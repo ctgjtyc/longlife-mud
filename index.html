@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title id="gameTitle">长生梦录</title>
+<style>
+/* 主题化 skin：颜色全部走 CSS 变量（默认 = 仙侠·山水皮肤），切换主题时由 novel.js applyTheme() 注入 :root */
+:root{
+  --bg:#f6f1e5; --bg-face:#faf6ec; --ink:#2f2a24; --ink-soft:#3a332a;
+  --border:#c9bfa8; --border-soft:#ddd2bc; --panel:#efe8d8; --panel-light:#fbf8f0;
+  --gold:#8a6d3b; --seal:#a63d2f; --green:#5b7a5d; --blue:#4a6b6a;
+  --btn-border:#a89b7f; --hp-empty:#d8d0bc; --sub-text:#6b6255;
+  --glow1:rgba(90,122,93,0.10); --glow2:rgba(74,107,106,0.10); --shadow:rgba(60,50,30,0.12);
+  --mtn1:#5b7a5d; --mtn2:#4a6b6a; --mtn3:#a63d2f;
+}
+*{box-sizing:border-box;font-family:"KaiTi","STKaiti","SimSun","Microsoft Yahei",sans-serif;}
+body{background:var(--bg);color:var(--ink);padding:20px;max-width:1200px;margin:0 auto;height:100vh;overflow:hidden;
+  background-image:radial-gradient(ellipse at 18% 8%, var(--glow1), transparent 55%),
+                   radial-gradient(ellipse at 88% 92%, var(--glow2), transparent 55%);}
+#layout{display:flex;gap:14px;height:100%;}
+#gamebox{background:var(--bg-face);padding:24px;border-radius:10px;border:1px solid var(--border);
+  box-shadow:0 4px 18px var(--shadow);
+  flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;}
+.scroll-area{flex:1;overflow-y:auto;min-height:0;}
+.title{color:var(--gold);font-size:24px;font-weight:bold;margin-bottom:12px;
+  font-family:"STKaiti","KaiTi","SimSun",serif;letter-spacing:2px;
+  display:flex;align-items:center;gap:10px;}
+.seal{display:inline-block;background:var(--seal);color:var(--bg-face);font-size:13px;
+  padding:3px 7px;border-radius:3px;font-family:"KaiTi",serif;letter-spacing:1px;
+  box-shadow:inset 0 0 0 1px rgba(250,246,236,0.45);}
+.mountain{flex-shrink:0;margin-left:auto;opacity:0.75;}
+.info-bar{display:flex;gap:18px;margin:10px 0;padding:10px 12px;background:var(--panel);border:1px solid var(--border-soft);border-radius:6px;font-size:14px;flex-wrap:wrap;color:var(--ink-soft);}
+.log{min-height:240px;padding:14px;background:var(--panel-light);border:1px solid var(--border-soft);border-radius:6px;margin:14px 0;white-space:pre-wrap;line-height:1.7;font-size:15px;color:var(--ink);}
+.opt{margin:8px 0;}
+button{width:100%;padding:11px;margin:5px 0;background:var(--bg);color:var(--ink);border:1px solid var(--btn-border);border-radius:6px;font-size:15px;cursor:pointer;text-align:left;font-family:"KaiTi","STKaiti","SimSun",serif;transition:all .2s ease;}
+button:hover{background:var(--green);color:var(--bg-face);border-color:var(--green);}
+.btnsmall{width:auto;padding:6px 12px;margin-right:6px;}
+.ach{color:var(--green);}
+.danger{color:var(--seal);}
+.gold{color:var(--gold);}
+.blue{color:var(--blue);}
+.red{color:var(--seal);}
+.green{color:var(--green);}
+#equipbox,#achbox,#fightui{margin:12px 0;padding:10px 12px;background:var(--panel);border:1px solid var(--border-soft);border-radius:6px;font-size:14px;color:var(--ink-soft);}
+#portraitbox{display:flex;flex-direction:column;gap:6px;margin:8px 0;overflow:hidden;}
+#portraitToggle{flex-shrink:0;width:auto;padding:4px 10px;margin:0;}
+#portraitwrap{display:flex;flex-direction:row-reverse;gap:14px;align-items:flex-start;transition:transform .35s ease;}
+#portraitwrap.collapsed{transform:translateX(110%);}
+#portraitimg{max-height:230px;max-width:220px;flex-shrink:0;border-radius:8px;border:1px solid var(--border);box-shadow:0 2px 10px var(--shadow);}
+#portraitlabel{flex:1;color:var(--gold);font-size:14px;letter-spacing:1px;line-height:1.7;white-space:pre-wrap;}
+.hpbar{width:100%;height:14px;background:var(--hp-empty);border-radius:4px;margin:4px 0;overflow:hidden;border:1px solid var(--border);}
+.hpinner{height:100%;background:var(--seal);}
+
+/* 侧栏功能面板（常驻，与剧情下一步选择分离）*/
+#sidepanel{width:170px;flex-shrink:0;background:var(--panel);border:1px solid var(--border-soft);border-radius:8px;
+  padding:10px;display:flex;flex-direction:column;gap:6px;overflow-y:auto;}
+.side-title{color:var(--gold);font-size:14px;font-weight:bold;letter-spacing:2px;text-align:center;margin-bottom:2px;}
+.side-divider{border:none;border-top:1px solid var(--border-soft);margin:4px 0;}
+.sidebtn{width:100%;padding:8px 10px;margin:0;font-size:13px;background:var(--bg);color:var(--ink);
+  border:1px solid var(--btn-border);border-radius:5px;cursor:pointer;text-align:center;font-family:"KaiTi","STKaiti","SimSun",serif;transition:all .2s ease;}
+.sidebtn:hover{background:var(--green);color:var(--bg-face);border-color:var(--green);}
+.sidebtn.home{background:var(--seal);color:var(--bg-face);border-color:var(--seal);}
+.sidebtn.home:hover{background:var(--seal);color:var(--bg-face);}
+</style>
+</head>
+<body>
+<div id="layout">
+<div id="gamebox">
+<div class="title"><span class="seal" id="gameTitleShow">长生梦录</span><span id="gameTitleSpan">长生梦录</span>
+<svg class="mountain" viewBox="0 0 200 60" width="200" height="60" aria-hidden="true">
+<path d="M0 60 L40 15 L70 45 L100 8 L130 42 L160 20 L200 60 Z" fill="var(--mtn1)" opacity="0.28"/>
+<path d="M0 60 L30 35 L60 50 L90 28 L120 48 L150 35 L200 60 Z" fill="var(--mtn2)" opacity="0.20"/>
+<path d="M0 60 L200 60 L200 60 L0 60 Z" fill="var(--mtn3)" opacity="0.12"/>
+</svg>
+</div>
+<div>
+<button class="btnsmall" onclick="showSaveWindow()">💾存/读档</button>
+<button class="btnsmall" onclick="clearSave()">🗑清除存档</button>
+</div>
+<div class="info-bar">
+<span class="ufield" data-k="life"><span class="ulabel">⏳寿命</span>：<span id="life">∞（长生）</span></span>
+<span class="ufield" data-k="realm"><span class="ulabel">🎯境界</span>：<span id="realm">炼气期</span></span>
+<span class="ufield" data-k="cult"><span class="ulabel">⚔️修为</span>：<span id="cult">0</span> 点</span>
+<span class="ufield" data-k="hp"><span class="ulabel">❤️生命</span>：<span id="hp">100</span>/<span id="hpmax">100</span></span>
+<span class="ufield" data-k="mp"><span class="ulabel">⚡灵力</span>：<span id="mp">20</span>/<span id="mpmax">20</span></span>
+<span class="ufield" data-k="stone"><span class="ulabel">💰灵石</span>：<span id="stone">100</span></span>
+<span class="ufield" data-k="year"><span class="ulabel">📅岁月流逝</span>：<span id="year">0</span>年</span>
+<span class="ufield" data-k="status"><span class="ulabel">❤️状态</span>：<span id="status">平安无事</span></span>
+</div>
+<div class="info-bar" style="font-size:13px;color:var(--sub-text);">
+<span class="ufield attr" data-k="constitution"><span class="ulabel">🧬体魄</span>：<span id="attr-constitution">10</span></span>
+<span class="ufield attr" data-k="soul"><span class="ulabel">🧠神魂</span>：<span id="attr-soul">10</span></span>
+<span class="ufield attr" data-k="spirit"><span class="ulabel">⚡灵力</span>：<span id="attr-spirit">10</span></span>
+<span class="ufield attr" data-k="comprehension"><span class="ulabel">📖悟性</span>：<span id="attr-comprehension">10</span></span>
+<span class="ufield attr" data-k="heart"><span class="ulabel">☯道心</span>：<span id="attr-heart">0</span></span>
+<span class="ufield attr" data-k="demon"><span class="ulabel">🌑魔性</span>：<span id="attr-demon">0</span></span>
+</div>
+<div id="equipbox">🎒装备：<span id="equip">无</span></div>
+<div id="achbox">🏆成就：<span id="achtext">暂无</span></div>
+<div id="fightui" style="display:none;">
+<div>⚔️战斗界面</div>
+<div>敌方：<span id="enemyName"></span></div>
+<div class="hpbar"><div id="enemyHpBar" class="hpinner"></div></div>
+<span>敌方生命：<span id="enemyHpText"></span></span>
+</div>
+<div id="portraitbox" style="display:none;overflow:hidden;">
+<button id="portraitToggle" class="btnsmall" style="flex-shrink:0;width:auto;padding:4px 10px;margin:0 0 6px 0;" onclick="togglePortrait()">➖ 收起插图</button>
+<div id="portraitwrap" class="collapsed" style="display:flex;gap:14px;align-items:flex-start;transition:transform .35s ease;">
+  <img id="portraitimg" alt="">
+  <div id="portraitlabel"></div>
+</div>
+</div>
+<div class="scroll-area">
+<div class="log" id="logbox"></div>
+<div id="optbox"></div>
+</div>
+</div>
+
+<div id="sidepanel">
+<div class="side-title">☰ 功能</div>
+<div id="sidebtns"></div>
+<hr class="side-divider">
+<button class="sidebtn home" data-k="home" onclick="mainStep0()">🏠返回主线</button>
+</div>
+</div>
+
+<script src="js/data/balance.js"></script>
+<script src="js/data/items.js"></script>
+<script src="js/data/arts.js"></script>
+<script src="js/data/factions.js"></script>
+<script src="js/data/monsters.js"></script>
+<script src="js/data/quests.js"></script>
+<script src="js/data/npcs.js"></script>
+<script src="js/data/memories.js"></script>
+<script src="js/data/novel_changsheng_400.js"></script>
+<script src="js/data/novel.js"></script>
+<script src="js/data/world.js"></script>
+<script src="js/data/dynasty.js"></script>
+<script src="js/data/images.js"></script>
+<script src="js/core.js"></script>
+<script src="js/memory.js"></script>
+<script src="js/buff.js"></script>
+<script src="js/inventory.js"></script>
+<script src="js/arts.js"></script>
+<script src="js/faction.js"></script>
+<script src="js/encounter.js"></script>
+<script src="js/quest.js"></script>
+<script src="js/dialogue.js"></script>
+<script src="js/loot.js"></script>
+<script src="js/fight.js"></script>
+<script src="js/dungeons.js"></script>
+<script src="js/events.js"></script>
+<script src="js/story.js"></script>
+<script src="js/world.js"></script>
+<script src="js/trade.js"></script>
+<script src="js/dynasty.js"></script>
+
+<script src="js/gen.js"></script>
+<script src="js/eventgen.js"></script>
+<script src="js/director.js"></script>
+<script src="js/ngplus.js"></script>
+<script src="js/modloader.js"></script>
+<script src="js/meta.js"></script>
+<script src="js/novel.js"></script>
+<script src="js/share.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

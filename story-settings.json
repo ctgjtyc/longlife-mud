@@ -1,0 +1,28 @@
+{
+ "version": 1,
+ "gen": {
+  "enabled": true,
+  "level": "L0"
+ },
+ "l1": {
+  "baseUrl": "http://127.0.0.1:11434",
+  "model": "qwen3",
+  "maxTokens": 300,
+  "temperature": 0.8,
+  "eval": "2026-08-23 实接实测：/api/chat+think:false（qwen3 思考型必须关 think，/api/generate 空响应）；file:// 直连受 CORS 拒，须 start-http.bat（http://127.0.0.1:8000）打开游戏；运行态设置存 localStorage(gen_settings_v1)"
+ },
+ "l2": {
+  "enabled": false,
+  "endpoint": "",
+  "apiKey": "",
+  "dailyBudget": 10,
+  "cooldownMin": 30,
+  "maxTokens": 500,
+  "note": "云端默认关；启用需填 endpoint+key+日预算，超支自动降级 L0"
+ },
+ "director": {
+  "pace": "normal",
+  "intensity": "normal",
+  "note": "2026-08-23 首版落地 js/director.js：pace（事件密度+岁月因子）+结局锁定校验+面板；intensity/顺序/变体批次列后续（与 diff 叠加关系待内容侧裁决）"
+ }
+}

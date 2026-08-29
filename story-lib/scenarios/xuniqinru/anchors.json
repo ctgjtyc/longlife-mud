@@ -1,0 +1,14 @@
+{
+ "format": "anchor-v1",
+ "fields": [
+  "chapter",
+  "id",
+  "title",
+  "keywords",
+  "trigger",
+  "summary",
+  "pos",
+  "refs"
+ ],
+ "anchors": []
+}

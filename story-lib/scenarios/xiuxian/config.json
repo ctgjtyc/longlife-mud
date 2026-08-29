@@ -1,0 +1,33 @@
+{
+ "id": "xiuxian",
+ "name": "修仙·长生道",
+ "version": "0.1",
+ "status": "active",
+ "world": {
+  "theme": "修仙",
+  "timeline": "境界纪年",
+  "tone": "清冷长生流"
+ },
+ "progression": {
+  "system": "境界",
+  "stages": [
+   "炼气",
+   "筑基",
+   "金丹",
+   "元婴",
+   "化神",
+   "渡劫",
+   "大乘"
+  ],
+  "source": "data/balance.js"
+ },
+ "locked": {
+  "endings": "结局清单以 story.js 锁定区为准，AI 只填充不改走向"
+ },
+ "anchors_file": "anchors.json",
+ "story_pack": {
+  "scenes": "（story.js 现有 5 线场景，v0.5 外部化为 data 驱动）",
+  "endings_locked": "5 结局锁定"
+ },
+ "swap_protocol": "v1: 设置面板选模块 → 加载 config+anchors+story-pack → 存档绑定 module_id 防串档；引擎层(core/fight/inventory)共享，叙事层(config/anchors/story-pack)按模块切换"
+}

@@ -1,0 +1,14 @@
+# 统一行尾策略：仓库内一律 LF（Windows 检出不再转 CRLF，避免构建产物无谓 diff）
+* text=auto eol=lf
+
+# 批处理脚本必须 CRLF（Windows cmd 解析依赖）
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# 二进制素材不做行尾与文本处理
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.ico binary
+*.mp4 binary

@@ -1,0 +1,23 @@
+{
+ "id": "xuniqinru",
+ "name": "游戏虚拟世界入侵地球",
+ "version": "0.1",
+ "status": "reserved",
+ "world": {
+  "theme": "虚拟世界入侵现实",
+  "timeline": "入侵纪年",
+  "tone": "待定（都市异能/数据废土可选）"
+ },
+ "progression": {
+  "system": "玩家等级+数据污染度（替换境界体系）",
+  "stages": [],
+  "source": "待定"
+ },
+ "relation_to_xiuxian": "待裁决：独立新存档线 or 修仙线后期资料片（入侵修仙世界）",
+ "anchors_file": "anchors.json",
+ "story_pack": {
+  "scenes": "（待建：现实线/虚拟线双世界场景表）",
+  "endings_locked": "（待建）"
+ },
+ "swap_protocol": "v1: 设置面板选模块 → 加载 config+anchors+story-pack → 存档绑定 module_id 防串档；引擎层(core/fight/inventory)共享，叙事层(config/anchors/story-pack)按模块切换"
+}

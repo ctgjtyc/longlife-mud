@@ -1,0 +1,32 @@
+# ============================================================
+# longlife-mud 仓库边界（2026-08-29 QW 盘点定稿）
+# 原则：入库源码/配置/文档/创作型派生产物；排除版权语料、可重切中间产物、运行时状态、大体积旁路素材
+# ============================================================
+
+# ---- 第三方版权语料（网文原文 19M，不可分发）----
+story-lib/scenarios/*/source/
+
+# ---- 管线中间产物（可由 step0_split.py 从 source 重切）----
+story-pipeline/chunks/
+story-pipeline/ch_list_*.txt
+story-pipeline/archive/
+
+# ---- 运行时状态与日志（每次运行变动，非内容）----
+__pycache__/
+*.pyc
+build_check.log
+story-pipeline/state.json
+story-pipeline/progress.json
+story-pipeline/redo-queue.json
+
+# ---- 写前备份件 ----
+*.bak
+*.bak-*
+
+# ---- 大体积旁路素材（CG 视频 5.7M；游戏仅提示引用，不参与构建内联）----
+assets/cg/
+
+# ---- 系统/编辑器杂物 ----
+.DS_Store
+Thumbs.db
+desktop.ini
