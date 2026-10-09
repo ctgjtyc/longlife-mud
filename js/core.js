@@ -268,9 +268,10 @@ function migrateSave(){
 	}
 }
 function clearSave(){
- if(!confirm("确定清除存档？此操作不可恢复！"))return;
- localStorage.removeItem("mud_save");
- log("🗑存档已清除");
+ if(typeof confirm==="function"&&!confirm("确定清除存档？此操作不可恢复！"))return;
+ localStorage.removeItem("mud_save"); // 旧单槽
+ for(let n=1;n<=SAVE_SLOTS;n++)localStorage.removeItem(_slotKey(n)); // P1-2 修复：6 槽位一并清除（否则再开局仍提示检测到存档）
+ log("🗑存档已清除（单槽+"+SAVE_SLOTS+" 槽位）");
 }
 
 //成就

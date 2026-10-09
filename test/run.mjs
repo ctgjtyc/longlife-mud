@@ -1165,6 +1165,22 @@ assert(S.gs.status === "走火入魔" && S.gs.equip === "青锋短剑" && S.gs.e
 assert(S.gs.flags.modao === true && S.gs.achs.includes("长生伊始"), "旧档兼容：flags/achs 零丢失");
 assert(S.gs.version === 8, "旧档兼容：迁移后版本升至 v8");
 
+//==== 存档通道收敛②：清槽（clearSave 清单+6 槽位，修 P1-2）====
+section("存档通道收敛：清除存档清单+槽");
+freshGame();
+localStorage.setItem("mud_save", "x");
+localStorage.setItem("mud_save_slot_1", "x");
+localStorage.setItem("mud_save_slot_6", "x");
+document.getElementById("optbox").innerHTML = "";
+G.startGame();
+assert(document.getElementById("optbox")._children.some(b => b.innerText.includes("继续上次存档")), "清槽前置：有档时开局提示检测到存档");
+try { G.clearSave(); } catch (e) { /* 现版裸调 confirm 在测试沙箱会抛，实现需补 typeof 守卫（P1-2 修复一并处理） */ }
+assert(localStorage.getItem("mud_save") === null, "清槽：旧单槽 mud_save 清除");
+assert(localStorage.getItem("mud_save_slot_1") === null && localStorage.getItem("mud_save_slot_6") === null, "清槽：6 槽位全部清除（修 P1-2）");
+document.getElementById("optbox").innerHTML = "";
+G.startGame();
+assert(!document.getElementById("optbox")._children.some(b => b.innerText.includes("继续上次存档")), "清槽后：开局不再提示检测到存档");
+
 //==== 汇总 ====
 console.log("\n==============================");
 console.log(`T0 测试结果：${pass} 通过 / ${fail} 失败`);
