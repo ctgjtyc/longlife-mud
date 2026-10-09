@@ -217,6 +217,8 @@ function showSaveWindow(){
 }
 
 //==== 存档 v6 迁移：v1（无 version/attrs/flags）→ v2 补默认 → v3 补 P3 容器 → v5 补 P4 叙事引擎 → v6 补 P6 元游戏/多人，数值零漂移 ====
+// 标量默认表（migrate 尾段兜底）：极旧档/坏档缺标量字段→补默认，消灭 NaN 残留向量；已有值一律不动（零漂移）
+const SAVE_SCALAR_DEFAULTS={cult:0,stone:100,year:0,hp:100,hpmax:100,status:"平安无事",equip:"无",equipBonus:0,step:0,dead:false,endType:0,mp:20};
 function migrateSave(){
  if(!gs.version)gs.version=2;
  if(!gs.attrs)gs.attrs={};
@@ -265,6 +267,12 @@ function migrateSave(){
 	if(gs.version<8){
 	 if(!gs.memories)gs.memories={};
 	 gs.version=8;
+	}
+	// 标量默认表兜底（P2「migrateSave 不补标量」修复）：缺失/null/NaN 标量补默认，已有值零漂移。
+	// 放在版本链之后——mp 等字段先走版本链语义（v<3 用 mpMax()），仍缺才落默认表
+	for(let k in SAVE_SCALAR_DEFAULTS){
+	 let v=gs[k];
+	 if(v===undefined||v===null||(typeof v==="number"&&isNaN(v)))gs[k]=SAVE_SCALAR_DEFAULTS[k];
 	}
 }
 function clearSave(){

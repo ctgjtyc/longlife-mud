@@ -1181,6 +1181,38 @@ document.getElementById("optbox").innerHTML = "";
 G.startGame();
 assert(!document.getElementById("optbox")._children.some(b => b.innerText.includes("继续上次存档")), "清槽后：开局不再提示检测到存档");
 
+//==== 存档通道收敛③：标量默认表（migrate 补标量，消灭 NaN 残留向量）====
+section("存档通道收敛：标量迁移（migrate 补标量默认）");
+// 极旧档：标量字段大面积缺失 → 不得出现 NaN/undefined
+freshGame();
+S.gs = { version: 2, attrs: Object.assign({}, S.BALANCE.attrsInit), flags: {} };
+G.migrateSave();
+assert(typeof S.gs.cult === "number" && !isNaN(S.gs.cult), "标量迁移：cult 缺失补默认非 NaN");
+assert(typeof S.gs.stone === "number" && !isNaN(S.gs.stone), "标量迁移：stone 缺失补默认非 NaN");
+assert(S.gs.year === 0 && S.gs.hp === 100 && S.gs.hpmax === 100, "标量迁移：year/hp/hpmax 补默认");
+assert(S.gs.status === "平安无事" && S.gs.equip === "无" && S.gs.equipBonus === 0, "标量迁移：status/equip/equipBonus 补默认");
+assert(S.gs.step === 0 && S.gs.dead === false && S.gs.endType === 0, "标量迁移：step/dead/endType 补默认");
+// null（NaN 经 JSON 序列化的产物）同样兜底
+freshGame();
+S.gs = { version: 8, cult: null, stone: null, hp: null, equipBonus: null, attrs: Object.assign({}, S.BALANCE.attrsInit), flags: {} };
+G.migrateSave();
+assert(S.gs.cult === 0 && S.gs.stone === 100 && S.gs.hp === 100, "标量迁移：null（NaN 序列化残留）兜底为默认");
+assert(S.gs.equipBonus === 0, "标量迁移：equipBonus null 兜底");
+// 零漂移：已有值绝不动（含 0/false/字符串）
+freshGame();
+S.gs = { version: 8, cult: 7, stone: 0, year: 33, hp: 1, hpmax: 1, status: "走火入魔", equip: "青锋短剑", equipBonus: 3, step: 2, dead: false, endType: 4, mp: 5, attrs: Object.assign({}, S.BALANCE.attrsInit), flags: {} };
+G.migrateSave();
+assert(S.gs.cult === 7 && S.gs.stone === 0 && S.gs.year === 33, "标量迁移零漂移：已有数值不动（含 0）");
+assert(S.gs.hp === 1 && S.gs.hpmax === 1 && S.gs.equipBonus === 3, "标量迁移零漂移：hp/equipBonus 不动");
+assert(S.gs.status === "走火入魔" && S.gs.step === 2 && S.gs.endType === 4, "标量迁移零漂移：字符串/枚举不动");
+assert(S.gs.mp === 5, "标量迁移零漂移：mp 已有值不动");
+// 实战口径：缺标量档经 migrate 后时间主链不产生 NaN
+freshGame();
+S.gs = { version: 2, attrs: Object.assign({}, S.BALANCE.attrsInit), flags: {} };
+G.migrateSave();
+G.passYear(10);
+assert(typeof S.gs.cult === "number" && !isNaN(S.gs.cult) && S.gs.cult > 0, "标量迁移：缺标量档 passYear 后修为正常增长非 NaN");
+
 //==== 汇总 ====
 console.log("\n==============================");
 console.log(`T0 测试结果：${pass} 通过 / ${fail} 失败`);
