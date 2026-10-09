@@ -1075,6 +1075,28 @@ assert(g0v.text.includes("金丹期"), "L0 模板：变量填充生效");
 let g1 = await G.generate("encounter", { kw: "妖兽" });
 assert(g1.level === "L0" && g1.text.length > 0, "generate 主入口：默认 L0 通道产出（L1/L2 受闸默认关）");
 
+//==== 死接线修复 P1-3：难度敌人倍率接进开战（配置改了要生效）====
+section("死接线修复：难度敌人倍率接开战");
+freshGame();
+G.setDifficulty(2); // 硬核 ×1.3
+G.startFight(G.monsterByName("山林妖狼"));
+assert(S.gs.enemy.hp === 104 && S.gs.enemy.hpMax === 104, "死接线·难度倍率：硬核开战敌人血量×1.3（80→104）");
+assert(S.gs.enemy.atk === 15, "死接线·难度倍率：硬核开战敌人攻击×1.3（12→15）");
+G.endFight();
+freshGame();
+G.setDifficulty(0); // 简单 ×0.8
+G.startFight(G.monsterByName("山林妖狼"));
+assert(S.gs.enemy.hp === 64, "死接线·难度倍率：简单开战敌人血量×0.8（80→64）");
+assert(S.gs.enemy.atk === 9, "死接线·难度倍率：简单开战敌人攻击×0.8（12→9）");
+G.endFight();
+assert(S.MONSTERS["山林妖狼"].hp === 80 && S.MONSTERS["山林妖狼"].atk === 12, "死接线·难度倍率：倍率只作用克隆体，模板数据零污染");
+freshGame();
+G.setDifficulty(2);
+G.startFight([G.monsterByName("山林妖狼"), G.monsterByName("魔渊鬼卒")]);
+assert(S.gs.foes.length === 2 && S.gs.foes[1].hp === 78, "死接线·难度倍率：团体战全员乘倍率（60→78）");
+assert(S.gs.foeReward.cult === 40, "死接线·难度倍率：奖励不随敌人强度缩放（30+10）");
+G.endFight();
+
 //==== 汇总 ====
 console.log("\n==============================");
 console.log(`T0 测试结果：${pass} 通过 / ${fail} 失败`);

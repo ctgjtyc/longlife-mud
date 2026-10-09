@@ -11,7 +11,9 @@ function startFight(monsterObj){
 //团体战斗：克隆敌人数组，聚合总奖励，记录首领
 function startFightGroup(monsters){
  gs.inFight=true;
- gs.foes=monsters.map(m=>{let c=JSON.parse(JSON.stringify(m));c.hpMax=c.hp;return c;});
+ // P1-3 死接线修复：难度敌人倍率（diffEnemyMult）在此接进开战克隆——只缩放血量/攻击，奖励不缩放
+ let dm=(typeof diffEnemyMult==="function")?diffEnemyMult():1;
+ gs.foes=monsters.map(m=>{let c=JSON.parse(JSON.stringify(m));c.hp=Math.floor(c.hp*dm);c.atk=Math.floor(c.atk*dm);c.hpMax=c.hp;return c;});
  gs.foeIndex=0;
  gs.enemy=gs.foes[0];
  gs.foeLeader=gs.foes[0];
