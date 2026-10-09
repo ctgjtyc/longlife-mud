@@ -2,8 +2,9 @@
 // 分享码格式：CFSAVE1.<encodeURIComponent(JSON)> / CFGIFT1.<...>，纯 JS 无环境依赖
 
 //==== 存档导出：gs+allAch 序列化为分享码 ====
+// P1-1 收敛：与本地槽位共用 sanitizeSave（战斗态清洗），import 走 _applySaveData（迁移+运行时兜底+结构校验）
 function exportSave(){
- let data={gs:gs,allAch:allAch,ver:6};
+ let data={gs:sanitizeSave(),allAch:allAch,ver:gs.version};
  let code="CFSAVE1."+encodeURIComponent(JSON.stringify(data));
  if(typeof navigator!=="undefined"&&navigator.clipboard&&navigator.clipboard.writeText){
   navigator.clipboard.writeText(code).then(()=>log("存档码已复制！可发给他人导入。","green")).catch(()=>{});
@@ -17,15 +18,8 @@ function importSave(code){
  try{
   if(!code||code.indexOf("CFSAVE1.")!==0)throw new Error("格式错误");
   let d=JSON.parse(decodeURIComponent(code.slice(8)));
-  if(!d.gs)throw new Error("缺 gs");
-  gs=d.gs;
-  migrateSave();
-  if(d.allAch)Object.assign(allAch,d.allAch);
-  renderAch();
-  refreshUi();
-  log("📥存档导入成功！","green");
-  clearOpt();
-  routeByStep();
+  if(!d||typeof d!=="object"||!d.gs||typeof d.gs!=="object")throw new Error("缺 gs");
+  _applySaveData(d,"📥存档导入成功！","green");
   return true;
  }catch(e){
   log("存档导入失败："+e.message,"red");

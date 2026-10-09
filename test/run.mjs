@@ -1123,6 +1123,48 @@ let shNone0 = S.gs.cult;
 G.passYear(20);
 assert(S.gs.cult - shNone0 === shBase, "死接线·据点加成：无据点零加成（基准不受扰）");
 
+//==== 存档通道收敛①：sanitize 共用（分享码/槽位/单槽同一份运行时清洗，修 P1-1）====
+section("存档通道收敛：sanitize 共用（分享码战斗态清洗）");
+freshGame();
+S.gs.cult = 500; S.gs.stone = 300;
+// 战斗中导出（P1-1 场景：幽灵敌人来自导出码残留战斗态）
+S.gs.inFight = true;
+S.gs.enemy = { name: "幽灵敌人", hp: 10, hpMax: 10, atk: 5, reward: { cult: 1, stone: 1 } };
+S.gs.foes = [S.gs.enemy]; S.gs.foeIndex = 0;
+S.gs.foeReward = { cult: 9, stone: 9 }; S.gs.foeLeader = S.gs.enemy;
+S.gs.aiEnabled = true;
+let fightCode = G.exportSave();
+let fightPayload = JSON.parse(decodeURIComponent(fightCode.slice(8)));
+assert(fightPayload.gs.inFight === false && fightPayload.gs.enemy === null, "sanitize·导出码：战斗态被清洗（inFight=false/enemy=null）");
+assert(fightPayload.gs.foeLeader === undefined && fightPayload.gs.foeReward === undefined && fightPayload.gs.aiEnabled === undefined, "sanitize·导出码：运行时字段整组剥离（foe*/aiEnabled）");
+assert(fightPayload.ver === 8, "sanitize·导出码：ver 与当前存档版本一致（不再漂移）");
+assert(G.importSave(fightCode) === true, "分享码战斗态往返：导入成功");
+assert(S.gs.inFight === false && S.gs.enemy === null, "分享码战斗态往返：导入后无幽灵敌人（P1-1）");
+assert(S.gs.cult === 500 && S.gs.stone === 300, "分享码战斗态往返：正常字段零丢失");
+// 槽位通道共用同一清洗
+freshGame();
+S.gs.inFight = true; S.gs.enemy = { name: "x" }; S.gs.foeLeader = { name: "x" }; S.gs.aiEnabled = true;
+vm.runInContext("saveToSlot(3)", sandbox);
+let slotRaw = JSON.parse(localStorage.getItem("mud_save_slot_3"));
+assert(slotRaw.gs.inFight === false && slotRaw.gs.enemy === null, "sanitize·槽位档：战斗态清洗");
+assert(slotRaw.gs.foeLeader === undefined && slotRaw.gs.aiEnabled === undefined, "sanitize·槽位档：运行时字段整组剥离（与导出码共用）");
+vm.runInContext("deleteSlot(3)", sandbox);
+// 单槽通道共用同一清洗
+freshGame();
+localStorage.removeItem("mud_save");
+S.gs.inFight = true; S.gs.enemy = { name: "x" }; S.gs.foeLeader = { name: "x" };
+G.saveGame();
+let singleRaw = JSON.parse(localStorage.getItem("mud_save"));
+assert(singleRaw.gs.inFight === false && singleRaw.gs.enemy === null, "sanitize·单槽档：战斗态清洗（与导出码共用）");
+assert(singleRaw.gs.foeLeader === undefined, "sanitize·单槽档：运行时字段整组剥离（与导出码共用）");
+// 旧档读入零丢失（兼容性样本：v2 极旧档全字段回读）
+localStorage.setItem("mud_save", JSON.stringify({ gs: { version: 2, cult: 123, stone: 456, year: 30, hp: 80, hpmax: 100, status: "走火入魔", equip: "青锋短剑", equipBonus: 12, achs: ["长生伊始"], step: 2, dead: false, endType: 0, attrs: Object.assign({}, S.BALANCE.attrsInit), flags: { modao: true } }, allAch: { a1: { got: true } } }));
+G.loadGame();
+assert(S.gs.cult === 123 && S.gs.stone === 456 && S.gs.year === 30, "旧档兼容：v2 样本核心数值零丢失");
+assert(S.gs.status === "走火入魔" && S.gs.equip === "青锋短剑" && S.gs.equipBonus === 12, "旧档兼容：状态/装备字段零丢失");
+assert(S.gs.flags.modao === true && S.gs.achs.includes("长生伊始"), "旧档兼容：flags/achs 零丢失");
+assert(S.gs.version === 8, "旧档兼容：迁移后版本升至 v8");
+
 //==== 汇总 ====
 console.log("\n==============================");
 console.log(`T0 测试结果：${pass} 通过 / ${fail} 失败`);

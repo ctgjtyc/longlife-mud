@@ -69,13 +69,23 @@ const allAch={
 //怪物库已迁至 data/monsters.js（P4 战斗深度：AI/阶段BOSS/词缀掉落）
 
 //==== 存档读档 localstorage ====
+// 运行时字段不落档（H 修复：战斗中存档→读档后幽灵敌人攻击）；单槽/槽位/分享码三通道共用同一份清单（P1-1 收敛）
+const RUNTIME_KEYS=["inFight","enemy","foes","foeIndex","foeReward","foeLeader","aiEnabled"];
+//落档快照清洗（saveGame/saveToSlot/exportSave 共用：浅拷贝+剥离运行时字段）
+function sanitizeSave(){
+ let snap=Object.assign({},gs);
+ for(let k of RUNTIME_KEYS)delete snap[k];
+ snap.inFight=false;snap.enemy=null;snap.foes=null;
+ return snap;
+}
+//读档运行时兜底（_applySaveData 共用：旧档/分享码残留的战斗态整组清空，防幽灵战斗）
+function _resetRuntimeState(){
+ gs.inFight=false;gs.enemy=null;gs.foes=null;
+ gs.foeIndex=0;gs.foeReward={cult:0,stone:0};gs.foeLeader=null;gs.aiEnabled=false;
+}
 function saveGame(){
  if(localStorage.getItem("mud_save")&&!confirm("已有旧存档，确定覆盖保存？"))return;
- // 运行时字段不落档（H 修复：战斗中存档→读档后幽灵敌人攻击）
- let snap=Object.assign({},gs);
- delete snap.inFight;delete snap.enemy;delete snap.foes;delete snap.aiEnabled;
- snap.inFight=false;snap.enemy=null;snap.foes=null;
- let saveData={gs:snap,allAch:allAch};
+ let saveData={gs:sanitizeSave(),allAch:allAch};
  localStorage.setItem("mud_save",JSON.stringify(saveData));
  log("✅游戏已保存至本地浏览器存档");
 }
@@ -87,16 +97,15 @@ function loadGame(){
  if(!d||typeof d!=="object"||!d.gs||typeof d.gs!=="object"){log("⚠存档结构异常，无法读取","red");return;}
  _applySaveData(d);
 }
-//读档共用落地（单槽/槽位/最近档共用：迁移+运行时字段兜底+路由）
-function _applySaveData(d){
+//读档共用落地（单槽/槽位/最近档/分享码共用：迁移+运行时字段兜底+路由；okMsg/okCls 可换导入语境文案）
+function _applySaveData(d,okMsg,okCls){
  gs=d.gs;
  migrateSave();
- // 旧档残留运行时字段兜底清空（防幽灵战斗）
- gs.inFight=false;gs.enemy=null;gs.foes=null;
+ _resetRuntimeState(); // 旧档/分享码残留运行时字段兜底清空（防幽灵战斗）
  Object.assign(allAch,d.allAch||{});
  renderAch();
  refreshUi();
- log("✅存档读取成功！");
+ log(okMsg||"✅存档读取成功！",okCls||"");
  clearOpt();
  routeByStep();
 }
@@ -122,10 +131,7 @@ function slotInfo(n){
 function saveToSlot(n){
  let info=slotInfo(n);
  if(!info.empty&&typeof confirm==="function"&&!confirm("槽位 "+n+" 已有存档，确定覆盖？"))return;
- let snap=Object.assign({},gs);
- delete snap.inFight;delete snap.enemy;delete snap.foes;delete snap.aiEnabled; // 运行时字段不落档（同 saveGame）
- snap.inFight=false;snap.enemy=null;snap.foes=null;
- let saveData={gs:snap,allAch:allAch,meta:_slotMeta()};
+ let saveData={gs:sanitizeSave(),allAch:allAch,meta:_slotMeta()}; // 运行时字段不落档（sanitizeSave 三通道共用）
  try{localStorage.setItem(_slotKey(n),JSON.stringify(saveData));}
  catch(e){log("⚠保存失败（存储空间不足？）","red");return;}
  log("✅已保存到槽位 "+n+"（第"+(gs.ng||1)+"世·"+gs.year+"年·"+realmOf(gs.cult).name+"）");
