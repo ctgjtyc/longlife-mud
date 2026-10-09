@@ -1,8 +1,15 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, addDisciple, addEnemy, checkCond, gs, hasEnemy, hidePortrait, isNpcDead, log, npcExpireYear, passYear, refreshUi, removeEnemy, setFlag, showPortrait } from "./core.js";
+import { NPCS } from "./data/npcs.js";
+import { addRep } from "./faction.js";
+import { addItem, equipByName, gainEquip } from "./inventory.js";
+import { mainStep0 } from "./story.js";
+
 //==== dialogue.js：NPC 对话树引擎（P4 叙事引擎）====
 // gs.relations = {npcId: 好感值}；多轮树遍历，选项 checkCond 门控，effect 改关系/声望/flags
 
 //关系等级（由好感值派生）
-function relationLevel(npcId){
+export function relationLevel(npcId){
  let v=gs.relations[npcId]||0;
  if(v>=50)return "知己";
  if(v>=20)return "友好";
@@ -10,12 +17,12 @@ function relationLevel(npcId){
  if(v>-20)return "陌生";
  return "交恶";
 }
-function addRelation(npcId,n){
+export function addRelation(npcId,n){
  gs.relations[npcId]=(gs.relations[npcId]||0)+n;
 }
 
 //开启对话（从 start 节点进入；NPC 已故则进入追忆）
-function startDialogue(npcId){
+export function startDialogue(npcId){
  if(!NPCS[npcId]){log("此人不在眼前");return;}
  npcExpireYear(npcId); // J34 后续：首次对话初始化寿命
  showPortrait(npcId,NPCS[npcId].name);
@@ -24,7 +31,7 @@ function startDialogue(npcId){
 }
 
 //NPC 已故追忆（按关系等级渲染；仇敌的恩怨随风散）
-function memorialDialogue(npcId){
+export function memorialDialogue(npcId){
  let npc=NPCS[npcId];
  let rel=relationLevel(npcId);
  log(`\n🪦【${npc.name}】的墓前，荒草萋萋。`);
@@ -43,7 +50,7 @@ function memorialDialogue(npcId){
 }
 
 //渲染对话节点：文本 + 条件门控的选项
-function dialogueNode(npcId,nodeId){
+export function dialogueNode(npcId,nodeId){
  let npc=NPCS[npcId];
  let node=npc.dialogue[nodeId];
  if(!node){hidePortrait();log("对话结束。");mainStep0();return;}
@@ -60,7 +67,7 @@ function dialogueNode(npcId,nodeId){
 }
 
 //对话效果结算（关系/声望/flags/物品/属性/时间/收徒/结仇）
-function applyDialogueEffect(npcId,eff){
+export function applyDialogueEffect(npcId,eff){
  if(!eff)return;
  if(eff.relation)for(let k in eff.relation)addRelation(k,eff.relation[k]);
  if(eff.rep)for(let k in eff.rep)addRep(k,eff.rep[k]);
@@ -77,7 +84,7 @@ function applyDialogueEffect(npcId,eff){
 }
 
 //==== 故人场景（拜访 NPC；need 门控：按路线/解锁条件显示；已故标注）====
-function sceneNpc(){
+export function sceneNpc(){
  log("\n💬【故人】你回想一路走来结识之人。");
  for(let id in NPCS){
   let npc=NPCS[id];

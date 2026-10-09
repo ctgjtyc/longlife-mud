@@ -1,9 +1,15 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, checkCond, gs, log, refreshUi } from "./core.js";
+import { MEMORIES } from "./data/memories.js";
+import { bioLog } from "./meta.js";
+import { mainStep0 } from "./story.js";
+
 //==== memory.js：记忆与阅历引擎（J34 方向3）====
 // gs.memories = {id: 解锁年份}；条件驱动解锁，阅历等级由记忆数派生
 // 记忆门控对话：checkCond({type:"memory",key:"mem_xxx",val:true}) / ({type:"memory",op:">=",val:N})
 
 //扫描记忆配置表，条件达成即记起（幂等：已解锁不重复记）
-function syncMemories(){
+export function syncMemories(){
  let added=0;
  for(let id in MEMORIES){
   if(gs.memories[id]!==undefined)continue;
@@ -18,11 +24,11 @@ function syncMemories(){
  return added;
 }
 
-function hasMemory(id){return gs.memories&&gs.memories[id]!==undefined;}
-function memoryCount(){return gs.memories?Object.keys(gs.memories).length:0;}
+export function hasMemory(id){return gs.memories&&gs.memories[id]!==undefined;}
+export function memoryCount(){return gs.memories?Object.keys(gs.memories).length:0;}
 
 //阅历等级（由记忆数派生，不落档）
-function memoryLevel(){
+export function memoryLevel(){
  let n=memoryCount();
  if(n>=10)return {name:"阅尽沧桑",desc:"千年岁月，故人皆已成灰。你见过太多，也放下了太多。"};
  if(n>=6)return {name:"见多识广",desc:"你走过山川湖海，见过恩怨情仇。"};
@@ -31,7 +37,7 @@ function memoryLevel(){
 }
 
 //回忆场景：盘点已记起的往事
-function sceneMemory(){
+export function sceneMemory(){
  syncMemories();
  log("\n📖【回忆】你闭上眼，往事如潮水般涌来。");
  let lv=memoryLevel();

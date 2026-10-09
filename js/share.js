@@ -1,9 +1,14 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { _applySaveData, addBtn, allAch, gs, log, sanitizeSave } from "./core.js";
+import { addItem } from "./inventory.js";
+import { mainStep0 } from "./story.js";
+
 //==== share.js：多人雏形（P6 存档分享/道具交换，无实时战斗）====
 // 分享码格式：CFSAVE1.<encodeURIComponent(JSON)> / CFGIFT1.<...>，纯 JS 无环境依赖
 
 //==== 存档导出：gs+allAch 序列化为分享码 ====
 // P1-1 收敛：与本地槽位共用 sanitizeSave（战斗态清洗），import 走 _applySaveData（迁移+运行时兜底+结构校验）
-function exportSave(){
+export function exportSave(){
  let data={gs:sanitizeSave(),allAch:allAch,ver:gs.version};
  let code="CFSAVE1."+encodeURIComponent(JSON.stringify(data));
  if(typeof navigator!=="undefined"&&navigator.clipboard&&navigator.clipboard.writeText){
@@ -14,7 +19,7 @@ function exportSave(){
  log("📤存档已导出为分享码。","blue");
  return code;
 }
-function importSave(code){
+export function importSave(code){
  try{
   if(!code||code.indexOf("CFSAVE1.")!==0)throw new Error("格式错误");
   let d=JSON.parse(decodeURIComponent(code.slice(8)));
@@ -28,7 +33,7 @@ function importSave(code){
 }
 
 //==== 道具交换码：背包道具打包为码（纯离线交换）====
-function exportGift(){
+export function exportGift(){
  let items=gs.inventory||{};
  let keys=Object.keys(items);
  if(!keys.length){log("背包空空，无可交换道具。","red");return null;}
@@ -41,7 +46,7 @@ function exportGift(){
  log("🎁道具已打包为交换码。","blue");
  return code;
 }
-function importGift(code){
+export function importGift(code){
  try{
   if(!code||code.indexOf("CFGIFT1.")!==0)throw new Error("格式错误");
   let d=JSON.parse(decodeURIComponent(code.slice(8)));
@@ -56,7 +61,7 @@ function importGift(code){
 }
 
 //==== 分享面板入口 ====
-function sceneShare(){
+export function sceneShare(){
  log("\n🤝【存档分享 / 道具交换】","blue");
  log("分享码为纯文本，可复制粘贴给他人离线导入；无实时战斗。");
  addBtn("📤导出存档码",()=>exportSave());

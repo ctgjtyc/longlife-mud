@@ -3,7 +3,7 @@
 // strongholds: 据点（maxLevel 上限 / upgrades 升级效果，level 存 gs.world.strongholds 持久）
 // dynEvents: 时间动态世界事件（year 触发年份 / choices 选项，flag 记录已抉择）
 
-const WORLD={
+export const WORLD={
  regions:{
   "jianghu":{name:"红尘江湖",desc:"凡俗王朝与散修汇聚之地，鱼龙混杂",x:1,y:2,adjacent:["qingyun","huangye","modao","sanxiu"],basePrice:{灵草:6,妖丹:40,星陨铁:25,魔骨:30},stronghold:null,ambushRate:0,monsters:["山林妖狼"]},
   "qingyun":{name:"青云山脉",desc:"仙门林立，灵气充沛，正道圣地",x:2,y:1,adjacent:["jianghu","yaoshan"],basePrice:{灵草:4,妖丹:50,星陨铁:30,魔骨:45},stronghold:"qingyun_zhai",ambushRate:0,monsters:["山林妖狼"]},

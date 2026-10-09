@@ -1,26 +1,31 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, gs, log, showInfo } from "./core.js";
+import { novelAnchorContext } from "./novel.js";
+import { mainStep0 } from "./story.js";
+
 /* gen.js - J35 M4 三级生成管线（L0 模板 / L1 Ollama / L2 云端默认关 + 五闸成本控制）
  * 独立模块，不接引擎；接线（index.html + build.py）列 v0.5。
  * 原则：呈现可变，走向锁定（锁定区校验通过才上屏）。 */
-const GEN_SETTINGS = {
+export const GEN_SETTINGS = {
   enabled: true, level: "L0",
   l1: { baseUrl: "http://127.0.0.1:11434", model: "qwen3", maxTokens: 300, temperature: 0.8 },
   l2: { enabled: false, endpoint: "", apiKey: "", dailyBudget: 0, cooldownMin: 30, maxTokens: 500 },
   cache: {}, budget: { spent: 0, day: "" }
 };
-const L0_TEMPLATES = {
+export const L0_TEMPLATES = {
   breakthrough: ["灵气如潮水般涌入经脉，{realm}的门槛在脚下碎裂。", "岁月无声，修为又进一步——{realm}。"],
   encounter: ["山雨欲来，{kw}的气息自远方逼近。", "命运的丝线轻轻颤动，{kw}之劫将至。"],
   npc_greet: ["{npc}抬眼看来：「长生路上，难得故人。」"],
   transition: ["数载寒暑，弹指即过。", "时光如白驹过隙。"]
 };
-function _stateFingerprint(gs) { return [gs.realm || 0, gs.year || 0, JSON.stringify(gs.flags || {})].join("|"); }
-function genL0(kind, vars) {
+export function _stateFingerprint(gs) { return [gs.realm || 0, gs.year || 0, JSON.stringify(gs.flags || {})].join("|"); }
+export function genL0(kind, vars) {
   const pool = L0_TEMPLATES[kind] || L0_TEMPLATES.transition;
   let t = pool[(vars && vars.seed || 0) % pool.length];
   for (const k in (vars || {})) t = t.split("{" + k + "}").join(vars[k]);
   return { text: t, level: "L0", cost: 0 };
 }
-async function genL1(kind, vars, extraPrompt) {
+export async function genL1(kind, vars, extraPrompt) {
   const s = GEN_SETTINGS.l1, body = {
     model: s.model, stream: false, think: false, // qwen3 思考型必须关 think，否则 num_predict 被思考吃尽（2026-08-23 实测）
     options: { num_predict: s.maxTokens, temperature: s.temperature },
@@ -33,7 +38,7 @@ async function genL1(kind, vars, extraPrompt) {
   t = String(t).replace(/<think>[\s\S]*?<\/think>/g, "").replace(/^[\s\S]{0,400}?<\/think>/, "").trim(); // 思考输出兜底剥离
   return { text: t, level: "L1", cost: 0 };
 }
-async function genL2(kind, vars, extraPrompt) {
+export async function genL2(kind, vars, extraPrompt) {
   const s = GEN_SETTINGS.l2;
   if (!s.enabled) return null;
   // 闸1 预算：日预算+冷却
@@ -48,7 +53,7 @@ async function genL2(kind, vars, extraPrompt) {
   GEN_SETTINGS.budget.spent += 1;
   return { text: ((d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content) || "").trim(), level: "L2", cost: 1 };
 }
-async function generate(kind, vars, extraPrompt) {
+export async function generate(kind, vars, extraPrompt) {
   // 闸2 缓存：同状态指纹命中直返
   const fp = kind + "|" + _stateFingerprint(typeof gs !== "undefined" ? gs : {});
   if (GEN_SETTINGS.cache[fp]) return Object.assign({}, GEN_SETTINGS.cache[fp], { cached: true });
@@ -68,7 +73,7 @@ async function generate(kind, vars, extraPrompt) {
 }
 //==== J35 M4 触发点1（2026-08-23）：奇遇氛围文案——锚点上下文喂料，L0 同步直出 / L1 异步升级 ====
 // 剧情参照取自 novelAnchorContext()（玩家当前主线 → 原著锚点摘要），L0 零成本不喂上下文，L1/L2 走 extraPrompt
-function genNarrateEncounter(e) {
+export function genNarrateEncounter(e) {
   try {
     const kw = (e && e.title) || "机缘";
     if (GEN_SETTINGS.level === "L0") { // L0：同步直出，保证与奇遇正文顺序
@@ -84,7 +89,7 @@ function genNarrateEncounter(e) {
 }
 //==== J35 M4-3：设置持久化 + 游戏内 AI 设置面板（2026-08-23 实接）====
 // 运行态设置以 localStorage 为准（story-settings.json 是管线侧默认值文档，file:// 下不可 fetch）
-function genSettingsLoad() {
+export function genSettingsLoad() {
   try {
     const j = JSON.parse(localStorage.getItem("gen_settings_v1") || "{}");
     if (j.enabled !== undefined) GEN_SETTINGS.enabled = !!j.enabled;
@@ -92,7 +97,7 @@ function genSettingsLoad() {
     if (j.l1) Object.assign(GEN_SETTINGS.l1, j.l1);
   } catch (_) {}
 }
-function genSettingsSave() {
+export function genSettingsSave() {
   try {
     localStorage.setItem("gen_settings_v1", JSON.stringify({
       enabled: GEN_SETTINGS.enabled, level: GEN_SETTINGS.level,
@@ -101,7 +106,7 @@ function genSettingsSave() {
   } catch (_) {}
 }
 //AI 生成设置面板（PANELS 注册 gen；L1 需 Ollama 在跑且经 http 启动器打开，file:// 下受 CORS 限自动降级 L0）
-function sceneGenSettings() {
+export function sceneGenSettings() {
   const lv = GEN_SETTINGS.level;
   log("\n⚙【AI 生成设置】当前等级：" + (lv === "L1" ? "L1 本地模型（Ollama·" + GEN_SETTINGS.l1.model + "·零出网）" : "L0 模板（零成本）"), "gold");
   if (lv !== "L1") {

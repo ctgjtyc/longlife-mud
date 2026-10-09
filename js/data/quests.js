@@ -3,7 +3,7 @@
 //       chain=连锁（onDone.unlockQuest 解锁下一环）/ hidden=隐藏（条件达成才可见）
 // steps: [{desc, cond(可空), reward(可空)}]；onDone: {flags, items, rep, cult, stone, attrs, unlockQuest}
 // 引擎只解释（quest.js），条件一律走 checkCond（D4 唯一门控）
-const QUESTS={
+export const QUESTS={
  // ---- 主线 ×5（对应五条路线）----
  "q_main_hide":{
   name:"隐世问道",kind:"main",need:null,

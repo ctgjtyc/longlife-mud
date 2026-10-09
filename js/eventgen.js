@@ -1,8 +1,16 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, checkCond, gs, log } from "./core.js";
+import { monsterByName } from "./data/monsters.js";
+import { startFight } from "./fight.js";
+import { GEN_SETTINGS, generate } from "./gen.js";
+import { mainStep0 } from "./story.js";
+import { applyEffect } from "./world.js";
+
 //==== eventgen.js：动态事件生成器（P5 模板+玩家状态，可选 AI 增强）====
 // 模板池：{cond, weight, slots(变量池), title/desc(模板), choices(选项)}
 // 生成：按玩家状态过滤 + 加权随机 → 填充变量 → 可选 gen.js AI 润色（默认关，主线锁定）
 
-const EVENT_TEMPLATES=[
+export const EVENT_TEMPLATES=[
  {cond:null,weight:3,slots:{kw:["妖兽","魔修","灵兽"]},title:"{kw}拦路",desc:"你在路上遭遇{kw}拦路，来者不善",choices:[
   {text:"迎战",fight:"山林妖狼"},
   {text:"绕道而行",effect:{stone:20}}
@@ -22,7 +30,7 @@ const EVENT_TEMPLATES=[
 ];
 
 //生成动态事件（模板 + 玩家状态过滤 + 加权随机 + 变量填充）
-function genDynamicEvent(){
+export function genDynamicEvent(){
  let pool=EVENT_TEMPLATES.filter(e=>!e.cond||checkCond(e.cond));
  if(!pool.length)return null;
  let total=pool.reduce((s,e)=>s+(e.weight||1),0);
@@ -43,7 +51,7 @@ function genDynamicEvent(){
 }
 
 //AI 增强（可选）：用 gen.js generate 润色事件描述（默认关；仅润色呈现，不改变选项/走向）
-async function aiEnhanceEvent(ev){
+export async function aiEnhanceEvent(ev){
  if(!(typeof generate==="function")||!GEN_SETTINGS||!GEN_SETTINGS.enabled)return ev.desc;
  try{
   let g=await generate("encounter",ev.vars,"润色这段动态事件描述，保持修仙口吻：");
@@ -53,7 +61,7 @@ async function aiEnhanceEvent(ev){
 }
 
 //动态事件场景（gs.aiEnabled 时走 AI 润色；主线/结局锁定不受影响）
-async function sceneDynamicEvent(){
+export async function sceneDynamicEvent(){
  let ev=genDynamicEvent();
  if(!ev){log("\n你四处游历，天地平静，并无异动。");addBtn("继续前行",()=>mainStep0());return;}
  let text=ev.desc;

@@ -2,7 +2,7 @@
 // type: consumable=消耗品 / material=材料（P3b 炼丹炼器使用）
 // use: 消耗品使用效果（数值全部在此配置，引擎只解释）
 
-const ITEMS={
+export const ITEMS={
  // ---- 消耗品 ----
  "回血散":{type:"consumable",desc:"凡俗伤药，恢复50点生命",use:{hp:50}},
  "聚灵丹":{type:"consumable",desc:"汇聚灵气，修为+60",use:{cult:60}},
@@ -22,7 +22,7 @@ const ITEMS={
 
 //==== 炼丹炼器配方表（P3b）====
 // mats: 材料消耗 {材料名:数量}；out: 产出（消耗品名 或 装备名，装备引用 core.js allEquip）；baseRate: 基础成功率（引擎叠加命格加成）
-const RECIPES={
+export const RECIPES={
  // ---- 炼丹 ----
  "聚灵丹":{mats:{灵草:2},out:"聚灵丹",baseRate:0.9},
  "养魂丹":{mats:{灵草:1,妖丹:1},out:"养魂丹",baseRate:0.8},

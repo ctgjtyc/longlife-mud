@@ -1,7 +1,14 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, costMp, gs, log, passYear, refreshUi } from "./core.js";
+import { ARTS } from "./data/arts.js";
+import { BALANCE } from "./data/balance.js";
+import { damageEnemy, enemyTurn } from "./fight.js";
+import { mainStep0 } from "./story.js";
+
 //==== arts.js：功法系统（P3b：习得/被动加成/主动技能/渡劫节点）====
 
 //习得功法（检查 cultReq，重复习得拒绝）
-function learnArt(id){
+export function learnArt(id){
  let a=ARTS[id];
  if(!a){log("没有此功法");return false;}
  if(gs.arts[id]){log(`你已习得【${id}】`);return false;}
@@ -13,7 +20,7 @@ function learnArt(id){
 }
 
 //被动功法属性加成（并入 attrEff，常驻生效）
-function artBonus(k){
+export function artBonus(k){
  let v=0;
  for(let id in gs.arts){
   let a=ARTS[id];
@@ -24,7 +31,7 @@ function artBonus(k){
 }
 
 //主动技能释放：战斗中命中敌方，战斗外仅演示
-function castSkill(id){
+export function castSkill(id){
  let a=ARTS[id];
  if(!a||a.type!=="active"){log("没有此技能");return false;}
  if(!gs.arts[id]){log(`你尚未习得【${id}】`,"red");return false;}
@@ -40,7 +47,7 @@ function castSkill(id){
 }
 
 //渡劫成功率：基础 + 渡劫节点功法加成（上限 95%）
-function tribulationChance(){
+export function tribulationChance(){
  let base=BALANCE.tribBase;
  for(let id in gs.arts){
   let a=ARTS[id];
@@ -51,7 +58,7 @@ function tribulationChance(){
 }
 
 //渡劫事件（P3b：渡劫期后触发，成败两分支）
-function triggerTribulation(){
+export function triggerTribulation(){
  log("\n⚡【渡劫】雷云密布，天劫降临！","danger");
  let ch=tribulationChance();
  log(`渡劫成功率：${Math.floor(ch*100)}%`);
@@ -75,7 +82,7 @@ function triggerTribulation(){
 }
 
 //==== 功法阁场景 ====
-function sceneArts(){
+export function sceneArts(){
  log("\n📖【功法阁】你翻阅典籍，参悟功法。");
  log(`当前修为：${gs.cult} 点｜灵力：${gs.mp}/${mpMax()}`);
  let learned=Object.keys(gs.arts);

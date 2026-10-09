@@ -1,6 +1,6 @@
 //==== data/balance.js：数值配置表（平衡表 SSOT）====
 
-const BALANCE={
+export const BALANCE={
  // 六属性初始值（旧档迁移时补此默认；悟性=10 保证 cult 公式与原版一致零漂移）
  attrsInit:{constitution:10,soul:10,spirit:10,comprehension:10,heart:0,demon:0},
  // 属性中文名（UI 展示）

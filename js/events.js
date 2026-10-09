@@ -1,6 +1,12 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addAch, addBtn, gs, log, passYear } from "./core.js";
+import { DIRECTOR_EVENT_BASE, directorEventRate } from "./director.js";
+import { equipByName, gainEquip } from "./inventory.js";
+import { mainStep0 } from "./story.js";
+
 //==== events.js：NPC 随机事件系统 ====
 
-function triggerRandomEvent(){
+export function triggerRandomEvent(){
  // J35 M3 Director：事件密度门（pace 因子；director 未加载时兜底全发，行为零回归）
  let _rate=(typeof directorEventRate==="function")?DIRECTOR_EVENT_BASE*directorEventRate():1;
  if(_rate<1&&Math.random()>_rate){

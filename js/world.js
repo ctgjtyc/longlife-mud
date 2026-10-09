@@ -1,11 +1,23 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, enemyRevenge, gs, log, passYear, setFlag } from "./core.js";
+import { monsterByName } from "./data/monsters.js";
+import { WORLD } from "./data/world.js";
+import { sceneDynasty } from "./dynasty.js";
+import { sceneDynamicEvent } from "./eventgen.js";
+import { addRep } from "./faction.js";
+import { startFight } from "./fight.js";
+import { addItem } from "./inventory.js";
+import { mainStep0 } from "./story.js";
+import { sceneTrade } from "./trade.js";
+
 //==== world.js：大世界引擎（P5 开放世界）====
 // gs.pos 当前区域；移动消耗岁月；据点升级（gs.world.strongholds 持久）；时间动态世界事件
 
 //当前区域（默认红尘江湖）
-function curRegion(){return WORLD.regions[gs.pos]||WORLD.regions.jianghu;}
+export function curRegion(){return WORLD.regions[gs.pos]||WORLD.regions.jianghu;}
 
 //通用效果结算（世界事件/王朝/动态事件共用：rep/items/stone/cult/attrs）
-function applyEffect(e){
+export function applyEffect(e){
  if(!e)return;
  if(e.rep)for(let k in e.rep)addRep(k,e.rep[k]);
  if(e.items)for(let k in e.items)addItem(k,e.items[k]);
@@ -15,7 +27,7 @@ function applyEffect(e){
 }
 
 //移动（相邻区域 + 消耗岁月）
-function moveTo(regionId){
+export function moveTo(regionId){
  let r=WORLD.regions[regionId];
  if(!r){log("没有此地");return;}
  let cur=curRegion();
@@ -30,7 +42,7 @@ function moveTo(regionId){
 }
 
 //J34 方向2：区域伏击（危险区域按 ambushRate 概率触发；30% 概率遭遇团体）
-function ambushCheck(r){
+export function ambushCheck(r){
  if(!r.ambushRate||Math.random()>=r.ambushRate)return false;
  let pool=r.monsters||["山林妖狼"];
  let n=Math.random()<0.3?2:1;
@@ -46,7 +58,7 @@ function ambushCheck(r){
 }
 
 //区域场景（据点/交易/动态事件/王朝/移动）
-function sceneRegion(){
+export function sceneRegion(){
  let r=curRegion();
  log(`\n📍【${r.name}】${r.desc}`);
  if(r.stronghold){
@@ -65,17 +77,17 @@ function sceneRegion(){
 }
 
 //据点等级（gs.world.strongholds 持久，默认 1）
-function strongholdLevel(id){
+export function strongholdLevel(id){
  return (gs.world&&gs.world.strongholds&&gs.world.strongholds[id])||1;
 }
-function setStrongholdLevel(id,lv){
+export function setStrongholdLevel(id,lv){
  if(!gs.world)gs.world={strongholds:{}};
  if(!gs.world.strongholds)gs.world.strongholds={};
  gs.world.strongholds[id]=lv;
 }
 
 //据点被动加成（每10年额外修为）
-function strongholdBonus(id){
+export function strongholdBonus(id){
  let sh=WORLD.strongholds[id];
  if(!sh)return 0;
  let lv=strongholdLevel(id);
@@ -87,7 +99,7 @@ function strongholdBonus(id){
 }
 
 //据点场景（升级消耗灵石）
-function sceneStronghold(id){
+export function sceneStronghold(id){
  let sh=WORLD.strongholds[id];
  let lv=strongholdLevel(id);
  log(`\n🏯【${sh.name}】当前等级 Lv${lv}，每10年额外修为+${strongholdBonus(id)}。`);
@@ -103,7 +115,7 @@ function sceneStronghold(id){
 }
 
 //待触发的时间动态世界事件（year 到达且未抉择）
-function pendingWorldEvent(){
+export function pendingWorldEvent(){
  for(let ev of WORLD.dynEvents){
   if(gs.year>=ev.year&&!gs.flags["dyn_"+ev.id])return ev;
  }
@@ -111,7 +123,7 @@ function pendingWorldEvent(){
 }
 
 //世界事件场景（mainStep0 优先展示；flag 记录已抉择）
-function sceneWorldEvent(ev){
+export function sceneWorldEvent(ev){
  setFlag("dyn_"+ev.id,true);
  log(`\n🌍【世界事件：${ev.title}】${ev.desc}`,"gold");
  for(let c of ev.choices){

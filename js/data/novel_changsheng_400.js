@@ -1,7 +1,7 @@
 //==== data/novel_changsheng_400.js：《系统赋我长生》前 400 章篇目（J35 M3 批次1，2026-08-23）====
 // 结构对齐 novel-lib-v2：chapters=[[章号,标题,关键词串],...]；anchors 增加 line 字段（五线+world 归属）
 // 数据源：story-lib chapters.json + anchors.json（digest 8 份提炼），本文件为生成产物，勿手改
-const NOVEL_CHANGSHENG_400={
+export const NOVEL_CHANGSHENG_400={
  id:"changsheng",
  game:"系统赋我长生",
  title:"系统赋我长生，活着终会无敌",

@@ -1,7 +1,62 @@
-//==== main.js：游戏入口 ====
+//==== main.js：游戏入口（ESM 装配根；显式引入全部模块，加载顺序机器保障）====
+// 数据层（叶子模块，无其它依赖）
+import "./data/balance.js";
+import "./data/items.js";
+import { TALENTS } from "./data/arts.js";
+import "./data/factions.js";
+import "./data/monsters.js";
+import "./data/quests.js";
+import "./data/npcs.js";
+import "./data/memories.js";
+import "./data/novel_changsheng_400.js";
+import "./data/novel.js";
+import "./data/world.js";
+import "./data/dynasty.js";
+import "./data/images.js";
+// 引擎层
+import { SAVE_SLOTS, addAch, addBtn, allEquip, gs, loadLatest, log, refreshUi, showPortrait, showSaveWindow, clearSave, togglePortrait } from "./core.js";
+import { sceneMemory } from "./memory.js";
+import "./buff.js";
+import { gainEquip, sceneInventory, sceneAlchemy } from "./inventory.js";
+import { sceneArts } from "./arts.js";
+import { sceneFaction } from "./faction.js";
+import "./encounter.js";
+import { questPanel } from "./quest.js";
+import { sceneNpc } from "./dialogue.js";
+import "./loot.js";
+import "./fight.js";
+import "./dungeons.js";
+import "./events.js";
+import { mainStep0, endingHide, endingDemon, endingInvincible, endingDead } from "./story.js";
+import "./world.js";
+import "./trade.js";
+import "./dynasty.js";
+import { sceneGenSettings } from "./gen.js";
+import "./eventgen.js";
+import { sceneDirector } from "./director.js";
+import "./ngplus.js";
+import { sceneModPanel } from "./modloader.js";
+import { bioLog, diffInitStone, sceneBiography, sceneHint, sceneDifficulty } from "./meta.js";
+import { sceneNovel, sceneSkillTree, sceneParty, sceneBestiary } from "./novel.js";
+import { sceneShare } from "./share.js";
+
+//==== 浏览器全局挂载：ESM 下函数不再自动挂 window，内联 onclick 与按名分发需显式暴露 ====
+Object.assign(window, {
+ // index.html 内联 onclick
+ showSaveWindow, clearSave, togglePortrait, mainStep0,
+ // 侧栏 PANELS 注册表按名分发（sideGo → window[fn]）
+ sceneInventory, sceneArts, sceneAlchemy, sceneFaction, questPanel, sceneNpc,
+ sceneMemory, sceneNovel, sceneBiography, sceneHint, sceneDifficulty,
+ sceneGenSettings, sceneDirector, sceneShare, sceneModPanel,
+ sceneSkillTree, sceneParty, sceneBestiary,
+ // 结局锁定校验（directorAssertLock → window[fnName]）
+ endingHide, endingDemon, endingInvincible, endingDead
+});
+
+//==== 游戏入口 ====
 
 //开局
-function startGame(){
+export function startGame(){
  document.getElementById("logbox").innerHTML="";
  // 有存档先问去向（修复：onload 无条件新开局，误触保存即覆盖旧档）
  let hasAny=false;
@@ -15,7 +70,7 @@ function startGame(){
  }
  newGameStart();
 }
-function newGameStart(){
+export function newGameStart(){
  document.getElementById("logbox").innerHTML="";
  showPortrait("hero","主角·长生者"); // 开局立绘（seedream 内嵌）
  log("===觉醒长生系统===");
@@ -31,7 +86,7 @@ function newGameStart(){
 }
 
 //==== 命格三选一（P3b：开局觉醒，互斥）====
-function chooseTalent(){
+export function chooseTalent(){
  log("\n【命格觉醒】冥冥之中，你感应到命格在呼唤，只能择一。","gold");
  let pool=Object.keys(TALENTS);
  let picks=[];

@@ -1,13 +1,18 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, gs, log, refreshUi } from "./core.js";
+import { THEMES, _firstNovel } from "./data/novel.js";
+import { mainStep0 } from "./story.js";
+
 //==== novel.js：可替换多主题多文本剧情库（novel-lib-v2）====
 // 数据：js/data/novel.js（THEMES 多主题数组，每主题含多篇 novels）
 // 当前主题：_THEME；当前篇：_NOVEL（指向选中主题内的某篇）。
 // 切换主题 -> 应用主题皮肤(css 变量) + 默认取该主题第一篇；切换篇目 -> 同步更新游戏名。
 
-var _THEME = THEMES && THEMES.length ? THEMES[0] : null;
-var _NOVEL = _firstNovel();
+export var _THEME = THEMES && THEMES.length ? THEMES[0] : null;
+export var _NOVEL = _firstNovel();
 
 //==== 面板注册表：面板 id -> {label,icon,fn,desc}（数据驱动侧栏按钮，见 docs/面板可替换规范.md）====
-var PANELS={
+export var PANELS={
  inventory:{label:"行囊",    icon:"🎒", fn:"sceneInventory", desc:"物品与装备"},
  arts:    {label:"功法阁",  icon:"📖", fn:"sceneArts",      desc:"功法学习"},
  alchemy: {label:"炼丹炼器",icon:"⚗", fn:"sceneAlchemy",   desc:"炼丹炼器"},
@@ -30,7 +35,7 @@ var PANELS={
 };
 
 // 应用主题皮肤：把主题 css 变量注入 :root
-function applyTheme(){
+export function applyTheme(){
  if(!_THEME||!_THEME.css)return;
  let c=_THEME.css, r=document.documentElement.style;
  let map={
@@ -45,7 +50,7 @@ function applyTheme(){
  applyUi();
 }
 //应用主题面板配置：资源栏显隐+标签映射 + 侧栏按钮数据驱动渲染(PANELS注册表)
-function applyUi(){
+export function applyUi(){
  if(typeof document==="undefined")return;
  let u=_THEME&&_THEME.ui? _THEME.ui:{};
  let res=u.resources||["life","realm","cult","hp","mp","stone","year","status"];
@@ -79,11 +84,11 @@ function applyUi(){
  }
 }
 //侧栏功能按钮入口：按函数名调用（函数自带返回/离开按钮）
-function sideGo(fn){
+export function sideGo(fn){
  if(typeof window[fn]==="function")window[fn]();
 }
 //切换主题（同步应用皮肤 + 默认取该主题第一篇，更新游戏名）
-function setTheme(id){
+export function setTheme(id){
  if(!THEMES||!THEMES.length)return;
  _THEME = THEMES.find(t=>t.id===id) || THEMES[0];
  applyTheme();
@@ -92,14 +97,14 @@ function setTheme(id){
  applyGameTitle();
 }
 //切换当前篇目（同步更新游戏名标识）
-function setNovel(id){
+export function setNovel(id){
  if(!_THEME||!_THEME.novels||!_THEME.novels.length)return;
  _NOVEL = _THEME.novels.find(n=>n.id===id) || _THEME.novels[0] || null;
  _novelAnchorCache=null; // 切篇失效，惰性重建
  applyGameTitle();
 }
 //根据当前篇.game 更新游戏名（标题 + 页面头部 + seal）
-function applyGameTitle(){
+export function applyGameTitle(){
  let name=(_NOVEL&&_NOVEL.game)?_NOVEL.game:"长生梦录";
  let t=document.getElementById("gameTitle"); if(t)t.innerText=name;
  let ts=document.getElementById("gameTitleSpan"); if(ts)ts.innerText=name;
@@ -109,12 +114,12 @@ function applyGameTitle(){
 if(typeof THEMES!=="undefined"&&THEMES&&THEMES.length){_THEME=THEMES[0];applyTheme();_NOVEL=_firstNovel();applyGameTitle();}
 
 //按章号取章节信息
-function novelChapter(ch){
+export function novelChapter(ch){
  if(!_NOVEL||!_NOVEL.chapters)return null;
  return _NOVEL.chapters.find(c=>c[0]===ch)||null;
 }
 //关键词检索（bigram 定位）：命中标题或关键词串，返回匹配章节数组
-function novelSearch(kw){
+export function novelSearch(kw){
  if(!_NOVEL||!_NOVEL.chapters)return [];
  let k=String(kw||"").trim();
  if(!k)return [];
@@ -122,14 +127,14 @@ function novelSearch(kw){
 }
 
 //随机一章（漫游当前篇）
-function novelRandom(){
+export function novelRandom(){
  if(!_NOVEL||!_NOVEL.chapters||!_NOVEL.chapters.length)return null;
  return _NOVEL.chapters[Math.floor(Math.random()*_NOVEL.chapters.length)];
 }
 
 //剧情锚点钩子：返回该章锚点，否则 null（J35 M3 批次1 优化：Map 缓存，切篇失效）
-var _novelAnchorCache=null; // {map:章号->锚点, lines:{line->[锚点]}}
-function _buildNovelAnchorCache(){
+export var _novelAnchorCache=null; // {map:章号->锚点, lines:{line->[锚点]}}
+export function _buildNovelAnchorCache(){
  if(!_NOVEL||!_NOVEL.anchors){_novelAnchorCache=null;return;}
  let m={},ln={};
  for(let a of _NOVEL.anchors){
@@ -138,14 +143,14 @@ function _buildNovelAnchorCache(){
  }
  _novelAnchorCache={map:m,lines:ln};
 }
-function novelAnchor(ch){
+export function novelAnchor(ch){
  if(!_novelAnchorCache)_buildNovelAnchorCache();
  if(!_novelAnchorCache)return null;
  return _novelAnchorCache.map[ch]||null;
 }
 
 //剧情库主面板：可切主题 + 切篇目 + 检索 + 随机
-function sceneNovel(){
+export function sceneNovel(){
  log("\n📚【剧情库】主题："+(_THEME?(("《"+_THEME.name+"》")+( _THEME.desc?("·"+_THEME.desc):"") ):"无"),"gold");
  if(_NOVEL){
   log("当前篇：《"+_NOVEL.title+"》·"+_NOVEL.author+" · 类型："+_NOVEL.type);
@@ -164,7 +169,7 @@ function sceneNovel(){
 }
 
 //主题选择
-function sceneThemePick(){
+export function sceneThemePick(){
  log("\n🎨【选择主题】每主题可含多篇文章，切换后皮肤与游戏名随之更新：","blue");
  for(let t of (THEMES||[])){
   let cur=(_THEME&&t.id===_THEME.id)?"（当前）":"";
@@ -175,7 +180,7 @@ function sceneThemePick(){
 }
 
 //篇目选择（当前主题内）
-function sceneNovelPick(){
+export function sceneNovelPick(){
  if(!_THEME||!_THEME.novels||!_THEME.novels.length){log("当前主题暂无文本。","red");sceneNovel();return;}
  log("\n📄【选择篇目】《"+_THEME.name+"》下共 "+_THEME.novels.length+" 篇：");
  for(let n of _THEME.novels){
@@ -186,7 +191,7 @@ function sceneNovelPick(){
 }
 
 //检索界面
-function sceneNovelSearch(){
+export function sceneNovelSearch(){
  log("\n🔍【检索】当前《"+_NOVEL.title+"》，输入关键词（人物名/地名/功法名）：","blue");
  addBtn("输入关键词",()=>{
   let kw=typeof prompt==="function"?prompt("输入检索关键词："):"";
@@ -203,7 +208,7 @@ function sceneNovelSearch(){
 }
 
 //章节详情（含剧情锚点与前后章导航）
-function sceneNovelChapter(ch){
+export function sceneNovelChapter(ch){
  let c=novelChapter(ch);
  if(!c){log("没有此章。","red");sceneNovel();return;}
  log("\n📖 第"+c[0]+"章 "+c[1],"gold");
@@ -226,15 +231,15 @@ function sceneNovelChapter(ch){
 }
 
 //==== J35 M3 五线锚点：按线浏览原著对照（hide/jianghu/zongmen/modao/fuben/world）====
-var NOVEL_LINE_NAMES={hide:"隐居·苟道种田",jianghu:"江湖·市井游历",zongmen:"宗门·五蕴宗",modao:"魔道·杀戮正邪",fuben:"副本·秘境历练",world:"世界大事"};
-function novelAnchorsByLine(line){
+export var NOVEL_LINE_NAMES={hide:"隐居·苟道种田",jianghu:"江湖·市井游历",zongmen:"宗门·五蕴宗",modao:"魔道·杀戮正邪",fuben:"副本·秘境历练",world:"世界大事"};
+export function novelAnchorsByLine(line){
  if(!_novelAnchorCache)_buildNovelAnchorCache();
  if(!_novelAnchorCache)return [];
  return _novelAnchorCache.lines[line]||[];
 }
 //锚点上下文（J35 M4 合流点）：按玩家当前主线（gs.step→线）取锚点摘要串，供 gen L1 extraPrompt 喂料
-var STEP_LINE={1:"hide",2:"jianghu",3:"zongmen",4:"modao",6:"fuben",7:"fuben",8:"fuben"};
-function novelAnchorContext(n){
+export var STEP_LINE={1:"hide",2:"jianghu",3:"zongmen",4:"modao",6:"fuben",7:"fuben",8:"fuben"};
+export function novelAnchorContext(n){
  n=n||3;
  if(typeof gs==="undefined"||!gs)return "";
  let line=STEP_LINE[gs.step]||null;
@@ -244,7 +249,7 @@ function novelAnchorContext(n){
  return "原著剧情参照（"+(NOVEL_LINE_NAMES[line]||line)+"）："+as.slice(0,n).map(a=>"第"+a.chapter+"章"+a.title+"："+a.summary).join("；");
 }
 //按线锚点面板（story.js 五线场景入口调用；无锚点时给出提示并返回剧情库）
-function sceneNovelLine(line){
+export function sceneNovelLine(line){
  let name=NOVEL_LINE_NAMES[line]||line;
  let as=novelAnchorsByLine(line);
  log("\n📖【原著锚点·"+name+"】《"+(_NOVEL?_NOVEL.title:"")+"》命中 "+as.length+" 个：","gold");
@@ -256,8 +261,8 @@ function sceneNovelLine(line){
 }
 
 //==== 转生/异界专属面板：技能树 / 伙伴 / 图鉴 ====
-var gs_skill=gs_skill||{points:0,tree:{}}; // 技能点（转生成长资源）
-function sceneSkillTree(){
+export var gs_skill=gs_skill||{points:0,tree:{}}; // 技能点（转生成长资源）
+export function sceneSkillTree(){
  let sk=(typeof gs==="object"&&gs)?gs:{}; // 兜底
  log("\n🌳【技能树】转生世界以技能点驱动成长，当前技能点："+(sk_pts()),"gold");
  let tree=[
@@ -278,15 +283,15 @@ function sceneSkillTree(){
  addBtn("🎁获得技能点（演示）",function(){gs_skill.points++;log("技能点 +1，当前 "+gs_skill.points,"gold");sceneSkillTree();});
  addBtn("返回",function(){mainStep0();});
 }
-function sk_pts(){return gs_skill.points;}
-function sceneParty(){
+export function sk_pts(){return gs_skill.points;}
+export function sceneParty(){
  if(!gs.party)gs.party=[];
  log("\n🤝【伙伴】与你同行的异界队友：","gold");
  if(!gs.party.length){log("（暂无伙伴，剧情中可结识。）","blue");}
  else{for(let p of gs.party)log("· "+p.name+"【"+p.title+"】好感"+p.favor+" 战力"+p.power);}
  addBtn("返回",function(){mainStep0();});
 }
-function sceneBestiary(){
+export function sceneBestiary(){
  if(!gs.bestiary)gs.bestiary={};
  log("\n📖【图鉴】收录遭遇过的灵物与敌人：","gold");
  let keys=Object.keys(gs.bestiary);

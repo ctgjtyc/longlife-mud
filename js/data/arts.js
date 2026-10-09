@@ -2,7 +2,7 @@
 // 功法 type: passive=被动加成（attrMods 并入 attrEff）/ active=主动技能（战斗耗灵力）/ tribulation=渡劫节点功法（提升渡劫成功率）
 // 数值全部在此配置，引擎只解释（对齐"一切数值进 data/ 配置表"约束）
 
-const ARTS={
+export const ARTS={
  // ---- 被动功法（attrMods 常驻生效）----
  "吐纳诀":{type:"passive",cultReq:0,desc:"基础吐纳法，悟性+2",attrMods:{comprehension:2}},
  "锻体诀":{type:"passive",cultReq:50,desc:"淬炼肉身，体魄+3",attrMods:{constitution:3}},
@@ -21,7 +21,7 @@ const ARTS={
 };
 
 // 命格（开局随机三选一，互斥；effect 为全局加成）
-const TALENTS={
+export const TALENTS={
  "天选之子":{desc:"气运加身，奇遇概率+15%",effect:{encounter:0.15}},
  "武痴转世":{desc:"战斗天赋，攻击伤害+10%",effect:{atkMul:1.1}},
  "丹道天才":{desc:"丹道亲和，炼丹成功率+15%",effect:{alchemy:0.15}},

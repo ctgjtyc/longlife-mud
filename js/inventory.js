@@ -1,20 +1,28 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addStatus } from "./buff.js";
+import { addBtn, allEquip, gs, log, refreshUi, setEquip } from "./core.js";
+import { TALENTS } from "./data/arts.js";
+import { BALANCE } from "./data/balance.js";
+import { ITEMS, RECIPES } from "./data/items.js";
+import { mainStep0, routeByStep } from "./story.js";
+
 //==== inventory.js：背包系统（P3a：消耗品/材料 + 多装备持有换装）====
 
 //物品增删查
-function addItem(name,n=1){
+export function addItem(name,n=1){
  gs.inventory[name]=(gs.inventory[name]||0)+n;
  log(`获得物品【${name}】×${n}`,"green");
 }
-function removeItem(name,n=1){
+export function removeItem(name,n=1){
  if((gs.inventory[name]||0)<n)return false;
  gs.inventory[name]-=n;
  if(gs.inventory[name]<=0)delete gs.inventory[name];
  return true;
 }
-function countItem(name){return gs.inventory[name]||0;}
+export function countItem(name){return gs.inventory[name]||0;}
 
 //使用消耗品（效果由 data/items.js 配置驱动）
-function useItem(name){
+export function useItem(name){
  let it=ITEMS[name];
  if(!it||it.type!=="consumable"){log("该物品无法使用");return false;}
  if(!removeItem(name,1)){log("背包中没有此物品");return false;}
@@ -31,12 +39,12 @@ function useItem(name){
 }
 
 //==== 多装备：持有列表 + 换装（gs.equip/equipBonus 仍为当前装备，兼容旧逻辑）====
-function gainEquip(eq){
+export function gainEquip(eq){
  if(!gs.ownedEquips.includes(eq.name))gs.ownedEquips.push(eq.name);
  setEquip(eq);
 }
-function equipByName(name){return allEquip.find(e=>e.name===name)||(gs.customEquips||[]).find(e=>e.name===name);}
-function switchEquip(name){
+export function equipByName(name){return allEquip.find(e=>e.name===name)||(gs.customEquips||[]).find(e=>e.name===name);}
+export function switchEquip(name){
  if(!gs.ownedEquips.includes(name)){log("你并未持有该装备");return false;}
  let eq=equipByName(name);
  if(!eq){log(`【${name}】装备数据缺失（旧档残留），已从持有列表移除`,"red");gs.ownedEquips=gs.ownedEquips.filter(n=>n!==name);return false;}
@@ -47,7 +55,7 @@ function switchEquip(name){
 }
 
 //==== 行囊界面（使用物品 / 换装）====
-function sceneInventory(){
+export function sceneInventory(){
  log("\n🎒【行囊】你清点随身之物。");
  let keys=Object.keys(gs.inventory);
  if(keys.length===0)log("（背包空空如也）");
@@ -72,17 +80,17 @@ function sceneInventory(){
 }
 
 //==== 炼丹炼器（P3b：配方配置化 + 成功率，材料消耗）====
-function alchemyChance(recipe){
+export function alchemyChance(recipe){
  let ch=recipe.baseRate||BALANCE.alchemyBase;
  let t=TALENTS[gs.talent];
  if(t&&t.effect&&t.effect.alchemy)ch+=t.effect.alchemy;
  return Math.min(0.95,ch);
 }
-function canCraft(recipe){
+export function canCraft(recipe){
  for(let m in recipe.mats){if((gs.inventory[m]||0)<recipe.mats[m])return false;}
  return true;
 }
-function craft(name){
+export function craft(name){
  let r=RECIPES[name];
  if(!r){log("没有此配方");return false;}
  if(!canCraft(r)){log("材料不足！","red");return false;}
@@ -98,7 +106,7 @@ function craft(name){
  refreshUi();
  return true;
 }
-function sceneAlchemy(){
+export function sceneAlchemy(){
  log("\n⚗【炼丹炼器】你架起丹炉，清点材料。");
  let mats=Object.keys(gs.inventory).filter(n=>(ITEMS[n]&&ITEMS[n].type==="material"));
  if(mats.length){log(`材料：${mats.map(m=>`${m}×${gs.inventory[m]}`).join("、")}`);}

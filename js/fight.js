@@ -1,15 +1,30 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { castSkill } from "./arts.js";
+import { attrEff } from "./buff.js";
+import { addAch, addBtn, clearOpt, gs, log, passYear, refreshUi, setFlag } from "./core.js";
+import { ARTS, TALENTS } from "./data/arts.js";
+import { BALANCE } from "./data/balance.js";
+import { ITEMS } from "./data/items.js";
+import { monsterByName } from "./data/monsters.js";
+import { stepCopyMagicCave, stepCopyYaoShan } from "./dungeons.js";
+import { useItem } from "./inventory.js";
+import { rollLoot } from "./loot.js";
+import { syncMemories } from "./memory.js";
+import { diffEnemyMult } from "./meta.js";
+import { mainStep0 } from "./story.js";
+
 //==== fight.js：回合战斗系统（P4 战斗深度 + J34 方向2 团体战斗）====
 // 团体战斗数据模型（运行时，不落档）：gs.foes 敌人数组 / gs.enemy 当前目标 / gs.foeIndex 目标索引
 // gs.foeReward 团体总奖励（启动时聚合）/ gs.foeLeader 首领（词缀掉落基准）
 
 //开始战斗：兼容单怪与团体（传数组即团体战）
-function startFight(monsterObj){
+export function startFight(monsterObj){
  let list=Array.isArray(monsterObj)?monsterObj:[monsterObj];
  startFightGroup(list);
 }
 
 //团体战斗：克隆敌人数组，聚合总奖励，记录首领
-function startFightGroup(monsters){
+export function startFightGroup(monsters){
  gs.inFight=true;
  // P1-3 死接线修复：难度敌人倍率（diffEnemyMult）在此接进开战克隆——只缩放血量/攻击，奖励不缩放
  let dm=(typeof diffEnemyMult==="function")?diffEnemyMult():1;
@@ -27,13 +42,13 @@ function startFightGroup(monsters){
  renderFightUi();
  fightTurn();
 }
-function renderFightUi(){
+export function renderFightUi(){
  document.getElementById("enemyName").innerText=gs.enemy.name+(gs.foes.length>1?`（${gs.foeIndex+1}/${gs.foes.length}）`:"");
  document.getElementById("enemyHpText").innerText=gs.enemy.hp;
  let pct=Math.max(0,gs.enemy.hp)/gs.enemy.hpMax*100;
  document.getElementById("enemyHpBar").style.width=pct+"%";
 }
-function fightTurn(){
+export function fightTurn(){
  if(!gs.inFight)return;
  clearOpt();
  addBtn("🗡挥剑攻击",()=>{playerAttack();});
@@ -48,7 +63,7 @@ function fightTurn(){
  addBtn("🏃尝试逃跑（不一定成功）",()=>{tryEscape();});
 }
 //P4：战斗内道具子菜单（用消耗品后返回战斗）
-function fightItem(){
+export function fightItem(){
  clearOpt();
  log("\n🎒【战斗道具】你翻找随身之物。");
  let consumables=Object.keys(gs.inventory).filter(n=>ITEMS[n]&&ITEMS[n].type==="consumable");
@@ -61,7 +76,7 @@ function fightItem(){
  }
  addBtn("返回战斗",()=>fightTurn());
 }
-function playerAttack(){
+export function playerAttack(){
  let t=TALENTS[gs.talent];
  let mul=(t&&t.effect&&t.effect.atkMul)||1;
  let dmg=Math.floor((BALANCE.atkBase + gs.equipBonus*BALANCE.atkEquip + gs.cult*BALANCE.atkCult + attrEff("constitution")*BALANCE.atkConstitution)*mul);
@@ -69,7 +84,7 @@ function playerAttack(){
  if(damageEnemy(dmg))return;
  enemyTurn();
 }
-function playerDefend(){
+export function playerDefend(){
  log("你摆出防御姿态，降低受到的伤害");
  let edmg=Math.floor(gs.enemy.atk*0.4);
  gs.hp-=edmg;
@@ -79,7 +94,7 @@ function playerDefend(){
  renderFightUi();
  if(gs.hp>0)fightTurn();
 }
-function tryEscape(){
+export function tryEscape(){
  let r=Math.random();
  if(r>0.45){
   log("✅你成功脱身逃离战场！");
@@ -92,7 +107,7 @@ function tryEscape(){
 }
 
 //对当前目标造成伤害；目标死亡切换下一目标；全部击杀→fightWin
-function damageEnemy(dmg){
+export function damageEnemy(dmg){
  let e=gs.enemy;
  e.hp-=dmg;
  renderFightUi();
@@ -108,7 +123,7 @@ function damageEnemy(dmg){
 }
 
 //敌方回合：所有存活敌人各攻击一次（含各自 AI）
-function enemyTurn(){
+export function enemyTurn(){
  for(let m of gs.foes){
   let dmg=m.atk+Math.floor(Math.random()*8);
   // P4：敌人 AI（狂暴/阶段/治疗/召唤，均按血量比例触发一次）
@@ -147,7 +162,7 @@ function enemyTurn(){
  renderFightUi();
  if(gs.hp>0)fightTurn();
 }
-function fightWin(){
+export function fightWin(){
  log(`🎉你击退了所有敌人！`,"gold");
  addAch("a9");
  let rw=gs.foeReward;
@@ -164,7 +179,7 @@ function fightWin(){
  endFight();
  backAfterFight();
 }
-function endFight(){
+export function endFight(){
  gs.inFight=false;
  gs.enemy=null;
  gs.foes=[];
@@ -174,7 +189,7 @@ function endFight(){
  document.getElementById("fightui").style.display="none";
  refreshUi();
 }
-function checkPlayerDead(){
+export function checkPlayerDead(){
  //长生特性：hp归零不会真正死亡，重伤，多年后恢复
  if(gs.hp<=0){
   log("\n💔你身受致命重创！长生特性触发，肉身不灭，但神魂受损。","danger");
@@ -187,7 +202,7 @@ function checkPlayerDead(){
   backAfterFight();
  }
 }
-function backAfterFight(){
+export function backAfterFight(){
  //战斗结束回到对应剧情分支
  if(gs.step===6){stepCopyYaoShan();}
  else if(gs.step===7){stepCopyMagicCave();}

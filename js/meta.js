@@ -1,27 +1,34 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, gs, log, refreshUi } from "./core.js";
+import { QUESTS } from "./data/quests.js";
+import { WORLD } from "./data/world.js";
+import { mainStep0 } from "./story.js";
+import { curRegion } from "./world.js";
+
 //==== meta.js：元游戏（P6 传记/难度/提示系统）====
 
 //==== 难度系统：0=简单 1=普通 2=硬核（gs.diff 落档）====
-const DIFFS=[
+export const DIFFS=[
  {id:0,name:"简单",desc:"修为增长×1.5，初始灵石200，敌人强度×0.8"},
  {id:1,name:"普通",desc:"标准体验"},
  {id:2,name:"硬核",desc:"修为增长×0.7，初始灵石50，敌人强度×1.3"}
 ];
-function setDifficulty(d){
+export function setDifficulty(d){
  if(d<0||d>2)return;
  gs.diff=d;
  log(`难度已设为【${DIFFS[d].name}】：${DIFFS[d].desc}`,"blue");
  refreshUi();
 }
-function diffMult(){ // 修为增长倍率
+export function diffMult(){ // 修为增长倍率
  return gs.diff===0?1.5:(gs.diff===2?0.7:1);
 }
-function diffEnemyMult(){ // 敌人强度倍率
+export function diffEnemyMult(){ // 敌人强度倍率
  return gs.diff===0?0.8:(gs.diff===2?1.3:1);
 }
-function diffInitStone(){ // 难度初始灵石
+export function diffInitStone(){ // 难度初始灵石
  return gs.diff===0?200:(gs.diff===2?50:100);
 }
-function sceneDifficulty(){
+export function sceneDifficulty(){
  log("\n⚙【难度设置】","blue");
  for(let d of DIFFS){
   addBtn(`【${d.name}】${d.desc}`,()=>{setDifficulty(d.id);sceneDifficulty();});
@@ -30,11 +37,11 @@ function sceneDifficulty(){
 }
 
 //==== 传记：gs.bio 记录关键节点 [{year,name,desc}]，跨世累积 ====
-function bioLog(name,desc){
+export function bioLog(name,desc){
  if(!gs.bio)gs.bio=[];
  gs.bio.push({year:gs.year,name:name,desc:desc});
 }
-function biography(){
+export function biography(){
  let lines=[];
  lines.push(`《长生赋》人物传记 · 第${gs.ng||1}世`);
  lines.push(`——${gs.year}年，${realmOf(gs.cult).name}，修为${gs.cult}点`);
@@ -51,7 +58,7 @@ function biography(){
  if(gs.endType)lines.push(`结局：${["","万古隐仙","宗门老祖","万古魔主","岁月道主","长生归寂"][gs.endType]}`);
  return lines.join("\n");
 }
-function sceneBiography(){
+export function sceneBiography(){
  log("\n📜【人物传记】","gold");
  log(biography());
  addBtn("📤导出传记（复制到剪贴板）",()=>{
@@ -67,7 +74,7 @@ function sceneBiography(){
 }
 //==== J35 M4-4：传记写入拾光（:8766 /api/diary → docs/personal/，零出网）====
 // 双通道：①直投（拾光若放行本页 Origin 则直接入库）②403/网络失败→下载 .md 由拾光「导入」功能落库（拾光拒跨源 Origin 是其 CSRF 防护设计，不绕过）
-function bioToShiguang(){
+export function bioToShiguang(){
  const title="长生赋·人物传记·第"+(gs.ng||1)+"世·"+gs.year+"年";
  const body=biography();
  const today=new Date().toISOString().slice(0,10);
@@ -82,7 +89,7 @@ function bioToShiguang(){
   bioDownloadFallback(title,body,today);
  });
 }
-function bioDownloadFallback(title,body,date){
+export function bioDownloadFallback(title,body,date){
  try{
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob(["# "+title+"\n\n"+body+"\n"],{type:"text/markdown"}));
@@ -94,7 +101,7 @@ function bioDownloadFallback(title,body,date){
 }
 
 //==== 提示系统：任务/可去地点/日志检索 ====
-function sceneHint(){
+export function sceneHint(){
  log("\n💡【提示】","blue");
  let active=Object.keys(gs.quests||{}).filter(k=>gs.quests[k]!=="done"&&gs.quests[k]!=="failed");
  if(active.length){
@@ -122,7 +129,7 @@ function sceneHint(){
  });
  addBtn("返回",()=>mainStep0());
 }
-function searchLog(kw){
+export function searchLog(kw){
  if(!kw)return 0;
  let lb=document.getElementById("logbox");
  let txt=lb.innerText||"";

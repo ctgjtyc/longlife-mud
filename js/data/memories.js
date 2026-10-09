@@ -2,7 +2,7 @@
 // 记忆 = 玩家经历的关键事件，条件驱动解锁（need 走 checkCond 唯一门控）
 // gs.memories = {id: 解锁年份}；syncMemories() 扫描本表，条件达成即记起
 // 阅历等级由 memoryCount() 派生（见 js/memory.js）
-const MEMORIES={
+export const MEMORIES={
  "mem_first_fight":{name:"初战",desc:"第一次与妖兽搏杀，血染衣襟。",need:{type:"flag",key:"kill_monster",val:true}},
  "mem_join_sect":{name:"拜入山门",desc:"踏入青云宗，从此有了师门。",need:{type:"flag",key:"zongmen",val:true}},
  "mem_fall_demon":{name:"坠入魔道",desc:"一念之差，踏入魔渊。",need:{type:"flag",key:"modao",val:true}},

@@ -1,9 +1,17 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, checkCond, gs, log, refreshUi, setFlag } from "./core.js";
+import { QUESTS } from "./data/quests.js";
+import { addRep } from "./faction.js";
+import { addItem } from "./inventory.js";
+import { syncMemories } from "./memory.js";
+import { mainStep0 } from "./story.js";
+
 //==== quest.js：任务引擎（P4 叙事引擎）====
 // gs.quests = {id: 当前步索引(number) | "done" | "failed"}
 // 接取/推进/完成全走 checkCond 门控（D4 唯一门控）；循环任务完成后重置为 active
 
 //任务是否可接（need 条件达成 + 未接取/未完成/未失败）
-function questAvailable(id){
+export function questAvailable(id){
  let q=QUESTS[id];
  if(!q)return false;
  if(gs.quests[id]==="done"||gs.quests[id]==="failed")return false;
@@ -13,7 +21,7 @@ function questAvailable(id){
 }
 
 //接取任务
-function acceptQuest(id){
+export function acceptQuest(id){
  let q=QUESTS[id];
  if(!q){log("没有此任务");return false;}
  if(!questAvailable(id)){log(`【${q.name}】当前无法接取`,"red");return false;}
@@ -24,7 +32,7 @@ function acceptQuest(id){
 }
 
 //推进任务：当前步条件达成 → 结算奖励 → 步进；最后一步 → 完成
-function advanceQuest(id){
+export function advanceQuest(id){
  let q=QUESTS[id];
  if(!q||typeof gs.quests[id]!=="number"){log("任务未在进行中","red");return false;}
  let idx=gs.quests[id];
@@ -39,7 +47,7 @@ function advanceQuest(id){
 }
 
 //完成任务：应用 onDone；循环任务重置为 active
-function completeQuest(id){
+export function completeQuest(id){
  let q=QUESTS[id];
  if(q.kind==="loop"){
   gs.quests[id]=0;
@@ -54,7 +62,7 @@ function completeQuest(id){
 }
 
 //统一奖励结算（任务步奖励 / onDone 共用）
-function applyReward(r){
+export function applyReward(r){
  if(!r)return;
  if(r.flags)for(let k in r.flags)setFlag(k,r.flags[k]);
  if(r.items)for(let k in r.items)addItem(k,r.items[k]);
@@ -65,7 +73,7 @@ function applyReward(r){
 }
 
 //==== 任务面板场景 ====
-function questPanel(){
+export function questPanel(){
  log("\n📜【任务】你盘点心中所系之事。");
  let avail=Object.keys(QUESTS).filter(id=>questAvailable(id));
  if(avail.length){

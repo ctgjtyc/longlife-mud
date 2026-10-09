@@ -5,7 +5,7 @@
 // next: 下一节点 id；"end" 或缺失 = 结束对话返回主线
 // need（NPC 级）：sceneNpc 拜访列表的可见门控（checkCond 唯一门控）
 // 伏笔埋设：foreshadow_* 前缀 flags（见 docs/story-craft/foreshadows.md）
-const NPCS={
+export const NPCS={
  //==== A 档：落魄老修士（灵魂领域：临终不索财/不夺后辈机缘/欠债必还/不对将死之人说谎）====
  "lao_xiu":{
   name:"落魄老修士",faction:"散修盟",desc:"寿元将尽，看出你长生特质",need:null,lifespan:30,

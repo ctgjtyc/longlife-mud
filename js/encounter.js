@@ -1,8 +1,19 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, checkCond, gs, hidePortrait, log, refreshUi, showScene } from "./core.js";
+import { TALENTS } from "./data/arts.js";
+import { BALANCE } from "./data/balance.js";
+import { monsterList } from "./data/monsters.js";
+import { addRep } from "./faction.js";
+import { startFight } from "./fight.js";
+import { genNarrateEncounter } from "./gen.js";
+import { addItem, equipByName, gainEquip } from "./inventory.js";
+import { mainStep0 } from "./story.js";
+
 //==== encounter.js：奇遇事件系统（P3b：条件触发，内容+引擎）====
 // 奇遇池：{cond:条件(可空), weight:权重, run:执行函数}
 // 触发概率 = 基础概率 + 命格加成（天选之子）；条件过滤后加权随机
 
-const ENCOUNTERS=[
+export const ENCOUNTERS=[
  {cond:null,weight:3,run:function(){
    showScene("spiritual_spring","灵泉"); // 场景插图（seedream 内嵌）
    log("\n✨【奇遇：灵泉洗髓】你拨开藤蔓，看见一眼泉。水面上浮着薄雾，凑近了能闻到一股清冽的草木香。");
@@ -58,7 +69,7 @@ const ENCOUNTERS=[
 ];
 
 //触发奇遇（概率 = 基础 + 命格加成；条件过滤后加权随机；auto=由主菜单随机门唤入时跳过内层概率门）
-function triggerEncounter(auto){
+export function triggerEncounter(auto){
  let base=BALANCE.encounterBase;
  let t=TALENTS[gs.talent];
  if(t&&t.effect&&t.effect.encounter)base+=t.effect.encounter;

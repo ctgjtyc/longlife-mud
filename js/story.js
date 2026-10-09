@@ -1,7 +1,25 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addAch, addBtn, allAch, allEquip, checkCond, gs, hidePortrait, log, passYear, renderAch, setFlag, setGs, showScene } from "./core.js";
+import { BALANCE } from "./data/balance.js";
+import { monsterList } from "./data/monsters.js";
+import { directorEventRate } from "./director.js";
+import { hiddenLunhui, stepCopyLunhui, stepCopyMagicCave, stepCopyStarRelic, stepCopyYaoShan } from "./dungeons.js";
+import { triggerEncounter } from "./encounter.js";
+import { triggerRandomEvent } from "./events.js";
+import { startFight } from "./fight.js";
+import { gainEquip } from "./inventory.js";
+import { startGame } from "./main.js";
+import { syncMemories } from "./memory.js";
+import { bioLog } from "./meta.js";
+import { sceneEnding } from "./ngplus.js";
+import { sceneNovelLine } from "./novel.js";
+import { acceptQuest, questAvailable, questPanel } from "./quest.js";
+import { pendingWorldEvent, sceneRegion, sceneWorldEvent } from "./world.js";
+
 //==== story.js：主线剧情分支 / 结局 / 路由 / 重置 ====
 
 //开局主线
-function mainStep0(){
+export function mainStep0(){
  gs.step=0;
  hidePortrait(); // 隐藏立绘/场景（回到主菜单）
  // J35 体验轮（用户 2026-08-23 定向）：奇遇随机出现于选择之间，不再作显式选项；flags.encCd 冷却防连发
@@ -38,7 +56,7 @@ function mainStep0(){
 }
 
 //==== 隐居线（enter=推进副作用，scene=幂等渲染；读档只走 scene，修复读档时间多走 bug）====
-function enterHide(){
+export function enterHide(){
  gs.step=1;
  acceptQuest("q_main_hide"); // P4：主线任务化（隐居线）
  bioLog("隐居山谷","寻到幽谷，不问世事，静待岁月流转。"); // P6 传记
@@ -48,7 +66,7 @@ function enterHide(){
  log(`转眼三十年。茅屋漏雨，你修了三次。修为随岁月慢慢涨。`);
  sceneHide();
 }
-function sceneHide(){
+export function sceneHide(){
  gs.step=1;
  log("\n【幽谷茅屋】屋外有棵歪脖子松树，风一吹，松针沙沙地响。");
  // flags 因果链：江湖结怨后回隐居，可隐匿避祸
@@ -79,7 +97,7 @@ function sceneHide(){
  addBtn("现在就下山闯荡",()=>enterJianghu());
  addBtn("📖原著隐居锚点",()=>sceneNovelLine("hide")); // J35 M3 五线锚点对照
 }
-function endingHide(){
+export function endingHide(){
  gs.endType=1;
  log("\n════════结局·万古隐仙═══════","gold");
  log("山谷里的茅屋塌过三次，你又搭了三次。最后一次，你懒得再搭，就坐在那棵歪脖子松树下。");
@@ -91,7 +109,7 @@ function endingHide(){
 }
 
 //==== 江湖线（enter/scene 拆分）====
-function enterJianghu(){
+export function enterJianghu(){
  gs.step=2;
  acceptQuest("q_main_jianghu"); // P4：主线任务化（江湖线）
  bioLog("闯荡江湖","踏入红尘，刀光剑影，历练搏机缘。"); // P6 传记
@@ -101,7 +119,7 @@ function enterJianghu(){
  log(`游历12年，见过仇杀，也见过有人为一碗面拼命。`);
  sceneJianghu();
 }
-function sceneJianghu(){
+export function sceneJianghu(){
  gs.step=2;
  log("\n【江湖漂泊】你在一家客栈歇脚。隔壁桌的刀客喝多了，正拍着桌子骂人。");
  addBtn("参与江湖争斗，搏宝物",()=>{
@@ -124,7 +142,7 @@ function sceneJianghu(){
  addBtn("江湖偶遇随机事件",()=>triggerRandomEvent());
  addBtn("📖原著江湖锚点",()=>sceneNovelLine("jianghu")); // J35 M3 五线锚点对照
 }
-function stepJianghu2(){
+export function stepJianghu2(){
  log("\n江湖漂泊已久，你如今有诸多道路可以选择。");
  addBtn("前往大宗门求道",()=>enterZongmen());
  addBtn("前往魔渊，投奔魔道",()=>enterModao());
@@ -134,7 +152,7 @@ function stepJianghu2(){
 }
 
 //==== 宗门线（enter/scene 拆分）====
-function enterZongmen(){
+export function enterZongmen(){
  gs.step=3;
  acceptQuest("q_main_zongmen"); // P4：主线任务化（宗门线）
  bioLog("拜入仙门","来到青云宗，踏上求道之路。"); // P6 传记
@@ -144,7 +162,7 @@ function enterZongmen(){
  passYear(5);
  sceneZongmen();
 }
-function sceneZongmen(){
+export function sceneZongmen(){
  gs.step=3;
  if(gs.cult<80){
   log("你的修为不足，无法直接成为内门弟子，只能做外门杂役。");
@@ -165,7 +183,7 @@ function sceneZongmen(){
  }
  addBtn("📖原著宗门锚点",()=>sceneNovelLine("zongmen")); // J35 M3 五线锚点对照
 }
-function stepZongmenEnd(){
+export function stepZongmenEnd(){
  log("\n你在宗门里熬着岁月，从外门熬到内门，从弟子熬成老祖。");
  passYear(120);
  if(gs.cult>=500){
@@ -184,7 +202,7 @@ function stepZongmenEnd(){
 }
 
 //==== 魔道线（enter/scene 拆分 + 魔性/因果标记联动）====
-function enterModao(){
+export function enterModao(){
  gs.step=4;
  acceptQuest("q_main_modao"); // P4：主线任务化（魔道线）
  bioLog("堕入魔道","踏入魔渊，与天下正道为敌。"); // P6 传记
@@ -196,7 +214,7 @@ function enterModao(){
  log("你修魔功，实力暴涨，但正道修士到处追杀魔道之人。");
  sceneModao();
 }
-function sceneModao(){
+export function sceneModao(){
  gs.step=4;
  addBtn("获取魔骨血甲，扎根魔渊",()=>{
   gainEquip(allEquip[4]);
@@ -213,7 +231,7 @@ function sceneModao(){
  addBtn("不想彻底沉沦，转身离开魔渊",()=>enterJianghu());
  addBtn("📖原著魔道锚点",()=>sceneNovelLine("modao")); // J35 M3 五线锚点对照
 }
-function endingDemon(){
+export function endingDemon(){
  gs.endType=3;
  log("\n════════结局：万古魔主═══════","danger");
  log("魔渊的阴风刮了千年，把你的兜帽吹成了布条。");
@@ -225,7 +243,7 @@ function endingDemon(){
 }
 
 //无敌结局
-function endingInvincible(){
+export function endingInvincible(){
  gs.endType=4;
  log("\n════════结局：岁月道主·天下无敌═══════","gold");
  log("你站在万山之巅，风把衣袍吹得猎猎作响。");
@@ -236,7 +254,7 @@ function endingInvincible(){
 }
 
 //坏结局：长生归寂
-function endingDead(){
+export function endingDead(){
  addAch("a7");
  gs.endType=5;
  log("\n════════结局：长生归寂═══════","danger");
@@ -248,7 +266,7 @@ function endingDead(){
 }
 
 //读取存档后跳转对应步骤（只调幂等 scene 渲染，不再推进时间——读档 bug 修复）
-function routeByStep(){
+export function routeByStep(){
  if(gs.step===0)mainStep0();
  else if(gs.step===1)sceneHide();
  else if(gs.step===2)sceneJianghu();
@@ -261,11 +279,11 @@ function routeByStep(){
 }
 
 //重置状态（多周目/重开共用：仅重置 gs 数据，不动 UI）
-function resetState(){
- gs={version:8,cult:0,stone:100,year:0,hp:100,hpmax:100,status:"平安无事",equip:"无",equipBonus:0,achs:[],step:0,dead:false,endType:0,inFight:false,enemy:null,attrs:Object.assign({},BALANCE.attrsInit),flags:{},inventory:{},ownedEquips:[],statuses:[],reputation:{},arts:{},talent:null,mp:20,quests:{},relations:{},npcLifespan:{},disciples:[],enemies:[],foes:[],foeIndex:0,foeReward:{cult:0,stone:0},foeLeader:null,memories:{},aiEnabled:false,diff:1,bio:[],ng:0};
+export function resetState(){
+ setGs({version:8,cult:0,stone:100,year:0,hp:100,hpmax:100,status:"平安无事",equip:"无",equipBonus:0,achs:[],step:0,dead:false,endType:0,inFight:false,enemy:null,attrs:Object.assign({},BALANCE.attrsInit),flags:{},inventory:{},ownedEquips:[],statuses:[],reputation:{},arts:{},talent:null,mp:20,quests:{},relations:{},npcLifespan:{},disciples:[],enemies:[],foes:[],foeIndex:0,foeReward:{cult:0,stone:0},foeLeader:null,memories:{},aiEnabled:false,diff:1,bio:[],ng:0});
 }
 //重置游戏
-function resetGame(){
+export function resetGame(){
  resetState();
  for(let k in allAch){allAch[k].got=false;}
  document.getElementById("logbox").innerHTML="";

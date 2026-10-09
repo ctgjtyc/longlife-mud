@@ -61,6 +61,10 @@ button:hover{background:var(--green);color:var(--bg-face);border-color:var(--gre
 .sidebtn:hover{background:var(--green);color:var(--bg-face);border-color:var(--green);}
 .sidebtn.home{background:var(--seal);color:var(--bg-face);border-color:var(--seal);}
 .sidebtn.home:hover{background:var(--seal);color:var(--bg-face);}
+/* c187（2026-09-06）：按方案仅取「焦点底线+动效豁免」两件——叙事沉浸皮肤不变 */
+button:focus-visible,[role="button"]:focus-visible,input:focus-visible,select:focus-visible,
+[tabindex]:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
 </style>
 </head>
 <body>
@@ -124,45 +128,7 @@ button:hover{background:var(--green);color:var(--bg-face);border-color:var(--gre
 </div>
 </div>
 
-<script src="js/data/balance.js"></script>
-<script src="js/data/items.js"></script>
-<script src="js/data/arts.js"></script>
-<script src="js/data/factions.js"></script>
-<script src="js/data/monsters.js"></script>
-<script src="js/data/quests.js"></script>
-<script src="js/data/npcs.js"></script>
-<script src="js/data/memories.js"></script>
-<script src="js/data/novel_changsheng_400.js"></script>
-<script src="js/data/novel.js"></script>
-<script src="js/data/world.js"></script>
-<script src="js/data/dynasty.js"></script>
-<script src="js/data/images.js"></script>
-<script src="js/core.js"></script>
-<script src="js/memory.js"></script>
-<script src="js/buff.js"></script>
-<script src="js/inventory.js"></script>
-<script src="js/arts.js"></script>
-<script src="js/faction.js"></script>
-<script src="js/encounter.js"></script>
-<script src="js/quest.js"></script>
-<script src="js/dialogue.js"></script>
-<script src="js/loot.js"></script>
-<script src="js/fight.js"></script>
-<script src="js/dungeons.js"></script>
-<script src="js/events.js"></script>
-<script src="js/story.js"></script>
-<script src="js/world.js"></script>
-<script src="js/trade.js"></script>
-<script src="js/dynasty.js"></script>
-
-<script src="js/gen.js"></script>
-<script src="js/eventgen.js"></script>
-<script src="js/director.js"></script>
-<script src="js/ngplus.js"></script>
-<script src="js/modloader.js"></script>
-<script src="js/meta.js"></script>
-<script src="js/novel.js"></script>
-<script src="js/share.js"></script>
-<script src="js/main.js"></script>
+<!-- 批次1 ES module 化：单一 ESM 入口，依赖图由 import 显式声明（dev 经 start-http.bat，dist 由 build.py 打包为内联单文件） -->
+<script type="module" src="js/main.js"></script>
 </body>
 </html>

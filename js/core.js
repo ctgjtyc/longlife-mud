@@ -1,7 +1,20 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { attrEff, tickStatuses } from "./buff.js";
+import { BALANCE } from "./data/balance.js";
+import { IMAGES } from "./data/images.js";
+import { NPCS } from "./data/npcs.js";
+import { WORLD } from "./data/world.js";
+import { addRelation } from "./dialogue.js";
+import { startFight } from "./fight.js";
+import { hasMemory, memoryCount, syncMemories } from "./memory.js";
+import { bioLog, diffMult } from "./meta.js";
+import { mainStep0, routeByStep } from "./story.js";
+import { strongholdBonus } from "./world.js";
+
 //==== core.js：全局状态 / 装备 / 成就 / 存档 / UI 工具 / 时间流逝 ====
 
 //游戏全局状态（v8：六属性 + flags 因果标记 + P3 容器字段 + P4 叙事引擎字段 + P6 元游戏/多人字段 + J34 后续 NPC 深度扩展/记忆阅历字段 + 版本号）
-let gs={
+export let gs={
  version:8,
  cult:0,
  stone:100,
@@ -41,8 +54,10 @@ let gs={
  bio:[],            // P6 传记事件 [{year,name,desc}]（跨世累积）
  ng:0               // P6 周目数（多周目继承）
 };
+//ESM 下 gs 为模块级可变绑定，跨模块整体重置须经本 setter（避免对导入绑定的非法赋值）
+export function setGs(v){gs=v;}
 //装备库
-const allEquip=[
+export const allEquip=[
  {name:"破旧布衣",bonus:0,desc:"凡俗衣物"},
  {name:"青锋短剑",bonus:12,desc:"普通法器，杀伐之力小幅提升"},
  {name:"玄木护符",bonus:8,desc:"微弱护佑，降低灾祸概率"},
@@ -53,7 +68,7 @@ const allEquip=[
 ];
 
 //成就库
-const allAch={
+export const allAch={
  a1:{name:"长生伊始",desc:"觉醒长生系统",got:false},
  a2:{name:"百年光阴",desc:"存活满100年",got:false},
  a3:{name:"隐世闲人",desc:"选择隐居千年不问世事",got:false},
@@ -70,26 +85,26 @@ const allAch={
 
 //==== 存档读档 localstorage ====
 // 运行时字段不落档（H 修复：战斗中存档→读档后幽灵敌人攻击）；单槽/槽位/分享码三通道共用同一份清单（P1-1 收敛）
-const RUNTIME_KEYS=["inFight","enemy","foes","foeIndex","foeReward","foeLeader","aiEnabled"];
+export const RUNTIME_KEYS=["inFight","enemy","foes","foeIndex","foeReward","foeLeader","aiEnabled"];
 //落档快照清洗（saveGame/saveToSlot/exportSave 共用：浅拷贝+剥离运行时字段）
-function sanitizeSave(){
+export function sanitizeSave(){
  let snap=Object.assign({},gs);
  for(let k of RUNTIME_KEYS)delete snap[k];
  snap.inFight=false;snap.enemy=null;snap.foes=null;
  return snap;
 }
 //读档运行时兜底（_applySaveData 共用：旧档/分享码残留的战斗态整组清空，防幽灵战斗）
-function _resetRuntimeState(){
+export function _resetRuntimeState(){
  gs.inFight=false;gs.enemy=null;gs.foes=null;
  gs.foeIndex=0;gs.foeReward={cult:0,stone:0};gs.foeLeader=null;gs.aiEnabled=false;
 }
-function saveGame(){
+export function saveGame(){
  if(localStorage.getItem("mud_save")&&!confirm("已有旧存档，确定覆盖保存？"))return;
  let saveData={gs:sanitizeSave(),allAch:allAch};
  localStorage.setItem("mud_save",JSON.stringify(saveData));
  log("✅游戏已保存至本地浏览器存档");
 }
-function loadGame(){
+export function loadGame(){
  let s=localStorage.getItem("mud_save");
  if(!s){log("⚠没有找到存档");return;}
  let d;
@@ -98,7 +113,7 @@ function loadGame(){
  _applySaveData(d);
 }
 //读档共用落地（单槽/槽位/最近档/分享码共用：迁移+运行时字段兜底+路由；okMsg/okCls 可换导入语境文案）
-function _applySaveData(d,okMsg,okCls){
+export function _applySaveData(d,okMsg,okCls){
  gs=d.gs;
  migrateSave();
  _resetRuntimeState(); // 旧档/分享码残留运行时字段兜底清空（防幽灵战斗）
@@ -112,9 +127,9 @@ function _applySaveData(d,okMsg,okCls){
 
 //==== J35 体验轮·多槽位存档（用户 2026-08-23 定向：存/读做弹出窗口+多档位）====
 // 槽位键 mud_save_slot_{1..6}（旧单槽 mud_save 保留兼容，作「继续上次存档」回落源）
-const SAVE_SLOTS=6;
-function _slotKey(n){return "mud_save_slot_"+n;}
-function _slotMeta(){
+export const SAVE_SLOTS=6;
+export function _slotKey(n){return "mud_save_slot_"+n;}
+export function _slotMeta(){
  let r={time:new Date().toLocaleString()};
  try{
   r.year=gs.year;r.ng=gs.ng||1;r.endType=gs.endType||0;
@@ -122,13 +137,13 @@ function _slotMeta(){
  }catch(_){}
  return r;
 }
-function slotInfo(n){
+export function slotInfo(n){
  let s=localStorage.getItem(_slotKey(n));
  if(!s)return {empty:true};
  try{let d=JSON.parse(s);return {empty:false,meta:d.meta||{}};}
  catch(_){return {empty:false,meta:{},broken:true};}
 }
-function saveToSlot(n){
+export function saveToSlot(n){
  let info=slotInfo(n);
  if(!info.empty&&typeof confirm==="function"&&!confirm("槽位 "+n+" 已有存档，确定覆盖？"))return;
  let saveData={gs:sanitizeSave(),allAch:allAch,meta:_slotMeta()}; // 运行时字段不落档（sanitizeSave 三通道共用）
@@ -137,7 +152,7 @@ function saveToSlot(n){
  log("✅已保存到槽位 "+n+"（第"+(gs.ng||1)+"世·"+gs.year+"年·"+realmOf(gs.cult).name+"）");
  showSaveWindow(); // 刷新浮窗
 }
-function loadFromSlot(n){
+export function loadFromSlot(n){
  let s=localStorage.getItem(_slotKey(n));
  if(!s){log("⚠槽位 "+n+" 为空","red");return;}
  let d;
@@ -146,14 +161,14 @@ function loadFromSlot(n){
  _saveWinClose();
  _applySaveData(d);
 }
-function deleteSlot(n){
+export function deleteSlot(n){
  if(typeof confirm==="function"&&!confirm("确定删除槽位 "+n+" 的存档？"))return;
  localStorage.removeItem(_slotKey(n));
  log("已删除槽位 "+n+"。");
  showSaveWindow();
 }
 //最近档（槽位中 meta.time 最新；无槽位档时回落旧单槽）
-function loadLatest(){
+export function loadLatest(){
  let best=null;
  for(let n=1;n<=SAVE_SLOTS;n++){
   let info=slotInfo(n);
@@ -167,9 +182,9 @@ function loadLatest(){
  best.load();
 }
 //存档管理浮窗：每槽一行（摘要+时间+存/读/删）
-var _saveBox=null;
-function _saveWinClose(){if(_saveBox){try{_saveBox.remove();}catch(_){}_saveBox=null;}}
-function showSaveWindow(){
+export var _saveBox=null;
+export function _saveWinClose(){if(_saveBox){try{_saveBox.remove();}catch(_){}_saveBox=null;}}
+export function showSaveWindow(){
  if(typeof document==="undefined"||!document.body)return;
  _saveWinClose();
  if(typeof _infoBox!=="undefined"&&_infoBox&&_infoBox.remove){try{_infoBox.remove();}catch(_){}} // 互斥浮窗
@@ -218,8 +233,8 @@ function showSaveWindow(){
 
 //==== 存档 v6 迁移：v1（无 version/attrs/flags）→ v2 补默认 → v3 补 P3 容器 → v5 补 P4 叙事引擎 → v6 补 P6 元游戏/多人，数值零漂移 ====
 // 标量默认表（migrate 尾段兜底）：极旧档/坏档缺标量字段→补默认，消灭 NaN 残留向量；已有值一律不动（零漂移）
-const SAVE_SCALAR_DEFAULTS={cult:0,stone:100,year:0,hp:100,hpmax:100,status:"平安无事",equip:"无",equipBonus:0,step:0,dead:false,endType:0,mp:20};
-function migrateSave(){
+export const SAVE_SCALAR_DEFAULTS={cult:0,stone:100,year:0,hp:100,hpmax:100,status:"平安无事",equip:"无",equipBonus:0,step:0,dead:false,endType:0,mp:20};
+export function migrateSave(){
  if(!gs.version)gs.version=2;
  if(!gs.attrs)gs.attrs={};
  for(let k in BALANCE.attrsInit){
@@ -275,7 +290,7 @@ function migrateSave(){
 	 if(v===undefined||v===null||(typeof v==="number"&&isNaN(v)))gs[k]=SAVE_SCALAR_DEFAULTS[k];
 	}
 }
-function clearSave(){
+export function clearSave(){
  if(typeof confirm==="function"&&!confirm("确定清除存档？此操作不可恢复！"))return;
  localStorage.removeItem("mud_save"); // 旧单槽
  for(let n=1;n<=SAVE_SLOTS;n++)localStorage.removeItem(_slotKey(n)); // P1-2 修复：6 槽位一并清除（否则再开局仍提示检测到存档）
@@ -283,19 +298,19 @@ function clearSave(){
 }
 
 //成就
-function addAch(key){
+export function addAch(key){
  if(allAch[key].got)return;
  allAch[key].got=true;
  gs.achs.push(allAch[key].name);
  log(`\n🏆【解锁成就：${allAch[key].name}】${allAch[key].desc}`,"ach");
  renderAch();
 }
-function renderAch(){
+export function renderAch(){
  document.getElementById("achtext").innerText=gs.achs.length>0?gs.achs.join(" | "):"暂无";
 }
 
 //装备
-function setEquip(eq){
+export function setEquip(eq){
  if(!eq){log("装备数据缺失，无法穿戴","red");return;} // 旧档残留名防御（审查 H11 二号位）
  gs.equip=eq.name;
  gs.equipBonus=eq.bonus;
@@ -303,7 +318,7 @@ function setEquip(eq){
 }
 
 //日志与UI工具
-function log(txt,cls=""){
+export function log(txt,cls=""){
  const lb=document.getElementById("logbox");
  let sp=document.createElement("span");
  if(cls)sp.className=cls;
@@ -313,14 +328,14 @@ function log(txt,cls=""){
  const sc=lb.parentElement;
  if(sc)sc.scrollTop=sc.scrollHeight;
 }
-function clearOpt(){document.getElementById("optbox").innerHTML="";}
-function addBtn(text,cb){
+export function clearOpt(){document.getElementById("optbox").innerHTML="";}
+export function addBtn(text,cb){
  let b=document.createElement("button");
  b.innerText=text;
  b.onclick=()=>{clearOpt();cb();};
  document.getElementById("optbox").appendChild(b);
 }
-function refreshUi(){
+export function refreshUi(){
  document.getElementById("cult").innerText=gs.cult;
  document.getElementById("stone").innerText=gs.stone;
  document.getElementById("year").innerText=gs.year;
@@ -338,7 +353,7 @@ function refreshUi(){
 
 //==== 立绘/场景插图展示（seedream base64 内嵌）====
 // 状态：pw._open=true 展开 / false 收起。首次出现由右侧滑入，之后可手动收起避免遮挡文本。
-function showPortrait(key,label){
+export function showPortrait(key,label){
  let pb=document.getElementById("portraitbox");
  let pi=document.getElementById("portraitimg");
  let pl=document.getElementById("portraitlabel");
@@ -355,11 +370,11 @@ function showPortrait(key,label){
    if(t)t.innerText="➖ 收起插图";
  }
 }
-function showScene(key,label){
+export function showScene(key,label){
  // 场景图复用人像展示逻辑，统一右侧滑入/收起
  showPortrait(key,label);
 }
-function togglePortrait(){
+export function togglePortrait(){
  let pw=document.getElementById("portraitwrap");
  if(!pw)return;
  if(pw._open){ // 收起
@@ -374,14 +389,14 @@ function togglePortrait(){
    if(t)t.innerText="➖ 收起插图";
  }
 }
-function hidePortrait(){
+export function hidePortrait(){
  let pb=document.getElementById("portraitbox");
  if(pb)pb.style.display="none";
 }
 
 //==== 条件表达式系统（方向⑤）：数组=AND，单条不匹配即 false ====
 // 类型：attr(修为/六属性) flag(因果标记) year(年份) item/rep(P3 接入)
-function checkCond(c){
+export function checkCond(c){
  if(Array.isArray(c))return c.every(checkCond);
  if(!c)return true;
  let v=condValue(c);
@@ -396,7 +411,7 @@ function checkCond(c){
  }
  return false;
 }
-function condValue(c){
+export function condValue(c){
  switch(c.type){
   case "attr":
    if(gs[c.key]!==undefined)return gs[c.key];
@@ -415,10 +430,10 @@ function condValue(c){
  }
  return null;
 }
-function setFlag(k,v){gs.flags[k]=v;}
+export function setFlag(k,v){gs.flags[k]=v;}
 
 //==== 境界：派生值（由 cult 计算，不落存档）====
-function realmOf(cult){
+export function realmOf(cult){
  let r=BALANCE.realms[0];
  for(let i=BALANCE.realms.length-1;i>=0;i--){
   if(cult>=BALANCE.realms[i].cult){r=BALANCE.realms[i];break;}
@@ -427,7 +442,7 @@ function realmOf(cult){
 }
 
 //时间流逝，长生被动涨修为（无状态时悟性=10 与原版公式完全一致，零漂移；P6 难度倍率；J34 后续弟子加成）
-function passYear(n){
+export function passYear(n){
  gs.year+=n;
  let gain= n*(BALANCE.cultGainBase+(attrEff("comprehension")-10)*BALANCE.cultGainAttr+gs.equipBonus*BALANCE.cultGainEquip);
  gs.cult+=Math.floor(gain*(typeof diffMult==="function"?diffMult():1)*(1+discipleCultBonus()/100));
@@ -447,7 +462,7 @@ function passYear(n){
 }
 
 //==== J34 后续：NPC 寿命流逝（首次对话初始化 expireYear；寿元尽则离世）====
-function npcExpireYear(npcId){
+export function npcExpireYear(npcId){
  let npc=NPCS[npcId];
  if(!npc)return null;
  if(!gs.npcLifespan[npcId]){
@@ -456,15 +471,15 @@ function npcExpireYear(npcId){
  }
  return gs.npcLifespan[npcId].expireYear;
 }
-function isNpcDead(npcId){
+export function isNpcDead(npcId){
  return gs.npcLifespan[npcId]&&gs.year>=gs.npcLifespan[npcId].expireYear;
 }
-function npcRemaining(npcId){
+export function npcRemaining(npcId){
  let e=npcExpireYear(npcId);
  if(e===null)return null;
  return Math.max(0,e-gs.year);
 }
-function tickNpcLifespan(n){
+export function tickNpcLifespan(n){
  for(let id in gs.npcLifespan){
   if(gs.year>=gs.npcLifespan[id].expireYear&&!gs.flags["npc_dead_"+id]){
    setFlag("npc_dead_"+id,true);
@@ -478,16 +493,16 @@ function tickNpcLifespan(n){
 }
 
 //==== J34 后续：收徒系统（弟子成长周期；凡人寿元 80 年；每名弟子修炼+5%）====
-function addDisciple(name,talent){
+export function addDisciple(name,talent){
  gs.disciples.push({name:name,joinYear:gs.year,talent:talent||"中平",expireYear:gs.year+80});
  log(`\n🎓你收下弟子【${name}】（资质：${talent||"中平"}），传其吐纳之法。`,"gold");
  bioLog("收徒",`收下弟子【${name}】（资质：${talent||"中平"}）。`);
  refreshUi();
  return true;
 }
-function discipleCount(){return gs.disciples.length;}
-function discipleCultBonus(){return gs.disciples.length*5;}
-function tickDisciples(n){
+export function discipleCount(){return gs.disciples.length;}
+export function discipleCultBonus(){return gs.disciples.length*5;}
+export function tickDisciples(n){
  let dead=[];
  for(let d of gs.disciples){
   if(gs.year>=d.expireYear)dead.push(d);
@@ -500,7 +515,7 @@ function tickDisciples(n){
   bioLog("弟子离世",`弟子【${d.name}】寿元已尽，临终传功。`);
  }
 }
-function sceneDisciples(){
+export function sceneDisciples(){
  log("\n🎓【弟子】你回想膝下弟子。");
  if(!gs.disciples.length){
   log("（你尚未收徒。长生路上，收一名弟子，或许能让你记得自己也曾年轻过。）");
@@ -515,7 +530,7 @@ function sceneDisciples(){
 }
 
 //==== J34 后续：结仇系统（对话/事件触发；仇敌寻仇战斗；可化解）====
-function addEnemy(npcId,reason){
+export function addEnemy(npcId,reason){
  if(gs.enemies.some(e=>e.npcId===npcId))return false;
  let name=NPCS[npcId]?NPCS[npcId].name:npcId;
  gs.enemies.push({npcId:npcId,name:name,grudgeYear:gs.year,reason:reason||"结怨"});
@@ -525,15 +540,15 @@ function addEnemy(npcId,reason){
  refreshUi();
  return true;
 }
-function hasEnemy(npcId){return gs.enemies.some(e=>e.npcId===npcId);}
-function removeEnemy(npcId){gs.enemies=gs.enemies.filter(e=>e.npcId!==npcId);}
-function enemyMonster(npcId){
+export function hasEnemy(npcId){return gs.enemies.some(e=>e.npcId===npcId);}
+export function removeEnemy(npcId){gs.enemies=gs.enemies.filter(e=>e.npcId!==npcId);}
+export function enemyMonster(npcId){
  let npc=NPCS[npcId];
  let base=gs.cult*0.15;
  let name=npc?npc.name:npcId;
  return {name:name,hp:Math.floor(150+base),atk:Math.floor(15+base*0.1),reward:{cult:Math.floor(80+base*0.5),stone:Math.floor(150+base)},ai:"normal"};
 }
-function enemyRevenge(){
+export function enemyRevenge(){
  let alive=gs.enemies.filter(e=>!isNpcDead(e.npcId));
  if(!alive.length)return false;
  if(Math.random()<0.3){
@@ -544,7 +559,7 @@ function enemyRevenge(){
  }
  return false;
 }
-function sceneEnemies(){
+export function sceneEnemies(){
  log("\n☠【仇敌】你回想结下的仇怨。");
  if(!gs.enemies.length){log("（你尚未与人结仇。长生路上，恩怨自随缘。）");}
  for(let e of gs.enemies){
@@ -555,8 +570,8 @@ function sceneEnemies(){
 }
 
 //==== P3b：灵力系统（mpMax 派生，不落档）====
-function mpMax(){return 20+(attrEff("soul")||0)*1+(attrEff("spirit")||0)*2;}
-function costMp(n){
+export function mpMax(){return 20+(attrEff("soul")||0)*1+(attrEff("spirit")||0)*2;}
+export function costMp(n){
  if((gs.mp||0)<n){log("灵力不足！","red");return false;}
  gs.mp-=n;
  refreshUi();
@@ -565,8 +580,8 @@ function costMp(n){
 
 //==== J35 体验轮：信息浮窗（说明类文字不进历程流，用户 2026-08-23 定向）====
 //showInfo(标题, 行数组)：固定浮层，主题 CSS 变量自适应皮肤；点 ✕ 关闭；重复调用替换旧窗
-var _infoBox=null;
-function showInfo(title,lines){
+export var _infoBox=null;
+export function showInfo(title,lines){
  if(typeof document==="undefined"||!document.body)return;
  if(_infoBox){try{_infoBox.remove();}catch(_){}_infoBox=null;}
  let box=document.createElement("div"); box.id="infobox";

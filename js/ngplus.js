@@ -1,8 +1,15 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, allAch, gs, log, refreshUi, renderAch } from "./core.js";
+import { BALANCE } from "./data/balance.js";
+import { startGame } from "./main.js";
+import { bioLog } from "./meta.js";
+import { resetGame, resetState } from "./story.js";
+
 //==== ngplus.js：多周目系统（P5 多周目继承）====
 // gs.ng 周目数；结局后可选多周目：继承成就/部分属性/功法/声望/灵石/修为
 
 //多周目继承：成就全保留；属性×30%；功法/声望全保留；灵石×20%；修为×10%；难度/传记跨世保留
-function startNgPlus(){
+export function startNgPlus(){
  let inherit={
   achs:gs.achs.slice(),
   attrs:{},
@@ -37,7 +44,7 @@ function startNgPlus(){
 }
 
 //结局统一入口：提供重新开局 + 多周目选项（各结局文本自带，此处只挂按钮）
-function sceneEnding(endType){
+export function sceneEnding(endType){
  gs.endType=endType;
  bioLog("迎来结局",`${["","万古隐仙","宗门老祖","万古魔主","岁月道主","长生归寂"][endType]||"未知"}。`); // P6 传记
  addBtn("🔄重新开局",()=>resetGame());

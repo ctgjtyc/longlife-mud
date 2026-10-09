@@ -1,3 +1,6 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { NOVEL_CHANGSHENG_400 } from "./novel_changsheng_400.js";
+
 //==== data/novel.js：可替换多主题多文本剧情库（novel-lib-v2）====
 // 结构：THEMES = [ {id,name,desc,css:{...皮肤变量...},novels:[{id,game,title,author,type,desc,chapters,anchors}]} ]
 // 约定：
@@ -6,7 +9,7 @@
 //   · 想加文章：在某主题的 novels 数组加一项（章节+锚点），游戏内即可切换。
 //   · 游戏名（每篇文章的 game）与皮肤（主题的 css）随切换动态更新。
 //   · 原《系统赋我长生》2704 章索引已归档：story-pipeline/archive/novel_changsheng_2704.js
-const THEMES=[
+export const THEMES=[
 {
  id:"xianxia",
  name:"仙侠·长生",
@@ -94,5 +97,5 @@ const THEMES=[
 }
 ];
 // 兼容别名：当前主题/当前篇（sceneNovel 沿用 _NOVEL 单篇接口；默认取第一个主题的第一篇）
-function _firstNovel(){ if(!THEMES||!THEMES.length)return null; for(let t of THEMES){ if(t.novels&&t.novels.length)return t.novels[0]; } return null; }
-const NOVEL = _firstNovel();
+export function _firstNovel(){ if(!THEMES||!THEMES.length)return null; for(let t of THEMES){ if(t.novels&&t.novels.length)return t.novels[0]; } return null; }
+export const NOVEL = _firstNovel();

@@ -1,8 +1,14 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, gs, log } from "./core.js";
+import { ITEMS } from "./data/items.js";
+import { addItem, removeItem } from "./inventory.js";
+import { curRegion, sceneRegion } from "./world.js";
+
 //==== trade.js：交易系统（P5 地区物价/倒卖）====
 // 地区物价：WORLD.regions[r].basePrice；波动 ±20%；低买高卖倒卖
 
 //当前区域某物品物价（含随机波动 0.8~1.2）
-function regionPrice(item){
+export function regionPrice(item){
  let r=curRegion();
  let base=r.basePrice[item];
  if(base===undefined)return null;
@@ -11,7 +17,7 @@ function regionPrice(item){
 }
 
 //交易场景（买入：区域物价；卖出：持有材料按当前区域价）
-function sceneTrade(){
+export function sceneTrade(){
  let r=curRegion();
  log(`\n🏪【${r.name}】集市，物价随行就市。`);
  let goods=Object.keys(r.basePrice);

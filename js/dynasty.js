@@ -1,8 +1,13 @@
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+import { addBtn, gs, log, setFlag } from "./core.js";
+import { DYNASTIES } from "./data/dynasty.js";
+import { applyEffect, sceneRegion } from "./world.js";
+
 //==== dynasty.js：王朝系统（P5 凡俗王朝纷争）====
 // 参与派系纷争，获取声望/灵石；事件 flag 记录已抉择
 
 //王朝场景（派系声望 + 未触发纷争事件）
-function sceneDynasty(){
+export function sceneDynasty(){
  let d=DYNASTIES["大夏王朝"];
  log(`\n🏛【${d.name}】${d.desc}`);
  log("（派系）");
@@ -22,7 +27,7 @@ function sceneDynasty(){
 }
 
 //王朝纷争事件（抉择 → 效果 → 置 flag）
-function sceneDynastyEvent(e){
+export function sceneDynastyEvent(e){
  log(`\n🏛【${e.title}】${e.desc}`);
  for(let c of e.choices){
   addBtn(c.text,()=>{

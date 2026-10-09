@@ -1,7 +1,7 @@
 //==== data/dynasty.js：凡俗王朝配置（内容层 SSOT，P5 王朝纷争）====
 // 王朝：factions 派系（声望）/ events 纷争事件（choices 选项，flag 记录已抉择）
 
-const DYNASTIES={
+export const DYNASTIES={
  "大夏王朝":{
   name:"大夏王朝",desc:"立国三百载，如今内忧外患，气数渐衰",
   factions:{
