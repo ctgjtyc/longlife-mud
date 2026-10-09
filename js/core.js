@@ -324,16 +324,30 @@ export function setEquip(eq){
 }
 
 //日志与UI工具
+//==== 批次3 日志虚拟化：内存与 DOM 均只保留最近 LOG_MAX 条，长会话内存/DOM 有界 ====
+const LOG_MAX=1000;   // 环形缓冲上限（最近 1000 条）
+let _logLines=[];     // 最近日志文本（供 searchLog 数组检索，长会话有界）
+let _logSpans=[];     // 与文本一一对应的 DOM 节点引用（超限时移除最旧，防 DOM 无界增长）
 export function log(txt,cls=""){
  const lb=document.getElementById("logbox");
  let sp=document.createElement("span");
  if(cls)sp.className=cls;
  sp.innerText=txt+"\n";
  lb.appendChild(sp);
+ _logLines.push(txt);
+ _logSpans.push(sp);
+ if(_logSpans.length>LOG_MAX){ // 批量裁剪最旧一段（避免逐条 shift 的 O(n) 抖动）
+  let extra=_logSpans.length-LOG_MAX;
+  for(let i=0;i<extra;i++){let old=_logSpans[i];if(old&&old.remove){try{old.remove();}catch(_){}}}
+  _logSpans=_logSpans.slice(extra);
+  _logLines=_logLines.slice(extra);
+ }
  // 自动滚动：滚动容器是 logbox 的父级 .scroll-area（状态栏固定，剧情区独立滚动）
  const sc=lb.parentElement;
  if(sc)sc.scrollTop=sc.scrollHeight;
 }
+//最近日志文本快照（虚拟化后环形缓冲对外只读出口；真实 DOM 的 logbox.innerText 恒由 log 填充，桩环境可作检索兜底）
+export function recentLogs(){return _logLines.slice();}
 export function clearOpt(){document.getElementById("optbox").innerHTML="";}
 export function addBtn(text,cb){
  let b=document.createElement("button");

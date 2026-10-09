@@ -1,5 +1,5 @@
 //==== ESM 依赖导入（J 批次1：显式依赖图）====
-import { addBtn, gs, log, refreshUi } from "./core.js";
+import { addBtn, gs, log, recentLogs, refreshUi } from "./core.js";
 import { QUESTS } from "./data/quests.js";
 import { WORLD } from "./data/world.js";
 import { mainStep0 } from "./story.js";
@@ -132,7 +132,9 @@ export function sceneHint(){
 export function searchLog(kw){
  if(!kw)return 0;
  let lb=document.getElementById("logbox");
- let txt=lb.innerText||"";
+ let txt=(lb&&lb.innerText)||"";
+ // 批次3 日志虚拟化：DOM 只保留最近段；真实浏览器 logbox.innerText 恒由 log() 填充，此处仅在桩/空 DOM 时回落环形缓冲
+ if(!txt&&typeof recentLogs==="function")txt=recentLogs().join("\n");
  let lines=txt.split("\n").filter(l=>l.includes(kw));
  log(`检索【${kw}】命中 ${lines.length} 条：`,"blue");
  for(let l of lines.slice(-20))log(l);
