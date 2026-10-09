@@ -416,6 +416,12 @@ function passYear(n){
  gs.year+=n;
  let gain= n*(BALANCE.cultGainBase+(attrEff("comprehension")-10)*BALANCE.cultGainAttr+gs.equipBonus*BALANCE.cultGainEquip);
  gs.cult+=Math.floor(gain*(typeof diffMult==="function"?diffMult():1)*(1+discipleCultBonus()/100));
+ // P1-4 死接线修复：据点被动「每10年额外修为」接进时间主链（多据点叠加；flat 不乘难度/弟子倍率，与据点面板口径一致）
+ if(typeof strongholdBonus==="function"&&typeof WORLD!=="undefined"&&WORLD.strongholds){
+  let shb=0;
+  for(let id in WORLD.strongholds)shb+=strongholdBonus(id);
+  if(shb>0)gs.cult+=Math.floor(shb*n/10);
+ }
  tickStatuses(n); // P3a：BUFF/DEBUFF 随岁月 tick
  tickNpcLifespan(n); // J34 后续：NPC 寿命随岁月流逝
  tickDisciples(n);   // J34 后续：弟子成长/离世

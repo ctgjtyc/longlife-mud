@@ -1097,6 +1097,32 @@ assert(S.gs.foes.length === 2 && S.gs.foes[1].hp === 78, "死接线·难度倍�
 assert(S.gs.foeReward.cult === 40, "死接线·难度倍率：奖励不随敌人强度缩放（30+10）");
 G.endFight();
 
+//==== 死接线修复 P1-4：据点加成接 passYear（每10年额外修为要生效）====
+section("死接线修复：据点加成接 passYear");
+freshGame();
+S.gs.attrs.comprehension = 10;
+let shBase0 = S.gs.cult;
+G.passYear(20);
+let shBase = S.gs.cult - shBase0; // 无据点基准增长（20年）
+freshGame();
+G.setStrongholdLevel("qingyun_zhai", 2); // 每10年修为+1
+S.gs.attrs.comprehension = 10;
+let sh2_0 = S.gs.cult;
+G.passYear(20);
+assert(S.gs.cult - sh2_0 === shBase + 2, "死接线·据点加成：Lv2 每10年+1 → 20年额外+2 修为");
+freshGame();
+G.setStrongholdLevel("qingyun_zhai", 3); // 每10年修为+3
+G.setStrongholdLevel("modao_cheng", 2);  // 每10年修为+1（多据点叠加）
+S.gs.attrs.comprehension = 10;
+let sh3_0 = S.gs.cult;
+G.passYear(20);
+assert(S.gs.cult - sh3_0 === shBase + 8, "死接线·据点加成：Lv3(3)+Lv2(1) 多据点叠加 → 20年额外+8 修为");
+freshGame();
+S.gs.attrs.comprehension = 10;
+let shNone0 = S.gs.cult;
+G.passYear(20);
+assert(S.gs.cult - shNone0 === shBase, "死接线·据点加成：无据点零加成（基准不受扰）");
+
 //==== 汇总 ====
 console.log("\n==============================");
 console.log(`T0 测试结果：${pass} 通过 / ${fail} 失败`);
