@@ -2513,9 +2513,9 @@ function routeByStep(){
  else mainStep0();
 }
 
-//重置状态（多周目/重开共用：仅重置 gs 数据，不动 UI）
+//重置状态（多周目/重开共用：仅重置 gs 数据，不动 UI）；经状态工厂单一入口创建
 function resetState(){
- setGs({version:8,cult:0,stone:100,year:0,hp:100,hpmax:100,status:"平安无事",equip:"无",equipBonus:0,achs:[],step:0,dead:false,endType:0,inFight:false,enemy:null,attrs:Object.assign({},BALANCE.attrsInit),flags:{},inventory:{},ownedEquips:[],statuses:[],reputation:{},arts:{},talent:null,mp:20,quests:{},relations:{},npcLifespan:{},disciples:[],enemies:[],foes:[],foeIndex:0,foeReward:{cult:0,stone:0},foeLeader:null,memories:{},aiEnabled:false,diff:1,bio:[],ng:0});
+ setGs(createInitialState());
 }
 //重置游戏
 function resetGame(){
@@ -3768,47 +3768,53 @@ function sceneNpc(){
 
 //==== core.js：全局状态 / 装备 / 成就 / 存档 / UI 工具 / 时间流逝 ====
 
+//==== 状态工厂：gs 创建/重置的单一入口（消除散落字面量；字段与默认值严格保持旧版形态，保证存档零影响）====
+//每次返回全新对象，attrs 深拷贝防共享
+function createInitialState(){
+ return {
+  version:8,
+  cult:0,
+  stone:100,
+  year:0,
+  hp:100,
+  hpmax:100,
+  status:"平安无事",
+  equip:"无",
+  equipBonus:0,
+  achs:[],
+  step:0,
+  dead:false,
+  endType:0,
+  inFight:false,
+  enemy:null,
+  attrs:Object.assign({},BALANCE.attrsInit),
+  flags:{},
+  inventory:{},      // P3a 背包 {物品名:数量}
+  ownedEquips:[],    // P3a 持有装备名列表
+  statuses:[],       // P3a 持久状态 [{id,name,years,attrMods,hpPerYear,cultPerYear}]
+  reputation:{},     // P3b 势力声望 {势力:数值}
+  arts:{},           // P3b 已习功法 {id:层数}
+  talent:null,       // P3b 命格 id（开局三选一）
+  mp:20,             // P3b 当前灵力（mpMax 派生，不落档）
+  quests:{},         // P4 任务 {id:步索引|"done"|"failed"}
+  relations:{},      // P4 NPC 关系 {npcId:好感}
+  npcLifespan:{},    // J34 后续：NPC 寿命 {npcId:{expireYear:离世年份}}
+  disciples:[],      // J34 后续：弟子 [{name,joinYear,talent,expireYear}]
+  enemies:[],        // J34 后续：仇敌 [{npcId,name,grudgeYear,reason}]
+  foes:[],           // J34 方向2：团体战斗敌人数组（运行时，不落档）
+  foeIndex:0,        // J34 方向2：当前目标索引（运行时）
+  foeReward:{cult:0,stone:0}, // J34 方向2：团体总奖励（运行时）
+  foeLeader:null,    // J34 方向2：团体首领（词缀掉落基准，运行时）
+  memories:{},       // J34 方向3：记忆与阅历 {id: 解锁年份}
+  aiEnabled:false,   // P5 动态事件 AI 增强开关（可选，默认关；仅运行时，不落档）
+  diff:1,            // P6 难度 0=简单 1=普通 2=硬核
+  bio:[],            // P6 传记事件 [{year,name,desc}]（跨世累积）
+  ng:0               // P6 周目数（多周目继承）
+ };
+}
+
 //游戏全局状态（v8：六属性 + flags 因果标记 + P3 容器字段 + P4 叙事引擎字段 + P6 元游戏/多人字段 + J34 后续 NPC 深度扩展/记忆阅历字段 + 版本号）
-let gs={
- version:8,
- cult:0,
- stone:100,
- year:0,
- hp:100,
- hpmax:100,
- status:"平安无事",
- equip:"无",
- equipBonus:0,
- achs:[],
- step:0,
- dead:false,
- endType:0,
- inFight:false,
- enemy:null,
- attrs:Object.assign({},BALANCE.attrsInit),
- flags:{},
- inventory:{},      // P3a 背包 {物品名:数量}
- ownedEquips:[],    // P3a 持有装备名列表
- statuses:[],       // P3a 持久状态 [{id,name,years,attrMods,hpPerYear,cultPerYear}]
- reputation:{},     // P3b 势力声望 {势力:数值}
- arts:{},           // P3b 已习功法 {id:层数}
- talent:null,       // P3b 命格 id（开局三选一）
- mp:20,             // P3b 当前灵力（mpMax 派生，不落档）
- quests:{},         // P4 任务 {id:步索引|"done"|"failed"}
- relations:{},      // P4 NPC 关系 {npcId:好感}
- npcLifespan:{},    // J34 后续：NPC 寿命 {npcId:{expireYear:离世年份}}
- disciples:[],      // J34 后续：弟子 [{name,joinYear,talent,expireYear}]
- enemies:[],        // J34 后续：仇敌 [{npcId,name,grudgeYear,reason}]
- foes:[],           // J34 方向2：团体战斗敌人数组（运行时，不落档）
- foeIndex:0,        // J34 方向2：当前目标索引（运行时）
- foeReward:{cult:0,stone:0}, // J34 方向2：团体总奖励（运行时）
- foeLeader:null,    // J34 方向2：团体首领（词缀掉落基准，运行时）
- memories:{},       // J34 方向3：记忆与阅历 {id: 解锁年份}
- aiEnabled:false,   // P5 动态事件 AI 增强开关（可选，默认关；仅运行时，不落档）
- diff:1,            // P6 难度 0=简单 1=普通 2=硬核
- bio:[],            // P6 传记事件 [{year,name,desc}]（跨世累积）
- ng:0               // P6 周目数（多周目继承）
-};
+let gs=createInitialState();
 //ESM 下 gs 为模块级可变绑定，跨模块整体重置须经本 setter（避免对导入绑定的非法赋值）
 function setGs(v){gs=v;}
 //装备库

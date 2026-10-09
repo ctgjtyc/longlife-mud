@@ -1,5 +1,5 @@
 //==== ESM 依赖导入（J 批次1：显式依赖图）====
-import { addAch, addBtn, allAch, allEquip, checkCond, gs, hidePortrait, log, passYear, renderAch, setFlag, setGs, showScene } from "./core.js";
+import { addAch, addBtn, allAch, allEquip, checkCond, createInitialState, gs, hidePortrait, log, passYear, renderAch, setFlag, setGs, showScene } from "./core.js";
 import { BALANCE } from "./data/balance.js";
 import { monsterList } from "./data/monsters.js";
 import { directorEventRate } from "./director.js";
@@ -278,9 +278,9 @@ export function routeByStep(){
  else mainStep0();
 }
 
-//重置状态（多周目/重开共用：仅重置 gs 数据，不动 UI）
+//重置状态（多周目/重开共用：仅重置 gs 数据，不动 UI）；经状态工厂单一入口创建
 export function resetState(){
- setGs({version:8,cult:0,stone:100,year:0,hp:100,hpmax:100,status:"平安无事",equip:"无",equipBonus:0,achs:[],step:0,dead:false,endType:0,inFight:false,enemy:null,attrs:Object.assign({},BALANCE.attrsInit),flags:{},inventory:{},ownedEquips:[],statuses:[],reputation:{},arts:{},talent:null,mp:20,quests:{},relations:{},npcLifespan:{},disciples:[],enemies:[],foes:[],foeIndex:0,foeReward:{cult:0,stone:0},foeLeader:null,memories:{},aiEnabled:false,diff:1,bio:[],ng:0});
+ setGs(createInitialState());
 }
 //重置游戏
 export function resetGame(){
