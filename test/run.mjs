@@ -1213,6 +1213,18 @@ G.migrateSave();
 G.passYear(10);
 assert(typeof S.gs.cult === "number" && !isNaN(S.gs.cult) && S.gs.cult > 0, "标量迁移：缺标量档 passYear 后修为正常增长非 NaN");
 
+//==== 批次3 回归：日志环形缓冲上限（长会话内存/DOM 有界）====
+section("日志虚拟化：环形缓冲上限（LOG_MAX=1000）");
+{
+  const lb0 = document.getElementById("logbox");
+  for (let i = 0; i < 2600; i++) G.log("[压测] 条目" + i);
+  const rl = G.recentLogs();
+  assert(rl.length === 1000, "2600 次 log → 缓冲文本恰为 1000 条（有界）");
+  assert(rl[rl.length - 1].includes("条目2599"), "缓冲保留最新（末条=条目2599）");
+  assert(!rl.some(t => t.includes("条目0")), "缓冲裁去最旧（不含条目0）");
+  assert(lb0._children.length === 1000, "DOM 节点恰为 1000（有界；remove 兑现）");
+}
+
 //==== 汇总 ====
 console.log("\n==============================");
 console.log(`T0 测试结果：${pass} 通过 / ${fail} 失败`);
