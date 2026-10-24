@@ -311,7 +311,33 @@ export function addAch(key){
  gs.achs.push(allAch[key].name);
  log(`\n🏆【解锁成就：${allAch[key].name}】${allAch[key].desc}`,"ach");
  renderAch();
+ if(key==="m_1024_fly")showFlyCard();   // M1.5 §2.5：飞升专属「编译通过」卡片（关闭后再弹通用 toast）
+ else toastAch(key);
+ if(typeof window!=="undefined"&&typeof window.__afterAch==="function")window.__afterAch(key); // M1.5：成就后钩子（festcard 显隐，main.js 注册）
 }
+//M1.5 §2.5 通用成就 toast：顶部滑出 2.8s 自动消失，点击可提前关（纯 CSS 过渡）
+export function toastAch(key){
+ let a=allAch[key];if(!a)return;
+ let d=document.createElement("div");d.className="ach-toast";
+ d.innerHTML="<span class='ach-toast-icon'>🏆</span><span class='ach-toast-body'><b>成就解锁 · "+_achEsc(a.name)+"</b><br>"+_achEsc(a.desc)+"</span>";
+ d.onclick=()=>{if(d.remove)try{d.remove();}catch(_){}};
+ document.body.appendChild(d);
+ setTimeout(()=>{if(d.remove)try{d.remove();}catch(_){}},2800);
+}
+//M1.5 §2.5 飞升专属：半透明遮罩 + 终端风居中卡片，[ 继续长生路 ] 关闭（表现层，不动状态不推进年份）
+export function showFlyCard(){
+ let a=allAch["m_1024_fly"];if(!a)return;
+ let ov=document.createElement("div");ov.className="fly-overlay";
+ let card=document.createElement("div");card.className="fly-card";
+ card.innerHTML="&gt; Hello, World<br>编译通过：0 errors, 0 warnings<br><br>🏆 "+_achEsc(a.name)+"<br>"+_achEsc(a.desc)+"<br>";
+ let btn=document.createElement("button");btn.className="fly-btn";btn.textContent="[ 继续长生路 ]";
+ let close=()=>{if(ov.remove)try{ov.remove();}catch(_){}toastAch("m_1024_fly");};
+ btn.onclick=close;
+ ov.onclick=(e)=>{if(e.target===ov)close();};
+ card.appendChild(btn);ov.appendChild(card);
+ document.body.appendChild(ov);
+}
+function _achEsc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 export function renderAch(){
  document.getElementById("achtext").innerText=gs.achs.length>0?gs.achs.join(" | "):"暂无";
 }
@@ -349,10 +375,31 @@ export function log(txt,cls=""){
 }
 //最近日志文本快照（虚拟化后环形缓冲对外只读出口；真实 DOM 的 logbox.innerText 恒由 log 填充，桩环境可作检索兜底）
 export function recentLogs(){return _logLines.slice();}
+//M1.5 富文本日志：先 HTML 转义再把 `xx` 标记转行内代码（模组数据可含任意文本，转义前置防注入）
+export function logRich(txt,cls=""){
+ const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+ const html=esc(txt).split("`").map((seg,i)=>i%2?`<code class="inline-code">${seg}</code>`:seg).join("");
+ const lb=document.getElementById("logbox");
+ let sp=document.createElement("span");
+ if(cls)sp.className=cls;
+ sp.innerHTML=html+"\n";
+ lb.appendChild(sp);
+ _logLines.push(txt);
+ _logSpans.push(sp);
+ if(_logSpans.length>LOG_MAX){
+  let extra=_logSpans.length-LOG_MAX;
+  for(let i=0;i<extra;i++){let old=_logSpans[i];if(old&&old.remove){try{old.remove();}catch(_){}}}
+  _logSpans=_logSpans.slice(extra);
+  _logLines=_logLines.slice(extra);
+ }
+ const sc=lb.parentElement;
+ if(sc)sc.scrollTop=sc.scrollHeight;
+}
 export function clearOpt(){document.getElementById("optbox").innerHTML="";}
-export function addBtn(text,cb){
+export function addBtn(text,cb,cls){
  let b=document.createElement("button");
  b.innerText=text;
+ if(cls)b.className=cls;
  b.onclick=()=>{clearOpt();cb();};
  document.getElementById("optbox").appendChild(b);
 }

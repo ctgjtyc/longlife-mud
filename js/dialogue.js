@@ -1,5 +1,5 @@
 //==== ESM 依赖导入（J 批次1：显式依赖图）====
-import { addAch, addBtn, addDisciple, addEnemy, checkCond, gs, hasEnemy, hidePortrait, isNpcDead, log, npcExpireYear, passYear, refreshUi, removeEnemy, setFlag, showPortrait } from "./core.js";
+import { addAch, addBtn, addDisciple, addEnemy, checkCond, gs, hasEnemy, hidePortrait, isNpcDead, log, logRich, npcExpireYear, passYear, refreshUi, removeEnemy, setFlag, showPortrait } from "./core.js";
 import { NPCS } from "./data/npcs.js";
 import { addRep } from "./faction.js";
 import { addItem, equipByName, gainEquip } from "./inventory.js";
@@ -51,12 +51,13 @@ export function memorialDialogue(npcId){
  addBtn("默立片刻，转身离去",()=>{hidePortrait();mainStep0();});
 }
 
-//渲染对话节点：文本 + 条件门控的选项
+//渲染对话节点：文本 + 条件门控的选项（M1.5：行内代码标记 `xx` + 节点级终端代码块 node.code）
 export function dialogueNode(npcId,nodeId){
  let npc=NPCS[npcId];
  let node=npc.dialogue[nodeId];
  if(!node){hidePortrait();log("对话结束。");mainStep0();return;}
- log(`\n💬【${npc.name}】${node.text}`);
+ logRich(`\n💬【${npc.name}】${node.text}`);
+ if(node.code)log("\n"+node.code.join("\n"),"termcode"); // P5+：终端风格代码块（码道三境）
  let opts=node.options.filter(o=>!o.need||checkCond(o.need));
  if(!opts.length){hidePortrait();log("（无话可说，对话结束）");mainStep0();return;}
  for(let o of opts){
@@ -72,6 +73,7 @@ export function dialogueNode(npcId,nodeId){
 //对话效果结算（关系/声望/flags/物品/属性/时间/收徒/结仇）
 export function applyDialogueEffect(npcId,eff){
  if(!eff)return;
+ let firstMet=eff.flags&&eff.flags.q1024_met&&!gs.flags.q1024_met;   // M1.5：初遇代码真人即时引导（须在 flags 应用前取值）
  if(eff.relation)for(let k in eff.relation)addRelation(k,eff.relation[k]);
  if(eff.rep)for(let k in eff.rep)addRep(k,eff.rep[k]);
  if(eff.flags)for(let k in eff.flags)setFlag(k,eff.flags[k]);
@@ -84,6 +86,7 @@ export function applyDialogueEffect(npcId,eff){
  if(eff.disciple)addDisciple(eff.disciple.name,eff.disciple.talent); // J34 后续：收徒
  if(eff.enemy)addEnemy(eff.enemy.npcId,eff.enemy.reason);           // J34 后续：结仇
  if(eff.achs)for(let a of eff.achs)addAch(a);                        // 对话解成就（模组成就链路）
+ if(firstMet)log("💡【已解锁任务：初窥码道】点右侧「📜任务面板」接取，跟随指引完成码道飞升。","blue");
  refreshUi();
 }
 

@@ -14,9 +14,9 @@ export const OFFICIAL_MODS={
    quests:{
     "q_1024_1":{
      name:"初窥码道",kind:"chain",need:{type:"flag",key:"q1024_met",val:true},
-     steps:[
+      steps:[
       {desc:"听代码真人论道，习得码道三境",cond:{type:"flag",key:"q1024_taught",val:true},reward:{stone:64}},
-      {desc:"将修为打磨至 1024——码道之基，2 的十次方",cond:{type:"attr",key:"cult",op:">=",val:1024},reward:{items:{"代码卷轴":1}}}
+      {desc:"将修为打磨至 1024——码道之基，2 的十次方（背包使用【代码卷轴】可直达 1024，亦可自行修炼）",cond:{type:"attr",key:"cult",op:">=",val:1024},reward:{stone:128}}
      ],
      onDone:{flags:{q1024_1_done:true},rep:{散修盟:10},items:{"回血散":3},unlockQuest:"q_1024_2"}
     },
@@ -44,8 +44,8 @@ export const OFFICIAL_MODS={
        options:[
         {text:"愿闻其详",effect:{flags:{q1024_met:true},achs:["m_1024_meet"],relation:{daima_zhenren:5}},next:"story1024"},
         {text:"与他论道：何为码道？",need:{type:"flag",key:"q1024_met",val:true},next:"teach"},
-        {text:"领受考验：直面 Bug 心魔（战斗）",need:{type:"flag",key:"q1024_1_done",val:true},fight:"Bug心魔"},
-        {text:"诵出真言：Hello, World",need:{type:"flag",key:"q1024_2_done",val:true},next:"chant"},
+        {text:"⚔ 领受考验：直面 Bug 心魔（战斗）",need:{type:"flag",key:"q1024_1_done",val:true},fight:"Bug心魔"},
+        {text:"✨ 诵出真言：Hello, World",need:{type:"flag",key:"q1024_2_done",val:true},next:"chant"},
         {text:"不打扰了，告辞",next:"end"}
        ]
       },
@@ -57,13 +57,14 @@ export const OFFICIAL_MODS={
        ]
       },
       "teach":{
-       text:"「码道三境。」他竖起一根手指，「第一境，能跑就行；第二境，不要动它——祖传代码，动一行，崩十里；第三境，方敢言重构。」他又压低声音：「码修心魔名唤 Bug，无形无相，专在子时上线前袭来，斩之不尽，唯勤可御。你若真想入门，先把修为打磨到 1024，那是码道之基。」",
+       text:"「码道三境。」他竖起一根手指。他又压低声音：「码修心魔名唤 Bug，无形无相，专在子时上线前袭来，斩之不尽，唯勤可御。你若真想入门，先把修为打磨到 `1024`，那是码道之基。」临别，他塞给你一卷泛黄的卷轴：「此卷乃吾辈千年码道心得，参悟可抵千年苦修。码道之基，咫尺可至——去罢，斩了那心魔，再来见我。」",
+       code:["> 码道三境","  第一境：能跑就行","  第二境：不要动它   // 祖传代码，动一行，崩十里","  第三境：方敢言重构"],
        options:[
-        {text:"谨记教诲，回去打磨修为",effect:{flags:{q1024_taught:true},cult:64,relation:{daima_zhenren:10}},next:"end"}
+        {text:"谨记教诲，收下卷轴（获得【代码卷轴】）",effect:{flags:{q1024_taught:true},cult:64,items:{"代码卷轴":1},relation:{daima_zhenren:10}},next:"end"}
        ]
       },
       "chant":{
-       text:"你深吸一口气，对着青山旷野，一字一句地诵出：「Hello——World。」风停了一瞬。青石上的黑板子忽然亮起一片绿光，映得他眼中如星河倒灌。「编译通过，」代码真人缓缓起身，郑重抱拳，「零报错，零警告。欢迎入道，道友。从今日起，你也是码修了。长生路远，愿你的代码永无 Bug。」",
+       text:"你深吸一口气，对着青山旷野，一字一句地诵出：`Hello——World`。风停了一瞬。青石上的黑板子忽然亮起一片绿光，映得他眼中如星河倒灌。「编译通过，」代码真人缓缓起身，郑重抱拳，「零报错，零警告。欢迎入道，道友。从今日起，你也是码修了。长生路远，愿你的代码永无 Bug。」",
        options:[
         {text:"回礼：愿前辈永不加班",effect:{flags:{hello_world_chanted:true},cult:256,relation:{daima_zhenren:20}},next:"end"}
        ]
@@ -75,7 +76,7 @@ export const OFFICIAL_MODS={
     "代码卷轴":{type:"consumable",desc:"上古卷轴，展开只有一行真言：Hello, World。参悟后修为+1024",use:{cult:1024}}
    },
    monsters:{
-    "Bug心魔":{name:"Bug心魔",hp:256,atk:21,reward:{cult:256,stone:512,flags:{bug_1024_slain:true}},ai:"enrage",aiParam:{hpPct:0.35,atkMul:1.5},affixDrop:["噬魂","魔骨"]}
+    "Bug心魔":{name:"Bug心魔",hp:144,atk:10,reward:{cult:256,stone:512,flags:{bug_1024_slain:true}},ai:"enrage",aiParam:{hpPct:0.35,atkMul:1.5},affixDrop:["噬魂","魔骨"]}
    },
    achs:{
     "m_1024_meet":{name:"初遇代码真人",desc:"十月二十四，山道青石上遇见一位敲键盘的修士",got:false},

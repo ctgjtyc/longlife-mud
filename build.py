@@ -67,6 +67,9 @@ KEY_FUNCS = [
     "genL0", "genL1", "genL2", "generate",
     # P5+ 官方模组坊（1024 程序员节）
     "sceneOfficialMods", "modInstalled", "restoreOfficialMods",
+    # M1.5 彩蛋体验优化（WB 设计方案 2026-10-24）
+    "startCodeJourney", "hideModShop", "logRich", "toastAch", "showFlyCard",
+    "refreshFestCard", "toggleSideDrawer",
 ]
 
 # index.html 中的 ESM 入口

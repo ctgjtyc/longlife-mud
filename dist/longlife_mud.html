@@ -65,6 +65,76 @@ button:hover{background:var(--green);color:var(--bg-face);border-color:var(--gre
 button:focus-visible,[role="button"]:focus-visible,input:focus-visible,select:focus-visible,
 [tabindex]:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+
+/*==== M1.5 §2.0：1024 彩蛋「赛博修仙」设计变量（终端绿×等宽，只加不改古风基底）====*/
+:root{
+  --fest-green:#16a34a; --fest-green-dark:#15803d;
+  --fest-bg:#f0fdf4; --fest-border:#86efac;
+  --term-bg:#0d1117; --term-fg:#39d353; --term-dim:#8b949e;
+  --mono:Consolas,"Courier New",monospace;
+}
+/* §2.7 可读性微调 */
+.log{line-height:1.8;}
+.opt button{margin:7px 0;}
+#cult,#stone,#year,#hp,#hpmax,#mp,#mpmax{font-family:var(--mono);}
+/* §2.3 行内代码 + 终端代码块 */
+.inline-code{font-family:var(--mono);font-size:.92em;background:var(--fest-bg);border:1px solid var(--fest-border);border-radius:3px;padding:1px 5px;color:var(--fest-green-dark);}
+.termcode{display:block;font-family:var(--mono);font-size:13px;line-height:1.7;background:var(--term-bg);color:var(--term-fg);border-radius:8px;border-left:4px solid var(--fest-green);padding:12px;margin:8px 0;white-space:pre;}
+/* §2.1 彩蛋入口卡片 */
+#festcard{display:none;align-items:center;gap:14px;background:var(--fest-bg);border:1px solid var(--fest-border);border-radius:12px;padding:14px;margin-bottom:12px;}
+.fest-badge{flex-shrink:0;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:bold;font-size:15px;color:var(--fest-green);background:#dcfce7;border-radius:8px;}
+.fest-mid{flex:1;min-width:0;}
+.fest-title{font-size:15px;font-weight:600;color:var(--ink);}
+.fest-sub{font-size:12px;color:var(--fest-green-dark);margin-top:3px;}
+.fest-btn{flex-shrink:0;width:auto;min-height:44px;padding:10px 18px;background:var(--fest-green);color:#fff;border:1px solid var(--fest-green-dark);border-radius:8px;font-size:15px;text-align:center;}
+.fest-btn:hover{background:var(--fest-green-dark);border-color:var(--fest-green-dark);color:#fff;}
+#festdone{display:none;background:var(--fest-bg);border:1px dashed var(--fest-border);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:13px;color:var(--fest-green-dark);cursor:pointer;text-align:center;}
+/* §2.2 官方模组坊卡片 */
+#modshopbox{display:none;margin:8px 0;}
+.modcard{background:var(--panel-light);border:1px solid var(--fest-border);border-radius:10px;padding:12px 14px;margin:8px 0;}
+.modcard-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.modcard-name{font-weight:600;font-size:15px;color:var(--ink);}
+.modcard-ver{font-family:var(--mono);font-size:12px;color:var(--sub-text);}
+.modcard-badge{margin-left:auto;background:var(--fest-green);color:#fff;font-size:11px;padding:2px 8px;border-radius:999px;}
+.modcard-desc{font-size:13px;color:var(--ink-soft);line-height:1.7;margin:8px 0;}
+.modcard-bot{display:flex;align-items:center;gap:10px;}
+.modcard-author{font-size:12px;color:var(--sub-text);}
+.modcard-btn{width:auto;min-height:36px;padding:7px 20px;margin-left:auto;background:var(--fest-green);color:#fff;border:1px solid var(--fest-green-dark);border-radius:8px;font-size:14px;text-align:center;}
+.modcard-btn:hover{background:var(--fest-green-dark);color:#fff;}
+.modcard-btn.installed{background:var(--panel);color:var(--sub-text);border-color:var(--border-soft);cursor:default;}
+.modcard-btn.installed:hover{background:var(--panel);color:var(--sub-text);}
+/* §2.4 战斗界面增强：血条过渡 + 终稿副行 + 道具圆点 */
+.hpinner{transition:width .2s ease;}
+.hpinner.playerbar{background:var(--fest-green);}
+.enemy-sub{font-family:var(--mono);font-size:12px;color:var(--term-dim);margin:2px 0;}
+button.has-pill{position:relative;}
+button.has-pill::after{content:"";position:absolute;top:8px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--fest-green);box-shadow:0 0 0 2px var(--fest-bg);}
+/* §2.5 成就 toast + 飞升「编译通过」卡片 */
+.ach-toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;background:var(--bg-face);border:1px solid var(--fest-border);border-radius:10px;padding:10px 16px;max-width:min(90vw,480px);box-shadow:0 6px 20px var(--shadow);font-size:14px;color:var(--ink);cursor:pointer;animation:achToastIn .25s ease;}
+@keyframes achToastIn{from{opacity:0;transform:translateX(-50%) translateY(-12px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+.ach-toast-icon{font-size:20px;}
+.ach-toast-body{line-height:1.5;}
+.ach-toast-body b{color:var(--fest-green-dark);}
+.fly-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:9998;display:flex;align-items:center;justify-content:center;}
+.fly-card{background:var(--term-bg);color:var(--term-fg);font-family:var(--mono);font-size:14px;line-height:1.8;text-align:left;border-radius:12px;border:1px solid var(--fest-green);padding:22px 26px;max-width:420px;width:calc(100vw - 48px);}
+.fly-btn{width:auto;min-height:40px;margin-top:14px;padding:9px 18px;background:transparent;color:var(--term-fg);border:1px solid var(--fest-green);border-radius:8px;font-family:var(--mono);font-size:14px;text-align:center;}
+.fly-btn:hover{background:var(--fest-green);color:var(--term-bg);border-color:var(--fest-green);}
+/* §2.6 移动端（<768px）：侧栏改底部抽屉；按钮 ≥44px；彩蛋卡片纵排 */
+@media (max-width:768px){
+  body{padding:10px;}
+  #layout{flex-direction:column;padding-bottom:64px;gap:8px;}
+  #gamebox{padding:12px;}
+  .side-title{cursor:pointer;}
+  #sidepanel{position:fixed;left:0;right:0;bottom:0;width:100%;max-height:60vh;flex-direction:column;z-index:60;border-radius:12px 12px 0 0;transform:translateY(calc(100% - 48px));transition:transform .25s ease;box-shadow:0 -4px 16px var(--shadow);}
+  #sidepanel.side-open{transform:none;}
+  .sidebtn,button{min-height:44px;}
+  .sidebtn{font-size:14px;}
+  .info-bar{font-size:14px;gap:10px;}
+  #festcard{flex-direction:column;align-items:stretch;text-align:center;}
+  .fest-btn{width:100%;}
+  .ach-toast{left:16px;right:16px;transform:none;max-width:none;}
+  @keyframes achToastIn{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:translateY(0);}}
+}
 </style>
 </head>
 <body>
@@ -101,11 +171,26 @@ button:focus-visible,[role="button"]:focus-visible,input:focus-visible,select:fo
 </div>
 <div id="equipbox">🎒装备：<span id="equip">无</span></div>
 <div id="achbox">🏆成就：<span id="achtext">暂无</span></div>
+<!-- M1.5 §2.1：1024 彩蛋入口卡片（命格选定后由 refreshFestCard 显示；飞升后转「已飞升·重温」） -->
+<div id="festcard">
+  <div class="fest-badge">&lt;/&gt;</div>
+  <div class="fest-mid">
+    <div class="fest-title">1024·码道飞升</div>
+    <div class="fest-sub">程序员节限定彩蛋 · 约 3 分钟 · 斩 Bug 心魔，诵 Hello World</div>
+  </div>
+  <button class="fest-btn" onclick="startCodeJourney()">启程码道 →</button>
+</div>
+<div id="festdone" onclick="startCodeJourney()">🏆 已码道飞升 · 点击重温</div>
+<!-- M1.5 §2.2：官方模组坊卡片容器（sceneOfficialMods 渲染） -->
+<div id="modshopbox"></div>
 <div id="fightui" style="display:none;">
 <div>⚔️战斗界面</div>
 <div>敌方：<span id="enemyName"></span></div>
+<div id="enemySub" class="enemy-sub" style="display:none;"></div>
 <div class="hpbar"><div id="enemyHpBar" class="hpinner"></div></div>
 <span>敌方生命：<span id="enemyHpText"></span></span>
+<div>你方：<span id="playerHpText">100</span>/<span id="hpmax2">100</span></div>
+<div class="hpbar"><div id="playerHpBar" class="hpinner playerbar" style="width:100%;"></div></div>
 </div>
 <div id="portraitbox" style="display:none;overflow:hidden;">
 <button id="portraitToggle" class="btnsmall" style="flex-shrink:0;width:auto;padding:4px 10px;margin:0 0 6px 0;" onclick="togglePortrait()">➖ 收起插图</button>
@@ -121,7 +206,7 @@ button:focus-visible,[role="button"]:focus-visible,input:focus-visible,select:fo
 </div>
 
 <div id="sidepanel">
-<div class="side-title">☰ 功能</div>
+<div class="side-title" onclick="toggleSideDrawer()">☰ 功能</div>
 <div id="sidebtns"></div>
 <hr class="side-divider">
 <button class="sidebtn home" data-k="home" onclick="mainStep0()">🏠返回主线</button>
@@ -2236,8 +2321,766 @@ function questPanel(){
  addBtn("离开任务面板",()=>mainStep0());
 }
 
+//===== js/data/npcs.js =====
+//==== data/npcs.js：NPC 配置表（内容层 SSOT，P4 对话树/关系网）====
+// 依据：docs/story-craft/characters.md（五维角色卡 + 灵魂领域 SSOT）
+// dialogue: {nodeId:{text, options:[{text, need(可空), effect(可空), next}]}}
+// effect: {rep:{势力:数}, relation:{npcId:数}, flags:{k:v}, items:{名:数}, cult, stone, year, hp, equip}
+// next: 下一节点 id；"end" 或缺失 = 结束对话返回主线
+// need（NPC 级）：sceneNpc 拜访列表的可见门控（checkCond 唯一门控）
+// 伏笔埋设：foreshadow_* 前缀 flags（见 docs/story-craft/foreshadows.md）
+const NPCS={
+ //==== A 档：落魄老修士（灵魂领域：临终不索财/不夺后辈机缘/欠债必还/不对将死之人说谎）====
+ "lao_xiu":{
+  name:"落魄老修士",faction:"散修盟",desc:"寿元将尽，看出你长生特质",need:null,lifespan:30,
+  dialogue:{
+   "start":{
+    text:"路边一位寿元将尽的老修士拦住你。他咳嗽了两声，像破风箱漏气：「咳……小友，你身上……有长生的气息。」",
+    options:[
+     {text:"问他：何出此言？",effect:{flags:{foreshadow_changsheng:true}},next:"ask"},
+     {text:"老友叙旧（好感≥20）",need:{type:"relation",key:"lao_xiu",op:">=",val:20},next:"confide"},
+     {text:"与他谈起你这些年走过的路（阅历≥3）",need:{type:"memory",op:">=",val:3},next:"memtalk"},
+     {text:"婉言拒绝，径直离开",next:"end"}
+    ]
+   },
+   "memtalk":{
+    text:"老修士听你说完，又咳了一声：「老朽活了两百年，见过的路，比你走过的还多。可你走的这条……不一样。」他顿了顿，「你记住，长生不是熬出来的，是活明白的。你这一路，没白走。」",
+    options:[{text:"拜谢老修士",effect:{cult:150,relation:{lao_xiu:20}},next:"end"}]
+   },
+   "ask":{
+    text:"老修士眯起眼，又咳了一声：「老朽活了快两百年，见过的人多了。你这种……是熬出来的命。」他顿了顿，「老朽这把年纪，活到头了，就想找个人，把话说完。」",
+    options:[
+     {text:"倾听教诲，赠灵石50换取感悟",need:{type:"attr",key:"stone",op:">=",val:50},effect:{stone:-50,cult:80,relation:{lao_xiu:10}},next:"teach"},
+     {text:"注意到他腰间的褪色玉牌，问起来历",effect:{flags:{foreshadow_yupai:true}},next:"yupai"},
+     {text:"婉言拒绝，径直离开",next:"end"}
+    ]
+   },
+   "yupai":{
+    text:"老修士低头看了一眼腰间的玉牌，沉默了很久：「旧物，不提也罢。」他咳嗽得更厉害了，「……你要是真想知道，等哪天，你活够了再说。」",
+    options:[
+     {text:"不再追问，倾听教诲",need:{type:"attr",key:"stone",op:">=",val:50},effect:{stone:-50,cult:80,relation:{lao_xiu:10}},next:"teach"},
+     {text:"拜别老修士",next:"end"}
+    ]
+   },
+   "confide":{
+    text:"老修士这次没有咳嗽。他看了你很久，忽然开口：「老朽年轻时，见过一个和你一样的人。那人也熬过了很多年，最后……把一样东西，托付给了老朽。」他低头看腰间的玉牌，「就是它。」",
+    options:[
+     {text:"问他：那人是长生者吗（好感≥50）",need:{type:"relation",key:"lao_xiu",op:">=",val:50},effect:{flags:{foreshadow_yupai:true}},next:"bequeath"},
+     {text:"不再追问，倾听教诲",need:{type:"attr",key:"stone",op:">=",val:50},effect:{stone:-50,cult:80,relation:{lao_xiu:10}},next:"teach"},
+     {text:"拜别老修士",next:"end"}
+    ]
+   },
+   "bequeath":{
+    text:"老修士沉默了很久，把腰间的玉牌解下来，递到你面前：「老朽守了一辈子，没等到能认出它的人。你……或许可以。」他咳了一声，「别学老朽，守着一样东西过一辈子。该放手时，就放手。」",
+    options:[
+     {text:"郑重接过玉牌",effect:{flags:{foreshadow_yupai:true,foreshadow_yupai_got:true},relation:{lao_xiu:20}},next:"end"}
+    ]
+   },
+   "teach":{
+    text:"老修士将毕生感悟倾囊相授。他说得很慢，一句是一句：「长生不是熬出来的，是……活明白的。别学老朽，活了一辈子，最后才发现，最该珍惜的，早就没了。」",
+    options:[{text:"拜别老修士",effect:{relation:{lao_xiu:10}},next:"end"}]
+   },
+   "end":{text:"你与老修士作别。他站在路边，望着你的背影，又咳了一声。",options:[]}
+  }
+ },
+ //==== B 档：凡间女子·阿蛮（灵魂领域：知恩必报/认定的事拉不回/不拖累恩人）====
+ "fan_nv":{
+  name:"凡间女子·阿蛮",faction:"散修盟",desc:"你曾救下的凡间女子",need:null,lifespan:60,
+  dialogue:{
+   "start":{
+    text:"阿蛮站在村口，攥着腕上的红绳，看见你时眼睛亮了一下，又低下头：「恩公……」",
+    options:[
+     {text:"问她近来可好",next:"ask"},
+     {text:"与阿蛮叙旧（好感≥20）",need:{type:"relation",key:"fan_nv",op:">=",val:20},next:"confide"},
+     {text:"问她：可愿随我修行（好感≥50）",need:{type:"relation",key:"fan_nv",op:">=",val:50},next:"disciple"},
+     {text:"与阿蛮说起你初战妖兽的经历（需记忆：初战）",need:{type:"memory",key:"mem_first_fight",val:true},next:"memtalk"},
+     {text:"长生无情，婉拒情缘",effect:{relation:{fan_nv:-10}},next:"end"}
+    ]
+   },
+   "memtalk":{
+    text:"阿蛮睁大眼睛听完，攥着腕上的红绳：「恩公……原来恩公是这样的人。妾身只知道恩公救过妾身，却不知恩公也曾在刀尖上走过。」她低下头，「妾身……更敬重恩公了。」",
+    options:[{text:"摸摸她的头",effect:{relation:{fan_nv:10}},next:"end"}]
+   },
+   "ask":{
+    text:"阿蛮抬起头，努力笑了笑：「妾身……挺好的。就是，总想着恩公的恩情，还没还清。」她顿了顿，「妾身这条命，是恩公给的。」",
+    options:[
+     {text:"相伴共度一段岁月（凡人寿命短暂）",effect:{relation:{fan_nv:20},year:60},next:"accompany"},
+     {text:"告诉她：不必挂怀，好好活着",effect:{relation:{fan_nv:10}},next:"end"}
+    ]
+   },
+   "confide":{
+    text:"阿蛮坐在村口的石头上，看着远处的山：「妾身最近总在想，恩公这样的人，是不是活得很累。」她低头摆弄腕上的红绳，「妾身这辈子，能遇见恩公，值了。可妾身……怕恩公有一天，连妾身叫什么，都忘了。」",
+    options:[
+     {text:"告诉她：不会忘",effect:{relation:{fan_nv:20}},next:"end"},
+     {text:"告诉她：长生无情，忘与不忘都一样",effect:{relation:{fan_nv:-10}},next:"end"}
+    ]
+   },
+   "accompany":{
+    text:"你们相伴数十载。阿蛮老了，头发白了，笑起来眼睛还是弯成月牙。她走的那天，攥着你的手：「恩公……妾身这辈子，值了。」你把她葬在山坡上，种了一棵桃树。",
+    options:[{text:"目送故人逝去，继续踏上长生旅途",effect:{relation:{fan_nv:30}},next:"end"}]
+   },
+   "disciple":{
+    text:"阿蛮怔了很久，忽然跪下：「恩公若不嫌弃，妾身愿拜在恩公门下，学那长生之法。妾身这条命是恩公给的，往后，也想替恩公做点什么。」她攥着腕上的红绳，「妾身不怕苦。」",
+    options:[
+     {text:"收她为徒，传她吐纳之法",effect:{relation:{fan_nv:30},disciple:{name:"阿蛮",talent:"中上"}},next:"accept"},
+     {text:"婉拒：长生路上太寂寞，不必再添一人",effect:{relation:{fan_nv:-5}},next:"end"}
+    ]
+   },
+   "accept":{
+    text:"你扶起阿蛮，传她吐纳之法。她学得很慢，但很认真，夜里还在村口对着月亮比划。你忽然觉得，这漫长的岁月，好像有了一点盼头。",
+    options:[{text:"师徒相称，共度岁月",effect:{flags:{disciple_fan_nv_done:true}},next:"end"}]
+   },
+   "end":{text:"阿蛮望着你离去的背影，把红绳又系紧了一些。",options:[]}
+  }
+ },
+ //==== A 档：游走灵商（灵魂领域：童叟无欺/不赊账/不出卖主顾/生意交情两不相混）====
+ "ling_shang":{
+  name:"游走灵商",faction:"万宝楼",desc:"神秘商人，兜售珍稀法器",need:null,lifespan:300,
+  dialogue:{
+   "start":{
+    text:"神秘商人现身，腰间算盘拨得脆响：「道友，可要看看我的宝贝？」他笑眯眯的，笑意却不达眼底。",
+    options:[
+     {text:"花200灵石购买【流云道袍】",need:{type:"attr",key:"stone",op:">=",val:200},effect:{stone:-200,equip:"流云道袍",relation:{ling_shang:10}},next:"buy"},
+     {text:"问他：年轻时错过的那件宝物是什么",effect:{flags:{foreshadow_baowu:true}},next:"baowu"},
+     {text:"老主顾叙旧（好感≥20）",need:{type:"relation",key:"ling_shang",op:">=",val:20},next:"confide"},
+     {text:"威胁他：不交出宝物，就砸了他的摊子",effect:{enemy:{npcId:"ling_shang",reason:"强买强卖"},rep:{万宝楼:-20}},next:"end"},
+     {text:"不交易，就此告别",next:"end"}
+    ]
+   },
+   "baowu":{
+    text:"灵商拨算盘的手顿了一下：「道友耳朵尖。」他笑了笑，「年轻时有一件宝贝摆在面前，没舍得下手，如今再没见过。……不提了，好说好说，看货。」",
+    options:[
+     {text:"花200灵石购买【流云道袍】",need:{type:"attr",key:"stone",op:">=",val:200},effect:{stone:-200,equip:"流云道袍",relation:{ling_shang:10}},next:"buy"},
+     {text:"不交易，就此告别",next:"end"}
+    ]
+   },
+   "confide":{
+    text:"灵商拨算盘的手慢了下来：「道友是懂行的。那件宝贝……是一枚古玉，能养魂。当年摆在我面前，只要三百灵石。」他笑了笑，「我没舍得。后来再没见过。」他顿了顿，「好说好说，不提了。」",
+    options:[
+     {text:"问他：古玉现在在何处（好感≥50）",need:{type:"relation",key:"ling_shang",op:">=",val:50},effect:{flags:{foreshadow_baowu:true}},next:"secret"},
+     {text:"花200灵石购买【流云道袍】",need:{type:"attr",key:"stone",op:">=",val:200},effect:{stone:-200,equip:"流云道袍",relation:{ling_shang:10}},next:"buy"},
+     {text:"不交易，就此告别",next:"end"}
+    ]
+   },
+   "secret":{
+    text:"灵商压低声音，算盘都不拨了：「听说……在妖山古林深处，一座塌了半边的洞府里。我这把年纪，走不动了。」他直起身，又拨了两下算盘，「道友若寻到，记得回来告诉我一声。我就想……看它一眼。」",
+    options:[
+     {text:"应下此事",effect:{flags:{foreshadow_baowu:true},relation:{ling_shang:20}},next:"end"}
+    ]
+   },
+   "buy":{
+    text:"你购得流云道袍。灵商满意地点头，算盘又拨了两下：「道友爽快，下回有货，第一个想着你。」",
+    options:[{text:"告别灵商",next:"end"}]
+   },
+   "end":{text:"你与商人作别。他望着你的背影，眯着眼，不知道在想什么。",options:[]}
+  }
+ },
+ //==== A 档：魔渊引路人（灵魂领域：引人不入魔/魔道亦有道/不说谎但可不答/欠魔渊的债用命还）====
+ "mo_yin":{
+  name:"魔渊引路人",faction:"魔渊",desc:"魔渊使者，引你入道",need:null,lifespan:500,
+  dialogue:{
+   "start":{
+    text:"魔渊入口，引路人兜帽下露出一双眼睛，呵出的白气在阴风里凝而不散：「想好了吗？」",
+    options:[
+     {text:"应允，共襄魔道大业",need:{type:"flag",key:"modao",val:true},effect:{rep:{魔渊:50},relation:{mo_yin:20}},next:"join"},
+     {text:"问他：你在这里守了多久",next:"ask"},
+     {text:"故人叙旧（好感≥20）",need:{type:"relation",key:"mo_yin",op:">=",val:20},effect:{flags:{foreshadow_yinlu:true}},next:"confide"},
+     {text:"与引路人说起你见过的魔渊（需记忆：坠入魔道）",need:{type:"memory",key:"mem_fall_demon",val:true},next:"memtalk"},
+     {text:"不为所动，拒绝",next:"end"}
+    ]
+   },
+   "memtalk":{
+    text:"引路人呵出一口白气，望着你：「你进去过，又出来了。」他顿了顿，「魔渊不是魔。魔渊是那些想不开的人，自己走进去的。你能出来，说明你……想开了。」他点点头，「呵呵，路是你自己选的。你选得不错。」",
+    options:[{text:"拜别引路人",effect:{relation:{mo_yin:20}},next:"end"}]
+   },
+   "ask":{
+    text:"引路人沉默了一会儿：「记不清了。只记得，有一个人，我没拦住。他走进去，再也没出来。」他望着魔渊深处，「呵呵……路是自己选的。」",
+    options:[
+     {text:"追问：那个人是谁",effect:{flags:{foreshadow_yinlu:true}},next:"who"},
+     {text:"应允，共襄魔道大业",need:{type:"flag",key:"modao",val:true},effect:{rep:{魔渊:50},relation:{mo_yin:20}},next:"join"},
+     {text:"不为所动，拒绝",next:"end"}
+    ]
+   },
+   "who":{
+    text:"引路人没有回答。他望着魔渊深处，很久才说：「一个想找答案的人。……你要是也去找，记住，路是你自己选的。」",
+    options:[
+     {text:"应允，共襄魔道大业",need:{type:"flag",key:"modao",val:true},effect:{rep:{魔渊:50},relation:{mo_yin:20}},next:"join"},
+     {text:"不为所动，拒绝",next:"end"}
+    ]
+   },
+   "confide":{
+    text:"引路人沉默了很久，白气在阴风里凝而不散：「那个人……是来问路的。他问我，魔渊里有没有答案。」他顿了顿，「我说，路是自己选的。他点点头，就走了进去。」他呵出一口白气，「呵呵……我没拦他。」",
+    options:[
+     {text:"问他：魔渊里到底有什么（好感≥50）",need:{type:"relation",key:"mo_yin",op:">=",val:50},effect:{flags:{foreshadow_moyuan_truth:true}},next:"secret"},
+     {text:"应允，共襄魔道大业",need:{type:"flag",key:"modao",val:true},effect:{rep:{魔渊:50},relation:{mo_yin:20}},next:"join"},
+     {text:"不为所动，拒绝",next:"end"}
+    ]
+   },
+   "secret":{
+    text:"引路人抬眼，兜帽下那双眼睛亮了一下：「魔渊不是魔。魔渊是那些想不开的人，自己走进去的。」他顿了顿，「我守在这里，不是替魔渊挑人。是替他们……挑一条能回头的路。」他望着你，「你不一样。你是自己选的路。」",
+    options:[
+     {text:"问他：那我该走哪条路",effect:{relation:{mo_yin:20}},next:"path"},
+     {text:"应允，共襄魔道大业",need:{type:"flag",key:"modao",val:true},effect:{rep:{魔渊:50},relation:{mo_yin:20}},next:"join"},
+     {text:"不为所动，拒绝",next:"end"}
+    ]
+   },
+   "path":{
+    text:"引路人看着你，很久。最后他呵出一口白气：「路是你自己选的。魔道也好，正道也好，只要是自己选的，就不悔。」他顿了顿，「这是那个人走之前，我最后想跟他说的话。可惜，他没听见。」",
+    options:[
+     {text:"拜别引路人",effect:{relation:{mo_yin:20}},next:"end"}
+    ]
+   },
+   "join":{
+    text:"引路人侧身让开。他身后的阴风停了，露出一条窄路：「……记住，魔道亦有道。」",
+    options:[{text:"随使者离去",next:"end"}]
+   },
+   "end":{text:"引路人望着你的背影，呵出一口白气，又隐入阴影里。",options:[]}
+  }
+ },
+ //==== A 档：玄真道长（新增，宗门线；灵魂领域：收徒察心性/不杀降者/宗门为先/不对弟子说谎）====
+ "xuan_zhen":{
+  name:"玄真道长",faction:"青云宗",desc:"青云宗掌门，端方持重",need:{type:"flag",key:"zongmen",val:true},lifespan:400,
+  dialogue:{
+   "start":{
+    text:"青云宗大殿，玄真道长闭着眼，拂尘搭在臂弯。听见脚步声，他睁开眼：「善。道友好。」",
+    options:[
+     {text:"求教：宗门藏经阁的轮回镜传说",effect:{flags:{foreshadow_lunhui:true}},next:"lunhui"},
+     {text:"聆听教诲，感悟道法",need:{type:"rep",key:"青云宗",op:">=",val:30},effect:{cult:100,relation:{xuan_zhen:10}},next:"teach"},
+     {text:"与道长论道（好感≥20）",need:{type:"relation",key:"xuan_zhen",op:">=",val:20},next:"confide"},
+     {text:"告辞离开",next:"end"}
+    ]
+   },
+   "lunhui":{
+    text:"玄真道长闭了闭眼：「藏经阁那卷残页？上古有镜，可照轮回。……老道修行三百年，只当它是传说。」他顿了顿，「不过，藏经阁那卷残页，是祖师爷亲手抄的。祖师爷，不写没影的事。」",
+    options:[
+     {text:"聆听教诲，感悟道法",need:{type:"rep",key:"青云宗",op:">=",val:30},effect:{cult:100,relation:{xuan_zhen:10}},next:"teach"},
+     {text:"告辞离开",next:"end"}
+    ]
+   },
+   "teach":{
+    text:"玄真道长睁开眼，看着你：「宗门为重。但道，是自己的。」他顿了顿，「你若有心，便去寻。寻到了，回来说给我听听。」他拂尘一甩，「善。」",
+    options:[{text:"拜谢道长",next:"end"}]
+   },
+   "confide":{
+    text:"玄真道长睁开眼，拂尘搭在臂弯：「善。你来得正好。老道近日参悟一卷残经，有一处不解。」他顿了顿，「你且说说——宗门为重，还是道为重？」",
+    options:[
+     {text:"答：道为重，宗门是道的落脚处",effect:{relation:{xuan_zhen:20}},next:"daolun"},
+     {text:"答：宗门为重，道在宗门里",effect:{relation:{xuan_zhen:10}},next:"daolun"}
+    ]
+   },
+   "daolun":{
+    text:"玄真道长闭着眼听完，半晌睁开：「善。老道年轻时，也答过这道题。那时答的是宗门为重。」他顿了顿，「如今……老道觉得，道为重。宗门，是道在人间的落脚处。可落脚处，不是道本身。」",
+    options:[
+     {text:"问他：那叛出宗门的弟子，也是寻道吗（好感≥50）",need:{type:"relation",key:"xuan_zhen",op:">=",val:50},next:"secret"},
+     {text:"拜谢道长",next:"end"}
+    ]
+   },
+   "secret":{
+    text:"玄真道长沉默了很久。拂尘在臂弯里微微发颤：「那个弟子……也是这么问老道的。老道答不上来，他就走了。」他闭上眼，「老道守了宗门三百年，如今才明白，有些道，在宗门之外。」他睁开眼，看着你，「你若有朝一日走到那一步，不必回头。道是自己的。」",
+    options:[
+     {text:"拜谢道长",effect:{relation:{xuan_zhen:20}},next:"end"}
+    ]
+   },
+   "end":{text:"玄真道长又闭上眼，大殿归于寂静。",options:[]}
+  }
+ },
+ //==== B 档：沈孤鸿（新增，江湖线；灵魂领域：剑出必见血/不欺老弱/恩怨分明）====
+ "shen_guhong":{
+  name:"沈孤鸿",faction:"散修盟",desc:"江湖剑客，独行侠",need:{type:"flag",key:"jianghu_met",val:true},lifespan:80,
+  dialogue:{
+   "start":{
+    text:"客栈角落，一个独行剑客按着剑柄，左眉一道旧疤。他抬眼看了你一下：「嗯。」",
+    options:[
+     {text:"问他：剑鞘上三道刻痕的来历",effect:{flags:{foreshadow_kehen:true}},next:"kehen"},
+     {text:"邀他切磋剑法",need:{type:"attr",key:"cult",op:">=",val:100},effect:{relation:{shen_guhong:10},cult:50},next:"duel"},
+     {text:"问他：那三条命，到底是怎么回事",need:{type:"relation",key:"shen_guhong",op:">=",val:30},next:"story"},
+     {text:"出言羞辱他的剑道，激他拔剑",effect:{enemy:{npcId:"shen_guhong",reason:"羞辱其剑道"}},next:"provoke"},
+     {text:"告辞离开",next:"end"}
+    ]
+   },
+   "kehen":{
+    text:"沈孤鸿摩挲着剑鞘上的刻痕，沉默了很久：「三条命。」他不再说话，把酒碗里的酒一饮而尽。",
+    options:[
+     {text:"不再追问，邀他切磋剑法",need:{type:"attr",key:"cult",op:">=",val:100},effect:{relation:{shen_guhong:10},cult:50},next:"duel"},
+     {text:"告辞离开",next:"end"}
+    ]
+   },
+   "story":{
+    text:"沈孤鸿沉默了很久，把酒碗放下：「三个结义兄弟。死在同一个人手里。」他摩挲着剑鞘上的刻痕，「我替他们讨完了公道。……现在，债清了。」",
+    options:[{text:"敬他一碗酒",effect:{relation:{shen_guhong:20}},next:"end"}]
+   },
+   "provoke":{
+    text:"沈孤鸿按剑的手一顿。他抬眼，左眉的旧疤跳了跳：「你再说一遍。」",
+    options:[
+     {text:"（冷笑，转身就走）",effect:{relation:{shen_guhong:-20}},next:"end"}
+    ]
+   },
+   "duel":{
+    text:"沈孤鸿拔剑。剑光一闪，又归鞘。他点点头：「嗯，还行。」",
+    options:[{text:"抱拳告辞",next:"end"}]
+   },
+   "end":{text:"沈孤鸿又低下头，继续喝他的酒。",options:[]}
+  }
+ },
+ //==== S 档：镜娘（新增，轮回镜隐藏线；灵魂领域：镜中不言假/不渡无心人/轮回不可逆/欠轮回的因果必偿/镜娘不杀人）====
+ "jing_niang":{
+  name:"镜娘",faction:"散修盟",desc:"轮回镜灵，守镜千年",need:{type:"flag",key:"lunhui_unlocked",val:true},lifespan:9999,
+  dialogue:{
+   "start":{
+    text:"轮回镜界，一面古镜悬在半空。镜面泛起涟漪，一个声音从很远的地方传来：「你看见的，都是真的。」",
+    options:[
+     {text:"问她：轮回镜是什么",next:"what"},
+     {text:"问她：镜里映出的是什么",need:{type:"flag",key:"lunhui_unlocked",val:true},effect:{flags:{foreshadow_lunhui_done:true}},next:"mirror"},
+     {text:"与镜娘论镜（好感≥20）",need:{type:"relation",key:"jing_niang",op:">=",val:20},next:"confide"},
+     {text:"与镜娘说起你轮回镜外的见闻（阅历≥5）",need:{type:"memory",op:">=",val:5},next:"memtalk"},
+     {text:"退出镜界",next:"end"}
+    ]
+   },
+   "memtalk":{
+    text:"镜娘的声音带着回音：「你见过很多了。镜里照过的人，大多照一次就不敢再来。你走了这么远，还敢回来照自己。」她顿了顿，「你看见的，都是真的。你走过的，也都是真的。」",
+    options:[{text:"照见自己的心",effect:{relation:{jing_niang:20},flags:{foreshadow_lunhui_done:true}},next:"end"}]
+   },
+   "what":{
+    text:"镜娘的声音带着回音：「轮回镜，照前世今生。心不诚者，照不出。」她顿了顿，「你，想照吗？」",
+    options:[
+     {text:"问她：镜里映出的是什么",need:{type:"flag",key:"lunhui_unlocked",val:true},effect:{flags:{foreshadow_lunhui_done:true}},next:"mirror"},
+     {text:"退出镜界",next:"end"}
+    ]
+   },
+   "mirror":{
+    text:"镜面映出你的倒影，倒影却在笑——那不是你。镜娘的声音很轻：「前世……你欠的，今生要还。轮回不可逆。」",
+    options:[{text:"退出镜界",next:"end"}]
+   },
+   "confide":{
+    text:"镜面泛起涟漪，镜娘的声音从很远的地方传来：「你来了。镜里……照过很多人。有人照见前世，转身就走；有人照见自己，再不敢来。」她顿了顿，「你，是第三种。」",
+    options:[
+     {text:"问她：第三种是什么（好感≥50）",need:{type:"relation",key:"jing_niang",op:">=",val:50},effect:{relation:{jing_niang:20}},next:"secret"},
+     {text:"退出镜界",next:"end"}
+    ]
+   },
+   "secret":{
+    text:"镜娘沉默了很久。镜面缓缓亮起，映出你，也映出镜中的她：「第三种，是照见了自己，还敢留下的人。」她的声音带着回音，「镜守了千年，等的就是这样的眼睛。……你看见的，都是真的。你，也是真的。」",
+    options:[
+     {text:"照见真正的自己",effect:{flags:{foreshadow_lunhui_done:true},relation:{jing_niang:30}},next:"end"}
+    ]
+   },
+   "end":{text:"镜面归于平静，镜娘的声音渐渐远去。",options:[]}
+  }
+ }
+};
+
+//===== js/data/official_mods.js =====
+//==== data/official_mods.js：官方模组库（P5+ 1024 程序员节）====
+// 官方彩蛋模组：与玩家自制模组走完全相同的注入管线（modValidate/modConflictCheck/modLoad），
+// 官方内容先吃自己的狗粮——这是模组系统稳定性的最好证明。
+// 规范同 modloader.js：{id,name,version,desc,author,content:{quests,npcs,items,monsters,achs}}
+// achs 为 P5+ 新增注入目标（core.js allAch）；对话选项 fight 字段 / reward.flags / reward.achs 同批引擎扩展。
+const OFFICIAL_MODS={
+ "mod_1024":{
+  id:"mod_1024",
+  name:"1024·码道飞升",
+  version:"1.0.0",
+  author:"长生MUD×WorkBuddy 官方",
+  desc:"程序员节限定彩蛋：山道旁结识一位敲键盘的修士，修为打磨至 1024，斩除 Bug 心魔，诵出 Hello World 真言——成就码道飞升。（2026-10-24 程序员节献礼）",
+  content:{
+   quests:{
+    "q_1024_1":{
+     name:"初窥码道",kind:"chain",need:{type:"flag",key:"q1024_met",val:true},
+      steps:[
+      {desc:"听代码真人论道，习得码道三境",cond:{type:"flag",key:"q1024_taught",val:true},reward:{stone:64}},
+      {desc:"将修为打磨至 1024——码道之基，2 的十次方（背包使用【代码卷轴】可直达 1024，亦可自行修炼）",cond:{type:"attr",key:"cult",op:">=",val:1024},reward:{stone:128}}
+     ],
+     onDone:{flags:{q1024_1_done:true},rep:{散修盟:10},items:{"回血散":3},unlockQuest:"q_1024_2"}
+    },
+    "q_1024_2":{
+     name:"斩除心魔",kind:"chain",need:{type:"flag",key:"q1024_1_done",val:true},
+     steps:[
+      {desc:"在代码真人处领受考验，斩除 Bug 心魔",cond:{type:"flag",key:"bug_1024_slain",val:true},reward:{cult:128,stone:256}}
+     ],
+     onDone:{flags:{q1024_2_done:true},rep:{散修盟:10},unlockQuest:"q_1024_3"}
+    },
+    "q_1024_3":{
+     name:"Hello World 飞升",kind:"chain",need:{type:"flag",key:"q1024_2_done",val:true},
+     steps:[
+      {desc:"向代码真人诵出真言『Hello, World』",cond:{type:"flag",key:"hello_world_chanted",val:true},reward:{cult:512,stone:512}}
+     ],
+     onDone:{achs:["m_1024_fly"],flags:{q1024_3_done:true},rep:{散修盟:20}}
+    }
+   },
+   npcs:{
+    "daima_zhenren":{
+     name:"代码真人",faction:"散修盟",desc:"自称来自「硅基」的游方修士，敲键盘如抚琴，口吐真言 printf(\"长生\")",need:null,lifespan:1024,
+     dialogue:{
+      "start":{
+       text:"山道旁的青石上盘坐着一位灰袍修士，袍子洗得发白，膝上摊着一块微微发光的黑板子，十指在上面敲得飞快，像在弹一张看不见的琴。见你驻足，他头也不抬：「道友，可知今日是何日子？」",
+       options:[
+        {text:"愿闻其详",effect:{flags:{q1024_met:true},achs:["m_1024_meet"],relation:{daima_zhenren:5}},next:"story1024"},
+        {text:"与他论道：何为码道？",need:{type:"flag",key:"q1024_met",val:true},next:"teach"},
+        {text:"⚔ 领受考验：直面 Bug 心魔（战斗）",need:{type:"flag",key:"q1024_1_done",val:true},fight:"Bug心魔"},
+        {text:"✨ 诵出真言：Hello, World",need:{type:"flag",key:"q1024_2_done",val:true},next:"chant"},
+        {text:"不打扰了，告辞",next:"end"}
+       ]
+      },
+      "story1024":{
+       text:"灰袍修士终于抬起头，眼睛亮得不像个活了两千岁的人：「十月二十四。2 的十次方，1024。吾辈码修的节日。」他把黑板子转过来给你看，上面密密麻麻，全是天书一样的符文。「此物名曰键盘，此术名曰编程。一念生万物，一念噬百魂。你既有长生之姿，或许……与码道有缘。」",
+       options:[
+        {text:"与他论道：何为码道？",next:"teach"},
+        {text:"改日再来请教",next:"end"}
+       ]
+      },
+      "teach":{
+       text:"「码道三境。」他竖起一根手指。他又压低声音：「码修心魔名唤 Bug，无形无相，专在子时上线前袭来，斩之不尽，唯勤可御。你若真想入门，先把修为打磨到 `1024`，那是码道之基。」临别，他塞给你一卷泛黄的卷轴：「此卷乃吾辈千年码道心得，参悟可抵千年苦修。码道之基，咫尺可至——去罢，斩了那心魔，再来见我。」",
+       code:["> 码道三境","  第一境：能跑就行","  第二境：不要动它   // 祖传代码，动一行，崩十里","  第三境：方敢言重构"],
+       options:[
+        {text:"谨记教诲，收下卷轴（获得【代码卷轴】）",effect:{flags:{q1024_taught:true},cult:64,items:{"代码卷轴":1},relation:{daima_zhenren:10}},next:"end"}
+       ]
+      },
+      "chant":{
+       text:"你深吸一口气，对着青山旷野，一字一句地诵出：`Hello——World`。风停了一瞬。青石上的黑板子忽然亮起一片绿光，映得他眼中如星河倒灌。「编译通过，」代码真人缓缓起身，郑重抱拳，「零报错，零警告。欢迎入道，道友。从今日起，你也是码修了。长生路远，愿你的代码永无 Bug。」",
+       options:[
+        {text:"回礼：愿前辈永不加班",effect:{flags:{hello_world_chanted:true},cult:256,relation:{daima_zhenren:20}},next:"end"}
+       ]
+      }
+     }
+    }
+   },
+   items:{
+    "代码卷轴":{type:"consumable",desc:"上古卷轴，展开只有一行真言：Hello, World。参悟后修为+1024",use:{cult:1024}}
+   },
+   monsters:{
+    "Bug心魔":{name:"Bug心魔",hp:144,atk:10,reward:{cult:256,stone:512,flags:{bug_1024_slain:true}},ai:"enrage",aiParam:{hpPct:0.35,atkMul:1.5},affixDrop:["噬魂","魔骨"]}
+   },
+   achs:{
+    "m_1024_meet":{name:"初遇代码真人",desc:"十月二十四，山道青石上遇见一位敲键盘的修士",got:false},
+    "m_1024_fly":{name:"Hello World 飞升",desc:"在修仙世界写下第一行代码，一次编译通过",got:false}
+   }
+  }
+ }
+};
+
+//===== js/dialogue.js =====
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+
+
+
+
+
+
+
+//==== dialogue.js：NPC 对话树引擎（P4 叙事引擎）====
+// gs.relations = {npcId: 好感值}；多轮树遍历，选项 checkCond 门控，effect 改关系/声望/flags
+
+//关系等级（由好感值派生）
+function relationLevel(npcId){
+ let v=gs.relations[npcId]||0;
+ if(v>=50)return "知己";
+ if(v>=20)return "友好";
+ if(v>0)return "相识";
+ if(v>-20)return "陌生";
+ return "交恶";
+}
+function addRelation(npcId,n){
+ gs.relations[npcId]=(gs.relations[npcId]||0)+n;
+}
+
+//开启对话（从 start 节点进入；NPC 已故则进入追忆）
+function startDialogue(npcId){
+ if(!NPCS[npcId]){log("此人不在眼前");return;}
+ npcExpireYear(npcId); // J34 后续：首次对话初始化寿命
+ showPortrait(npcId,NPCS[npcId].name);
+ if(isNpcDead(npcId)){memorialDialogue(npcId);return;}
+ dialogueNode(npcId,"start");
+}
+
+//NPC 已故追忆（按关系等级渲染；仇敌的恩怨随风散）
+function memorialDialogue(npcId){
+ let npc=NPCS[npcId];
+ let rel=relationLevel(npcId);
+ log(`\n🪦【${npc.name}】的墓前，荒草萋萋。`);
+ if(rel==="知己"){
+  log("你想起他生前最后的话，忽然觉得，长生也没那么长。");
+ }else if(rel==="友好"||rel==="相识"){
+  log("你与他交情不深，但此刻站在墓前，仍有些怅然。");
+ }else{
+  log("你与他不过萍水相逢。如今人已作古，恩怨也一并埋进了土里。");
+ }
+ if(hasEnemy(npcId)){
+  log("他曾是你的仇敌。如今仇怨随风散，你在他墓前站了一会儿。");
+  removeEnemy(npcId);
+ }
+ addBtn("默立片刻，转身离去",()=>{hidePortrait();mainStep0();});
+}
+
+//渲染对话节点：文本 + 条件门控的选项（M1.5：行内代码标记 `xx` + 节点级终端代码块 node.code）
+function dialogueNode(npcId,nodeId){
+ let npc=NPCS[npcId];
+ let node=npc.dialogue[nodeId];
+ if(!node){hidePortrait();log("对话结束。");mainStep0();return;}
+ logRich(`\n💬【${npc.name}】${node.text}`);
+ if(node.code)log("\n"+node.code.join("\n"),"termcode"); // P5+：终端风格代码块（码道三境）
+ let opts=node.options.filter(o=>!o.need||checkCond(o.need));
+ if(!opts.length){hidePortrait();log("（无话可说，对话结束）");mainStep0();return;}
+ for(let o of opts){
+  addBtn(o.text,()=>{
+   if(o.effect)applyDialogueEffect(npcId,o.effect);
+   if(o.fight){hidePortrait();startFight(monsterByName(o.fight));return;} // P5+：对话开战（与动态事件 choices.fight 同语义）
+   if(o.next&&o.next!=="end"){dialogueNode(npcId,o.next);}
+   else{hidePortrait();log(`你与【${npc.name}】结束了对话。`);mainStep0();}
+  });
+ }
+}
+
+//对话效果结算（关系/声望/flags/物品/属性/时间/收徒/结仇）
+function applyDialogueEffect(npcId,eff){
+ if(!eff)return;
+ let firstMet=eff.flags&&eff.flags.q1024_met&&!gs.flags.q1024_met;   // M1.5：初遇代码真人即时引导（须在 flags 应用前取值）
+ if(eff.relation)for(let k in eff.relation)addRelation(k,eff.relation[k]);
+ if(eff.rep)for(let k in eff.rep)addRep(k,eff.rep[k]);
+ if(eff.flags)for(let k in eff.flags)setFlag(k,eff.flags[k]);
+ if(eff.items)for(let k in eff.items)addItem(k,eff.items[k]);
+ if(eff.cult)gs.cult+=eff.cult;
+ if(eff.stone)gs.stone+=eff.stone;
+ if(eff.year)passYear(eff.year);
+ if(eff.hp)gs.hp=Math.min(gs.hpmax,gs.hp+eff.hp);
+ if(eff.equip){let eq=equipByName(eff.equip);if(eq)gainEquip(eq);}
+ if(eff.disciple)addDisciple(eff.disciple.name,eff.disciple.talent); // J34 后续：收徒
+ if(eff.enemy)addEnemy(eff.enemy.npcId,eff.enemy.reason);           // J34 后续：结仇
+ if(eff.achs)for(let a of eff.achs)addAch(a);                        // 对话解成就（模组成就链路）
+ if(firstMet)log("💡【已解锁任务：初窥码道】点右侧「📜任务面板」接取，跟随指引完成码道飞升。","blue");
+ refreshUi();
+}
+
+//==== 故人场景（拜访 NPC；need 门控：按路线/解锁条件显示；已故标注）====
+function sceneNpc(){
+ log("\n💬【故人】你回想一路走来结识之人。");
+ for(let id in NPCS){
+  let npc=NPCS[id];
+  if(npc.need&&!checkCond(npc.need))continue; // 未达条件不显示（如宗门/江湖/轮回镜解锁）
+  let dead=isNpcDead(id);
+  addBtn(`拜访【${npc.name}】${dead?"（已故）":""}（${npc.faction}，好感${relationLevel(id)}）`,()=>startDialogue(id));
+ }
+ addBtn("离开",()=>mainStep0());
+}
+
+//===== js/modloader.js =====
+//==== ESM 依赖导入（J 批次1：显式依赖图）====
+
+
+
+
+
+
+
+
+//==== modloader.js：模组系统（P5 模组规范/加载/冲突检测/编辑器 + P5+ 官方模组坊）====
+// 模组规范：{id, name, version, content:{quests:{}, npcs:{}, items:{}, monsters:{}, achs:{}}}
+// 命名空间隔离：builtin:/mod: 前缀；冲突检测：同 id 且内容不同则拒绝
+// 编辑器草稿（浏览器内可视化编辑，prompt 交互）
+// P5+ 新增：achs 注入目标（core.js allAch）；官方模组库（data/official_mods.js，与玩家模组同管线）；
+//           读档恢复钩子（window.__afterSaveApplied，core.js _applySaveData 尾调用——无循环依赖）
+
+let modDraft=null;
+
+//模组注入目标（与内置内容同对象，加载即生效）
+// achs（core.allAch）经 modSections() 调用时求值——core 在拼接产物中晚序（import 环所致），顶层引用会撞 TDZ
+const MOD_TARGETS={quests:QUESTS,npcs:NPCS,items:ITEMS,monsters:MONSTERS};
+//内置内容快照（冲突检测基准）
+const MOD_BUILTIN={};
+for(let k in MOD_TARGETS)MOD_BUILTIN[k]=Object.assign({},MOD_TARGETS[k]);
+let _achBuiltin=null;
+function achBuiltin(){if(!_achBuiltin)_achBuiltin=Object.assign({},allAch);return _achBuiltin;} // 首次调用于启动后=纯内置成就快照
+//统一段视图：[段名, 注入目标, 内置快照]（数据段+成就段共用迭代）
+function modSections(){
+ return [["quests",QUESTS,MOD_BUILTIN.quests],["npcs",NPCS,MOD_BUILTIN.npcs],
+         ["items",ITEMS,MOD_BUILTIN.items],["monsters",MONSTERS,MOD_BUILTIN.monsters],
+         ["achs",allAch,achBuiltin()]];
+}
+
+//校验模组 JSON 是否符合规范
+function modValidate(mod){
+ if(!mod||typeof mod!=="object")return {ok:false,err:"模组必须为对象"};
+ if(!mod.id||typeof mod.id!=="string")return {ok:false,err:"缺少 id"};
+ if(!mod.name)return {ok:false,err:"缺少 name"};
+ if(!mod.version)return {ok:false,err:"缺少 version"};
+ if(!mod.content||typeof mod.content!=="object")return {ok:false,err:"缺少 content"};
+ return {ok:true};
+}
+
+//冲突检测：与内置同 id 且内容不同 → 冲突
+function modConflictCheck(mod){
+ let conflicts=[];
+ for(let [section,target,builtin] of modSections()){
+  let mods=mod.content[section]||{};
+  for(let id in mods){
+   let b=builtin[id];
+   if(b!==undefined&&JSON.stringify(b)!==JSON.stringify(mods[id])){
+    conflicts.push({section:section,id:id,type:"builtin"});
+   }
+  }
+ }
+ return conflicts;
+}
+
+//段注入帮手：achs 段有运行时 got 状态——重注入/重复加载时保留已解锁态（否则读档恢复的成就被数据源 got:false 打回）
+function _injectSection(section,target,mods){
+ for(let k in mods){
+  let v=mods[k];
+  if(section==="achs"&&target[k]&&typeof target[k].got==="boolean")v=Object.assign({},v,{got:target[k].got});
+  target[k]=v;
+ }
+}
+
+//加载模组（校验 + 冲突检测 + 注入 + 登记 gs.mods）
+function modLoad(mod){
+ let v=modValidate(mod);
+ if(!v.ok){log("模组校验失败："+v.err,"red");return false;}
+ let conflicts=modConflictCheck(mod);
+ if(conflicts.length){
+  log(`模组【${mod.name}】存在 ${conflicts.length} 处冲突，拒绝加载：`,"red");
+  for(let c of conflicts)log(`  ${c.section}.${c.id}（与内置冲突）`,"red");
+  return false;
+ }
+ for(let [section,target] of modSections()){
+  _injectSection(section,target,mod.content[section]||{});
+ }
+ if(!gs.mods)gs.mods={};
+ gs.mods[mod.id]={name:mod.name,version:mod.version};
+ log(`✅模组【${mod.name}】v${mod.version} 加载成功。`,"green");
+ refreshUi();
+ return true;
+}
+
+//导出模组 JSON（编辑器产物）
+function modExport(id,name,version,content){
+ return JSON.stringify({id:id,name:name,version:version,content:content||{}},null,2);
+}
+
+//模组面板
+function sceneModPanel(){
+ hideModShop();
+ log("\n📦【模组】当前已加载："+(gs.mods&&Object.keys(gs.mods).length?Object.keys(gs.mods).join("、"):"无"));
+ addBtn("🎁官方模组坊",()=>sceneOfficialMods());
+ addBtn("📤导出模组模板",()=>{
+  log("模组 JSON 模板（复制到文件/控制台）：\n"+modExport("my_mod","我的模组","0.1",{quests:{},npcs:{},items:{},monsters:{},achs:{}}),"blue");
+  sceneModPanel();
+ });
+ addBtn("📥加载模组（粘贴 JSON）",()=>sceneModImport());
+ addBtn("🛠模组编辑器",()=>sceneModEditor());
+ addBtn("离开模组面板",()=>mainStep0());
+}
+
+//==== P5+ 官方模组坊：官方彩蛋模组一键安装（与玩家模组同管线，官方内容吃自家狗粮）====
+//模组是否已完整注入（任一 content 键缺失即视为未装——用于读档恢复判定）
+function modInstalled(mod){
+ for(let [section,target] of modSections()){
+  let mods=(mod.content&&mod.content[section])||{};
+  for(let id in mods)if(target[id]===undefined)return false;
+ }
+ return true;
+}
+
+//官方模组坊面板（M1.5 §2.2 卡片化：渲染进 #modshopbox 专用容器，不占日志环形缓冲）
+function sceneOfficialMods(){
+ log("\n🎁【官方模组坊】官方彩蛋模组，与玩家模组走同一加载管线。");
+ let box=document.getElementById("modshopbox");
+ if(box){
+  box.style.display="block";
+  box.innerHTML="";
+  for(let id in OFFICIAL_MODS){
+   let m=OFFICIAL_MODS[id];
+   let installed=modInstalled(m);
+   let card=document.createElement("div");card.className="modcard";
+   let top=document.createElement("div");top.className="modcard-top";
+   top.innerHTML="<span class='modcard-name'>"+_modEsc(m.name)+"</span><span class='modcard-ver'>v"+_modEsc(m.version)+"</span><span class='modcard-badge'>限定</span>";
+   let mid=document.createElement("div");mid.className="modcard-desc";mid.textContent=m.desc;
+   let bot=document.createElement("div");bot.className="modcard-bot";
+   let au=document.createElement("span");au.className="modcard-author";au.textContent=m.author;
+   let btn=document.createElement("button");btn.className="modcard-btn"+(installed?" installed":"");
+   btn.textContent=installed?"已安装 ✓":"安装";
+   btn.disabled=installed;
+   btn.onclick=()=>{if(modLoad(m))sceneOfficialMods();};
+   bot.appendChild(au);bot.appendChild(btn);
+   card.appendChild(top);card.appendChild(mid);card.appendChild(bot);
+   box.appendChild(card);
+  }
+ }
+ let m1024=OFFICIAL_MODS["mod_1024"];
+ if(m1024&&modInstalled(m1024))addBtn("→ 立即前往代码真人",()=>startCodeJourney());
+ addBtn("返回模组面板",()=>sceneModPanel());
+}
+//模组坊容器显隐（离开面板/回主线时收起）
+function hideModShop(){let box=document.getElementById("modshopbox");if(box)box.style.display="none";}
+function _modEsc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+//M1.5 §1.3 一键启程：未装则走官方管线安装（幂等）→ 直达代码真人对话
+function startCodeJourney(){
+ let m=OFFICIAL_MODS["mod_1024"];
+ if(!m){log("官方模组暂不可用","red");return;}
+ if(!gs.mods||!gs.mods[m.id])modLoad(m);
+ else if(!modInstalled(m))restoreOfficialMods();
+ startDialogue("daima_zhenren");
+}
+
+//读档恢复：存档登记过的官方模组自动重注入（gs.mods 随档保存；玩家粘贴模组仍需手动重载）
+function restoreOfficialMods(){
+ let restored=[];
+ for(let id in OFFICIAL_MODS){
+  if(gs.mods&&gs.mods[id]&&!modInstalled(OFFICIAL_MODS[id])){
+   for(let [section,target] of modSections()){
+    _injectSection(section,target,OFFICIAL_MODS[id].content[section]||{});
+   }
+   restored.push(OFFICIAL_MODS[id].name);
+  }
+ }
+ if(restored.length){
+  log(`♻官方模组已随存档恢复：${restored.join("、")}`,"green");
+  refreshUi();
+ }
+}
+//读档钩子登记（core.js _applySaveData 尾调 window.__afterSaveApplied——经 window 解耦避免 core→modloader 循环依赖）
+//追加式包装：拼接顺序不定（import 环），须与 main.js 的卡片刷新钩子共存而非互相覆盖
+if(typeof window!=="undefined"){
+ const _prevHook=window.__afterSaveApplied;
+ window.__afterSaveApplied=()=>{if(typeof _prevHook==="function")_prevHook();restoreOfficialMods();};
+}
+
+//模组导入（浏览器 prompt 输入 JSON）
+function sceneModImport(){
+ log("\n📥【加载模组】请在浏览器弹窗中粘贴模组 JSON。");
+ let json=prompt("粘贴模组 JSON：");
+ if(json){
+  try{
+   let mod=JSON.parse(json);
+   modLoad(mod);
+  }catch(e){log("JSON 解析失败："+e.message,"red");}
+ }
+ sceneModPanel();
+}
+
+//模组编辑器（可视化：新增任务 → 草稿 → 导出）
+function sceneModEditor(){
+ log("\n🛠【模组编辑器】可视化编辑模组内容。");
+ addBtn("新增任务（输入 id/名称）",()=>{
+  let id=prompt("任务 id（如 q_mod_test）：");
+  let name=prompt("任务名称：");
+  if(id&&name){
+   if(!modDraft)modDraft={};
+   if(!modDraft.quests)modDraft.quests={};
+   modDraft.quests[id]={name:name,kind:"side",need:null,steps:[{desc:"模组任务第一步",cond:null,reward:{stone:50}}],onDone:{}};
+   log(`已加入草稿：任务【${name}】`,"green");
+  }
+  sceneModEditor();
+ });
+ addBtn("导出模组 JSON",()=>{
+  log("模组 JSON：\n"+modExport("my_mod","我的模组","0.1",modDraft||{}),"blue");
+  sceneModEditor();
+ });
+ addBtn("返回模组面板",()=>sceneModPanel());
+}
+
 //===== js/story.js =====
 //==== ESM 依赖导入（J 批次1：显式依赖图）====
+
 
 
 
@@ -2260,6 +3103,8 @@ function questPanel(){
 function mainStep0(){
  gs.step=0;
  hidePortrait(); // 隐藏立绘/场景（回到主菜单）
+ if(typeof hideModShop==="function")hideModShop(); // M1.5：回主线收起模组坊容器
+ if(typeof window!=="undefined"&&typeof window.__refreshFestCard==="function")window.__refreshFestCard(); // M1.5 §2.1：彩蛋卡片显隐（main.js 注册）
  // J35 体验轮（用户 2026-08-23 定向）：奇遇随机出现于选择之间，不再作显式选项；flags.encCd 冷却防连发
  if(!gs.flags.encCd && typeof BALANCE!=="undefined" &&
     Math.random()<BALANCE.encounterBase*((typeof directorEventRate==="function")?directorEventRate():1)*0.6){
@@ -2991,19 +3836,33 @@ function renderFightUi(){
  document.getElementById("enemyHpText").innerText=gs.enemy.hp;
  let pct=Math.max(0,gs.enemy.hp)/gs.enemy.hpMax*100;
  document.getElementById("enemyHpBar").style.width=pct+"%";
+ // M1.5 §2.4：敌方终稿副行（Bug 系怪物专属梗）+ 你方血条（数字保留，实时刷新修读档外血线盲区）
+ let sub=document.getElementById("enemySub");
+ if(sub){let isBug=/Bug/.test(gs.enemy.name||"");sub.style.display=isBug?"block":"none";if(isBug)sub.textContent="FATAL: unhandled exception";}
+ let pb=document.getElementById("playerHpBar");
+ if(pb)pb.style.width=Math.max(0,gs.hp)/gs.hpmax*100+"%";
+ let pt=document.getElementById("playerHpText");
+ if(pt)pt.innerText=gs.hp;
+ let pm=document.getElementById("hpmax2");
+ if(pm)pm.innerText=gs.hpmax;
 }
+//M1.5 §2.4：Boss（Bug 系）战且背包有回血散 → 道具按钮加圆点提示类（纯 CSS 呈现，无新逻辑）
+function _pillHintClass(){
+ let boss=gs.enemy&&/Bug/.test(gs.enemy.name||"");
+ return boss&&gs.inventory&&gs.inventory["回血散"]>0?"has-pill":"";
+}
+
 function fightTurn(){
  if(!gs.inFight)return;
  clearOpt();
- addBtn("🗡挥剑攻击",()=>{playerAttack();});
- // P3b：主动技能（已习得的 active 功法）
+ addBtn("🗡挥剑攻击",()=>{playerAttack();}); // P3b：主动技能（已习得的 active 功法）
  let actives=Object.keys(gs.arts).filter(id=>ARTS[id]&&ARTS[id].type==="active");
  for(let id of actives){
   let a=ARTS[id];
   addBtn(`⚡施展【${id}】（耗${a.mpCost}灵力，伤${a.dmg}）`,()=>{castSkill(id);});
  }
  addBtn("🛡防御格挡",()=>{playerDefend();});
- addBtn("🎒使用道具",()=>{fightItem();}); // P4：战斗内用消耗品
+ addBtn("🎒使用道具",()=>{fightItem();},_pillHintClass()); // P4：战斗内用消耗品（M1.5 §2.4 Boss 战有血散时圆点提示）
  addBtn("🏃尝试逃跑（不一定成功）",()=>{tryEscape();});
 }
 //P4：战斗内道具子菜单（用消耗品后返回战斗）
@@ -3319,455 +4178,6 @@ const IMAGES = {
   "spiritual_spring": "data:image/jpeg;base64,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",
 };
 
-//===== js/data/npcs.js =====
-//==== data/npcs.js：NPC 配置表（内容层 SSOT，P4 对话树/关系网）====
-// 依据：docs/story-craft/characters.md（五维角色卡 + 灵魂领域 SSOT）
-// dialogue: {nodeId:{text, options:[{text, need(可空), effect(可空), next}]}}
-// effect: {rep:{势力:数}, relation:{npcId:数}, flags:{k:v}, items:{名:数}, cult, stone, year, hp, equip}
-// next: 下一节点 id；"end" 或缺失 = 结束对话返回主线
-// need（NPC 级）：sceneNpc 拜访列表的可见门控（checkCond 唯一门控）
-// 伏笔埋设：foreshadow_* 前缀 flags（见 docs/story-craft/foreshadows.md）
-const NPCS={
- //==== A 档：落魄老修士（灵魂领域：临终不索财/不夺后辈机缘/欠债必还/不对将死之人说谎）====
- "lao_xiu":{
-  name:"落魄老修士",faction:"散修盟",desc:"寿元将尽，看出你长生特质",need:null,lifespan:30,
-  dialogue:{
-   "start":{
-    text:"路边一位寿元将尽的老修士拦住你。他咳嗽了两声，像破风箱漏气：「咳……小友，你身上……有长生的气息。」",
-    options:[
-     {text:"问他：何出此言？",effect:{flags:{foreshadow_changsheng:true}},next:"ask"},
-     {text:"老友叙旧（好感≥20）",need:{type:"relation",key:"lao_xiu",op:">=",val:20},next:"confide"},
-     {text:"与他谈起你这些年走过的路（阅历≥3）",need:{type:"memory",op:">=",val:3},next:"memtalk"},
-     {text:"婉言拒绝，径直离开",next:"end"}
-    ]
-   },
-   "memtalk":{
-    text:"老修士听你说完，又咳了一声：「老朽活了两百年，见过的路，比你走过的还多。可你走的这条……不一样。」他顿了顿，「你记住，长生不是熬出来的，是活明白的。你这一路，没白走。」",
-    options:[{text:"拜谢老修士",effect:{cult:150,relation:{lao_xiu:20}},next:"end"}]
-   },
-   "ask":{
-    text:"老修士眯起眼，又咳了一声：「老朽活了快两百年，见过的人多了。你这种……是熬出来的命。」他顿了顿，「老朽这把年纪，活到头了，就想找个人，把话说完。」",
-    options:[
-     {text:"倾听教诲，赠灵石50换取感悟",need:{type:"attr",key:"stone",op:">=",val:50},effect:{stone:-50,cult:80,relation:{lao_xiu:10}},next:"teach"},
-     {text:"注意到他腰间的褪色玉牌，问起来历",effect:{flags:{foreshadow_yupai:true}},next:"yupai"},
-     {text:"婉言拒绝，径直离开",next:"end"}
-    ]
-   },
-   "yupai":{
-    text:"老修士低头看了一眼腰间的玉牌，沉默了很久：「旧物，不提也罢。」他咳嗽得更厉害了，「……你要是真想知道，等哪天，你活够了再说。」",
-    options:[
-     {text:"不再追问，倾听教诲",need:{type:"attr",key:"stone",op:">=",val:50},effect:{stone:-50,cult:80,relation:{lao_xiu:10}},next:"teach"},
-     {text:"拜别老修士",next:"end"}
-    ]
-   },
-   "confide":{
-    text:"老修士这次没有咳嗽。他看了你很久，忽然开口：「老朽年轻时，见过一个和你一样的人。那人也熬过了很多年，最后……把一样东西，托付给了老朽。」他低头看腰间的玉牌，「就是它。」",
-    options:[
-     {text:"问他：那人是长生者吗（好感≥50）",need:{type:"relation",key:"lao_xiu",op:">=",val:50},effect:{flags:{foreshadow_yupai:true}},next:"bequeath"},
-     {text:"不再追问，倾听教诲",need:{type:"attr",key:"stone",op:">=",val:50},effect:{stone:-50,cult:80,relation:{lao_xiu:10}},next:"teach"},
-     {text:"拜别老修士",next:"end"}
-    ]
-   },
-   "bequeath":{
-    text:"老修士沉默了很久，把腰间的玉牌解下来，递到你面前：「老朽守了一辈子，没等到能认出它的人。你……或许可以。」他咳了一声，「别学老朽，守着一样东西过一辈子。该放手时，就放手。」",
-    options:[
-     {text:"郑重接过玉牌",effect:{flags:{foreshadow_yupai:true,foreshadow_yupai_got:true},relation:{lao_xiu:20}},next:"end"}
-    ]
-   },
-   "teach":{
-    text:"老修士将毕生感悟倾囊相授。他说得很慢，一句是一句：「长生不是熬出来的，是……活明白的。别学老朽，活了一辈子，最后才发现，最该珍惜的，早就没了。」",
-    options:[{text:"拜别老修士",effect:{relation:{lao_xiu:10}},next:"end"}]
-   },
-   "end":{text:"你与老修士作别。他站在路边，望着你的背影，又咳了一声。",options:[]}
-  }
- },
- //==== B 档：凡间女子·阿蛮（灵魂领域：知恩必报/认定的事拉不回/不拖累恩人）====
- "fan_nv":{
-  name:"凡间女子·阿蛮",faction:"散修盟",desc:"你曾救下的凡间女子",need:null,lifespan:60,
-  dialogue:{
-   "start":{
-    text:"阿蛮站在村口，攥着腕上的红绳，看见你时眼睛亮了一下，又低下头：「恩公……」",
-    options:[
-     {text:"问她近来可好",next:"ask"},
-     {text:"与阿蛮叙旧（好感≥20）",need:{type:"relation",key:"fan_nv",op:">=",val:20},next:"confide"},
-     {text:"问她：可愿随我修行（好感≥50）",need:{type:"relation",key:"fan_nv",op:">=",val:50},next:"disciple"},
-     {text:"与阿蛮说起你初战妖兽的经历（需记忆：初战）",need:{type:"memory",key:"mem_first_fight",val:true},next:"memtalk"},
-     {text:"长生无情，婉拒情缘",effect:{relation:{fan_nv:-10}},next:"end"}
-    ]
-   },
-   "memtalk":{
-    text:"阿蛮睁大眼睛听完，攥着腕上的红绳：「恩公……原来恩公是这样的人。妾身只知道恩公救过妾身，却不知恩公也曾在刀尖上走过。」她低下头，「妾身……更敬重恩公了。」",
-    options:[{text:"摸摸她的头",effect:{relation:{fan_nv:10}},next:"end"}]
-   },
-   "ask":{
-    text:"阿蛮抬起头，努力笑了笑：「妾身……挺好的。就是，总想着恩公的恩情，还没还清。」她顿了顿，「妾身这条命，是恩公给的。」",
-    options:[
-     {text:"相伴共度一段岁月（凡人寿命短暂）",effect:{relation:{fan_nv:20},year:60},next:"accompany"},
-     {text:"告诉她：不必挂怀，好好活着",effect:{relation:{fan_nv:10}},next:"end"}
-    ]
-   },
-   "confide":{
-    text:"阿蛮坐在村口的石头上，看着远处的山：「妾身最近总在想，恩公这样的人，是不是活得很累。」她低头摆弄腕上的红绳，「妾身这辈子，能遇见恩公，值了。可妾身……怕恩公有一天，连妾身叫什么，都忘了。」",
-    options:[
-     {text:"告诉她：不会忘",effect:{relation:{fan_nv:20}},next:"end"},
-     {text:"告诉她：长生无情，忘与不忘都一样",effect:{relation:{fan_nv:-10}},next:"end"}
-    ]
-   },
-   "accompany":{
-    text:"你们相伴数十载。阿蛮老了，头发白了，笑起来眼睛还是弯成月牙。她走的那天，攥着你的手：「恩公……妾身这辈子，值了。」你把她葬在山坡上，种了一棵桃树。",
-    options:[{text:"目送故人逝去，继续踏上长生旅途",effect:{relation:{fan_nv:30}},next:"end"}]
-   },
-   "disciple":{
-    text:"阿蛮怔了很久，忽然跪下：「恩公若不嫌弃，妾身愿拜在恩公门下，学那长生之法。妾身这条命是恩公给的，往后，也想替恩公做点什么。」她攥着腕上的红绳，「妾身不怕苦。」",
-    options:[
-     {text:"收她为徒，传她吐纳之法",effect:{relation:{fan_nv:30},disciple:{name:"阿蛮",talent:"中上"}},next:"accept"},
-     {text:"婉拒：长生路上太寂寞，不必再添一人",effect:{relation:{fan_nv:-5}},next:"end"}
-    ]
-   },
-   "accept":{
-    text:"你扶起阿蛮，传她吐纳之法。她学得很慢，但很认真，夜里还在村口对着月亮比划。你忽然觉得，这漫长的岁月，好像有了一点盼头。",
-    options:[{text:"师徒相称，共度岁月",effect:{flags:{disciple_fan_nv_done:true}},next:"end"}]
-   },
-   "end":{text:"阿蛮望着你离去的背影，把红绳又系紧了一些。",options:[]}
-  }
- },
- //==== A 档：游走灵商（灵魂领域：童叟无欺/不赊账/不出卖主顾/生意交情两不相混）====
- "ling_shang":{
-  name:"游走灵商",faction:"万宝楼",desc:"神秘商人，兜售珍稀法器",need:null,lifespan:300,
-  dialogue:{
-   "start":{
-    text:"神秘商人现身，腰间算盘拨得脆响：「道友，可要看看我的宝贝？」他笑眯眯的，笑意却不达眼底。",
-    options:[
-     {text:"花200灵石购买【流云道袍】",need:{type:"attr",key:"stone",op:">=",val:200},effect:{stone:-200,equip:"流云道袍",relation:{ling_shang:10}},next:"buy"},
-     {text:"问他：年轻时错过的那件宝物是什么",effect:{flags:{foreshadow_baowu:true}},next:"baowu"},
-     {text:"老主顾叙旧（好感≥20）",need:{type:"relation",key:"ling_shang",op:">=",val:20},next:"confide"},
-     {text:"威胁他：不交出宝物，就砸了他的摊子",effect:{enemy:{npcId:"ling_shang",reason:"强买强卖"},rep:{万宝楼:-20}},next:"end"},
-     {text:"不交易，就此告别",next:"end"}
-    ]
-   },
-   "baowu":{
-    text:"灵商拨算盘的手顿了一下：「道友耳朵尖。」他笑了笑，「年轻时有一件宝贝摆在面前，没舍得下手，如今再没见过。……不提了，好说好说，看货。」",
-    options:[
-     {text:"花200灵石购买【流云道袍】",need:{type:"attr",key:"stone",op:">=",val:200},effect:{stone:-200,equip:"流云道袍",relation:{ling_shang:10}},next:"buy"},
-     {text:"不交易，就此告别",next:"end"}
-    ]
-   },
-   "confide":{
-    text:"灵商拨算盘的手慢了下来：「道友是懂行的。那件宝贝……是一枚古玉，能养魂。当年摆在我面前，只要三百灵石。」他笑了笑，「我没舍得。后来再没见过。」他顿了顿，「好说好说，不提了。」",
-    options:[
-     {text:"问他：古玉现在在何处（好感≥50）",need:{type:"relation",key:"ling_shang",op:">=",val:50},effect:{flags:{foreshadow_baowu:true}},next:"secret"},
-     {text:"花200灵石购买【流云道袍】",need:{type:"attr",key:"stone",op:">=",val:200},effect:{stone:-200,equip:"流云道袍",relation:{ling_shang:10}},next:"buy"},
-     {text:"不交易，就此告别",next:"end"}
-    ]
-   },
-   "secret":{
-    text:"灵商压低声音，算盘都不拨了：「听说……在妖山古林深处，一座塌了半边的洞府里。我这把年纪，走不动了。」他直起身，又拨了两下算盘，「道友若寻到，记得回来告诉我一声。我就想……看它一眼。」",
-    options:[
-     {text:"应下此事",effect:{flags:{foreshadow_baowu:true},relation:{ling_shang:20}},next:"end"}
-    ]
-   },
-   "buy":{
-    text:"你购得流云道袍。灵商满意地点头，算盘又拨了两下：「道友爽快，下回有货，第一个想着你。」",
-    options:[{text:"告别灵商",next:"end"}]
-   },
-   "end":{text:"你与商人作别。他望着你的背影，眯着眼，不知道在想什么。",options:[]}
-  }
- },
- //==== A 档：魔渊引路人（灵魂领域：引人不入魔/魔道亦有道/不说谎但可不答/欠魔渊的债用命还）====
- "mo_yin":{
-  name:"魔渊引路人",faction:"魔渊",desc:"魔渊使者，引你入道",need:null,lifespan:500,
-  dialogue:{
-   "start":{
-    text:"魔渊入口，引路人兜帽下露出一双眼睛，呵出的白气在阴风里凝而不散：「想好了吗？」",
-    options:[
-     {text:"应允，共襄魔道大业",need:{type:"flag",key:"modao",val:true},effect:{rep:{魔渊:50},relation:{mo_yin:20}},next:"join"},
-     {text:"问他：你在这里守了多久",next:"ask"},
-     {text:"故人叙旧（好感≥20）",need:{type:"relation",key:"mo_yin",op:">=",val:20},effect:{flags:{foreshadow_yinlu:true}},next:"confide"},
-     {text:"与引路人说起你见过的魔渊（需记忆：坠入魔道）",need:{type:"memory",key:"mem_fall_demon",val:true},next:"memtalk"},
-     {text:"不为所动，拒绝",next:"end"}
-    ]
-   },
-   "memtalk":{
-    text:"引路人呵出一口白气，望着你：「你进去过，又出来了。」他顿了顿，「魔渊不是魔。魔渊是那些想不开的人，自己走进去的。你能出来，说明你……想开了。」他点点头，「呵呵，路是你自己选的。你选得不错。」",
-    options:[{text:"拜别引路人",effect:{relation:{mo_yin:20}},next:"end"}]
-   },
-   "ask":{
-    text:"引路人沉默了一会儿：「记不清了。只记得，有一个人，我没拦住。他走进去，再也没出来。」他望着魔渊深处，「呵呵……路是自己选的。」",
-    options:[
-     {text:"追问：那个人是谁",effect:{flags:{foreshadow_yinlu:true}},next:"who"},
-     {text:"应允，共襄魔道大业",need:{type:"flag",key:"modao",val:true},effect:{rep:{魔渊:50},relation:{mo_yin:20}},next:"join"},
-     {text:"不为所动，拒绝",next:"end"}
-    ]
-   },
-   "who":{
-    text:"引路人没有回答。他望着魔渊深处，很久才说：「一个想找答案的人。……你要是也去找，记住，路是你自己选的。」",
-    options:[
-     {text:"应允，共襄魔道大业",need:{type:"flag",key:"modao",val:true},effect:{rep:{魔渊:50},relation:{mo_yin:20}},next:"join"},
-     {text:"不为所动，拒绝",next:"end"}
-    ]
-   },
-   "confide":{
-    text:"引路人沉默了很久，白气在阴风里凝而不散：「那个人……是来问路的。他问我，魔渊里有没有答案。」他顿了顿，「我说，路是自己选的。他点点头，就走了进去。」他呵出一口白气，「呵呵……我没拦他。」",
-    options:[
-     {text:"问他：魔渊里到底有什么（好感≥50）",need:{type:"relation",key:"mo_yin",op:">=",val:50},effect:{flags:{foreshadow_moyuan_truth:true}},next:"secret"},
-     {text:"应允，共襄魔道大业",need:{type:"flag",key:"modao",val:true},effect:{rep:{魔渊:50},relation:{mo_yin:20}},next:"join"},
-     {text:"不为所动，拒绝",next:"end"}
-    ]
-   },
-   "secret":{
-    text:"引路人抬眼，兜帽下那双眼睛亮了一下：「魔渊不是魔。魔渊是那些想不开的人，自己走进去的。」他顿了顿，「我守在这里，不是替魔渊挑人。是替他们……挑一条能回头的路。」他望着你，「你不一样。你是自己选的路。」",
-    options:[
-     {text:"问他：那我该走哪条路",effect:{relation:{mo_yin:20}},next:"path"},
-     {text:"应允，共襄魔道大业",need:{type:"flag",key:"modao",val:true},effect:{rep:{魔渊:50},relation:{mo_yin:20}},next:"join"},
-     {text:"不为所动，拒绝",next:"end"}
-    ]
-   },
-   "path":{
-    text:"引路人看着你，很久。最后他呵出一口白气：「路是你自己选的。魔道也好，正道也好，只要是自己选的，就不悔。」他顿了顿，「这是那个人走之前，我最后想跟他说的话。可惜，他没听见。」",
-    options:[
-     {text:"拜别引路人",effect:{relation:{mo_yin:20}},next:"end"}
-    ]
-   },
-   "join":{
-    text:"引路人侧身让开。他身后的阴风停了，露出一条窄路：「……记住，魔道亦有道。」",
-    options:[{text:"随使者离去",next:"end"}]
-   },
-   "end":{text:"引路人望着你的背影，呵出一口白气，又隐入阴影里。",options:[]}
-  }
- },
- //==== A 档：玄真道长（新增，宗门线；灵魂领域：收徒察心性/不杀降者/宗门为先/不对弟子说谎）====
- "xuan_zhen":{
-  name:"玄真道长",faction:"青云宗",desc:"青云宗掌门，端方持重",need:{type:"flag",key:"zongmen",val:true},lifespan:400,
-  dialogue:{
-   "start":{
-    text:"青云宗大殿，玄真道长闭着眼，拂尘搭在臂弯。听见脚步声，他睁开眼：「善。道友好。」",
-    options:[
-     {text:"求教：宗门藏经阁的轮回镜传说",effect:{flags:{foreshadow_lunhui:true}},next:"lunhui"},
-     {text:"聆听教诲，感悟道法",need:{type:"rep",key:"青云宗",op:">=",val:30},effect:{cult:100,relation:{xuan_zhen:10}},next:"teach"},
-     {text:"与道长论道（好感≥20）",need:{type:"relation",key:"xuan_zhen",op:">=",val:20},next:"confide"},
-     {text:"告辞离开",next:"end"}
-    ]
-   },
-   "lunhui":{
-    text:"玄真道长闭了闭眼：「藏经阁那卷残页？上古有镜，可照轮回。……老道修行三百年，只当它是传说。」他顿了顿，「不过，藏经阁那卷残页，是祖师爷亲手抄的。祖师爷，不写没影的事。」",
-    options:[
-     {text:"聆听教诲，感悟道法",need:{type:"rep",key:"青云宗",op:">=",val:30},effect:{cult:100,relation:{xuan_zhen:10}},next:"teach"},
-     {text:"告辞离开",next:"end"}
-    ]
-   },
-   "teach":{
-    text:"玄真道长睁开眼，看着你：「宗门为重。但道，是自己的。」他顿了顿，「你若有心，便去寻。寻到了，回来说给我听听。」他拂尘一甩，「善。」",
-    options:[{text:"拜谢道长",next:"end"}]
-   },
-   "confide":{
-    text:"玄真道长睁开眼，拂尘搭在臂弯：「善。你来得正好。老道近日参悟一卷残经，有一处不解。」他顿了顿，「你且说说——宗门为重，还是道为重？」",
-    options:[
-     {text:"答：道为重，宗门是道的落脚处",effect:{relation:{xuan_zhen:20}},next:"daolun"},
-     {text:"答：宗门为重，道在宗门里",effect:{relation:{xuan_zhen:10}},next:"daolun"}
-    ]
-   },
-   "daolun":{
-    text:"玄真道长闭着眼听完，半晌睁开：「善。老道年轻时，也答过这道题。那时答的是宗门为重。」他顿了顿，「如今……老道觉得，道为重。宗门，是道在人间的落脚处。可落脚处，不是道本身。」",
-    options:[
-     {text:"问他：那叛出宗门的弟子，也是寻道吗（好感≥50）",need:{type:"relation",key:"xuan_zhen",op:">=",val:50},next:"secret"},
-     {text:"拜谢道长",next:"end"}
-    ]
-   },
-   "secret":{
-    text:"玄真道长沉默了很久。拂尘在臂弯里微微发颤：「那个弟子……也是这么问老道的。老道答不上来，他就走了。」他闭上眼，「老道守了宗门三百年，如今才明白，有些道，在宗门之外。」他睁开眼，看着你，「你若有朝一日走到那一步，不必回头。道是自己的。」",
-    options:[
-     {text:"拜谢道长",effect:{relation:{xuan_zhen:20}},next:"end"}
-    ]
-   },
-   "end":{text:"玄真道长又闭上眼，大殿归于寂静。",options:[]}
-  }
- },
- //==== B 档：沈孤鸿（新增，江湖线；灵魂领域：剑出必见血/不欺老弱/恩怨分明）====
- "shen_guhong":{
-  name:"沈孤鸿",faction:"散修盟",desc:"江湖剑客，独行侠",need:{type:"flag",key:"jianghu_met",val:true},lifespan:80,
-  dialogue:{
-   "start":{
-    text:"客栈角落，一个独行剑客按着剑柄，左眉一道旧疤。他抬眼看了你一下：「嗯。」",
-    options:[
-     {text:"问他：剑鞘上三道刻痕的来历",effect:{flags:{foreshadow_kehen:true}},next:"kehen"},
-     {text:"邀他切磋剑法",need:{type:"attr",key:"cult",op:">=",val:100},effect:{relation:{shen_guhong:10},cult:50},next:"duel"},
-     {text:"问他：那三条命，到底是怎么回事",need:{type:"relation",key:"shen_guhong",op:">=",val:30},next:"story"},
-     {text:"出言羞辱他的剑道，激他拔剑",effect:{enemy:{npcId:"shen_guhong",reason:"羞辱其剑道"}},next:"provoke"},
-     {text:"告辞离开",next:"end"}
-    ]
-   },
-   "kehen":{
-    text:"沈孤鸿摩挲着剑鞘上的刻痕，沉默了很久：「三条命。」他不再说话，把酒碗里的酒一饮而尽。",
-    options:[
-     {text:"不再追问，邀他切磋剑法",need:{type:"attr",key:"cult",op:">=",val:100},effect:{relation:{shen_guhong:10},cult:50},next:"duel"},
-     {text:"告辞离开",next:"end"}
-    ]
-   },
-   "story":{
-    text:"沈孤鸿沉默了很久，把酒碗放下：「三个结义兄弟。死在同一个人手里。」他摩挲着剑鞘上的刻痕，「我替他们讨完了公道。……现在，债清了。」",
-    options:[{text:"敬他一碗酒",effect:{relation:{shen_guhong:20}},next:"end"}]
-   },
-   "provoke":{
-    text:"沈孤鸿按剑的手一顿。他抬眼，左眉的旧疤跳了跳：「你再说一遍。」",
-    options:[
-     {text:"（冷笑，转身就走）",effect:{relation:{shen_guhong:-20}},next:"end"}
-    ]
-   },
-   "duel":{
-    text:"沈孤鸿拔剑。剑光一闪，又归鞘。他点点头：「嗯，还行。」",
-    options:[{text:"抱拳告辞",next:"end"}]
-   },
-   "end":{text:"沈孤鸿又低下头，继续喝他的酒。",options:[]}
-  }
- },
- //==== S 档：镜娘（新增，轮回镜隐藏线；灵魂领域：镜中不言假/不渡无心人/轮回不可逆/欠轮回的因果必偿/镜娘不杀人）====
- "jing_niang":{
-  name:"镜娘",faction:"散修盟",desc:"轮回镜灵，守镜千年",need:{type:"flag",key:"lunhui_unlocked",val:true},lifespan:9999,
-  dialogue:{
-   "start":{
-    text:"轮回镜界，一面古镜悬在半空。镜面泛起涟漪，一个声音从很远的地方传来：「你看见的，都是真的。」",
-    options:[
-     {text:"问她：轮回镜是什么",next:"what"},
-     {text:"问她：镜里映出的是什么",need:{type:"flag",key:"lunhui_unlocked",val:true},effect:{flags:{foreshadow_lunhui_done:true}},next:"mirror"},
-     {text:"与镜娘论镜（好感≥20）",need:{type:"relation",key:"jing_niang",op:">=",val:20},next:"confide"},
-     {text:"与镜娘说起你轮回镜外的见闻（阅历≥5）",need:{type:"memory",op:">=",val:5},next:"memtalk"},
-     {text:"退出镜界",next:"end"}
-    ]
-   },
-   "memtalk":{
-    text:"镜娘的声音带着回音：「你见过很多了。镜里照过的人，大多照一次就不敢再来。你走了这么远，还敢回来照自己。」她顿了顿，「你看见的，都是真的。你走过的，也都是真的。」",
-    options:[{text:"照见自己的心",effect:{relation:{jing_niang:20},flags:{foreshadow_lunhui_done:true}},next:"end"}]
-   },
-   "what":{
-    text:"镜娘的声音带着回音：「轮回镜，照前世今生。心不诚者，照不出。」她顿了顿，「你，想照吗？」",
-    options:[
-     {text:"问她：镜里映出的是什么",need:{type:"flag",key:"lunhui_unlocked",val:true},effect:{flags:{foreshadow_lunhui_done:true}},next:"mirror"},
-     {text:"退出镜界",next:"end"}
-    ]
-   },
-   "mirror":{
-    text:"镜面映出你的倒影，倒影却在笑——那不是你。镜娘的声音很轻：「前世……你欠的，今生要还。轮回不可逆。」",
-    options:[{text:"退出镜界",next:"end"}]
-   },
-   "confide":{
-    text:"镜面泛起涟漪，镜娘的声音从很远的地方传来：「你来了。镜里……照过很多人。有人照见前世，转身就走；有人照见自己，再不敢来。」她顿了顿，「你，是第三种。」",
-    options:[
-     {text:"问她：第三种是什么（好感≥50）",need:{type:"relation",key:"jing_niang",op:">=",val:50},effect:{relation:{jing_niang:20}},next:"secret"},
-     {text:"退出镜界",next:"end"}
-    ]
-   },
-   "secret":{
-    text:"镜娘沉默了很久。镜面缓缓亮起，映出你，也映出镜中的她：「第三种，是照见了自己，还敢留下的人。」她的声音带着回音，「镜守了千年，等的就是这样的眼睛。……你看见的，都是真的。你，也是真的。」",
-    options:[
-     {text:"照见真正的自己",effect:{flags:{foreshadow_lunhui_done:true},relation:{jing_niang:30}},next:"end"}
-    ]
-   },
-   "end":{text:"镜面归于平静，镜娘的声音渐渐远去。",options:[]}
-  }
- }
-};
-
-//===== js/dialogue.js =====
-//==== ESM 依赖导入（J 批次1：显式依赖图）====
-
-
-
-
-
-
-
-//==== dialogue.js：NPC 对话树引擎（P4 叙事引擎）====
-// gs.relations = {npcId: 好感值}；多轮树遍历，选项 checkCond 门控，effect 改关系/声望/flags
-
-//关系等级（由好感值派生）
-function relationLevel(npcId){
- let v=gs.relations[npcId]||0;
- if(v>=50)return "知己";
- if(v>=20)return "友好";
- if(v>0)return "相识";
- if(v>-20)return "陌生";
- return "交恶";
-}
-function addRelation(npcId,n){
- gs.relations[npcId]=(gs.relations[npcId]||0)+n;
-}
-
-//开启对话（从 start 节点进入；NPC 已故则进入追忆）
-function startDialogue(npcId){
- if(!NPCS[npcId]){log("此人不在眼前");return;}
- npcExpireYear(npcId); // J34 后续：首次对话初始化寿命
- showPortrait(npcId,NPCS[npcId].name);
- if(isNpcDead(npcId)){memorialDialogue(npcId);return;}
- dialogueNode(npcId,"start");
-}
-
-//NPC 已故追忆（按关系等级渲染；仇敌的恩怨随风散）
-function memorialDialogue(npcId){
- let npc=NPCS[npcId];
- let rel=relationLevel(npcId);
- log(`\n🪦【${npc.name}】的墓前，荒草萋萋。`);
- if(rel==="知己"){
-  log("你想起他生前最后的话，忽然觉得，长生也没那么长。");
- }else if(rel==="友好"||rel==="相识"){
-  log("你与他交情不深，但此刻站在墓前，仍有些怅然。");
- }else{
-  log("你与他不过萍水相逢。如今人已作古，恩怨也一并埋进了土里。");
- }
- if(hasEnemy(npcId)){
-  log("他曾是你的仇敌。如今仇怨随风散，你在他墓前站了一会儿。");
-  removeEnemy(npcId);
- }
- addBtn("默立片刻，转身离去",()=>{hidePortrait();mainStep0();});
-}
-
-//渲染对话节点：文本 + 条件门控的选项
-function dialogueNode(npcId,nodeId){
- let npc=NPCS[npcId];
- let node=npc.dialogue[nodeId];
- if(!node){hidePortrait();log("对话结束。");mainStep0();return;}
- log(`\n💬【${npc.name}】${node.text}`);
- let opts=node.options.filter(o=>!o.need||checkCond(o.need));
- if(!opts.length){hidePortrait();log("（无话可说，对话结束）");mainStep0();return;}
- for(let o of opts){
-  addBtn(o.text,()=>{
-   if(o.effect)applyDialogueEffect(npcId,o.effect);
-   if(o.fight){hidePortrait();startFight(monsterByName(o.fight));return;} // P5+：对话开战（与动态事件 choices.fight 同语义）
-   if(o.next&&o.next!=="end"){dialogueNode(npcId,o.next);}
-   else{hidePortrait();log(`你与【${npc.name}】结束了对话。`);mainStep0();}
-  });
- }
-}
-
-//对话效果结算（关系/声望/flags/物品/属性/时间/收徒/结仇）
-function applyDialogueEffect(npcId,eff){
- if(!eff)return;
- if(eff.relation)for(let k in eff.relation)addRelation(k,eff.relation[k]);
- if(eff.rep)for(let k in eff.rep)addRep(k,eff.rep[k]);
- if(eff.flags)for(let k in eff.flags)setFlag(k,eff.flags[k]);
- if(eff.items)for(let k in eff.items)addItem(k,eff.items[k]);
- if(eff.cult)gs.cult+=eff.cult;
- if(eff.stone)gs.stone+=eff.stone;
- if(eff.year)passYear(eff.year);
- if(eff.hp)gs.hp=Math.min(gs.hpmax,gs.hp+eff.hp);
- if(eff.equip){let eq=equipByName(eff.equip);if(eq)gainEquip(eq);}
- if(eff.disciple)addDisciple(eff.disciple.name,eff.disciple.talent); // J34 后续：收徒
- if(eff.enemy)addEnemy(eff.enemy.npcId,eff.enemy.reason);           // J34 后续：结仇
- if(eff.achs)for(let a of eff.achs)addAch(a);                        // 对话解成就（模组成就链路）
- refreshUi();
-}
-
-//==== 故人场景（拜访 NPC；need 门控：按路线/解锁条件显示；已故标注）====
-function sceneNpc(){
- log("\n💬【故人】你回想一路走来结识之人。");
- for(let id in NPCS){
-  let npc=NPCS[id];
-  if(npc.need&&!checkCond(npc.need))continue; // 未达条件不显示（如宗门/江湖/轮回镜解锁）
-  let dead=isNpcDead(id);
-  addBtn(`拜访【${npc.name}】${dead?"（已故）":""}（${npc.faction}，好感${relationLevel(id)}）`,()=>startDialogue(id));
- }
- addBtn("离开",()=>mainStep0());
-}
-
 //===== js/core.js =====
 //==== ESM 依赖导入（J 批次1：显式依赖图）====
 
@@ -4081,7 +4491,33 @@ function addAch(key){
  gs.achs.push(allAch[key].name);
  log(`\n🏆【解锁成就：${allAch[key].name}】${allAch[key].desc}`,"ach");
  renderAch();
+ if(key==="m_1024_fly")showFlyCard();   // M1.5 §2.5：飞升专属「编译通过」卡片（关闭后再弹通用 toast）
+ else toastAch(key);
+ if(typeof window!=="undefined"&&typeof window.__afterAch==="function")window.__afterAch(key); // M1.5：成就后钩子（festcard 显隐，main.js 注册）
 }
+//M1.5 §2.5 通用成就 toast：顶部滑出 2.8s 自动消失，点击可提前关（纯 CSS 过渡）
+function toastAch(key){
+ let a=allAch[key];if(!a)return;
+ let d=document.createElement("div");d.className="ach-toast";
+ d.innerHTML="<span class='ach-toast-icon'>🏆</span><span class='ach-toast-body'><b>成就解锁 · "+_achEsc(a.name)+"</b><br>"+_achEsc(a.desc)+"</span>";
+ d.onclick=()=>{if(d.remove)try{d.remove();}catch(_){}};
+ document.body.appendChild(d);
+ setTimeout(()=>{if(d.remove)try{d.remove();}catch(_){}},2800);
+}
+//M1.5 §2.5 飞升专属：半透明遮罩 + 终端风居中卡片，[ 继续长生路 ] 关闭（表现层，不动状态不推进年份）
+function showFlyCard(){
+ let a=allAch["m_1024_fly"];if(!a)return;
+ let ov=document.createElement("div");ov.className="fly-overlay";
+ let card=document.createElement("div");card.className="fly-card";
+ card.innerHTML="&gt; Hello, World<br>编译通过：0 errors, 0 warnings<br><br>🏆 "+_achEsc(a.name)+"<br>"+_achEsc(a.desc)+"<br>";
+ let btn=document.createElement("button");btn.className="fly-btn";btn.textContent="[ 继续长生路 ]";
+ let close=()=>{if(ov.remove)try{ov.remove();}catch(_){}toastAch("m_1024_fly");};
+ btn.onclick=close;
+ ov.onclick=(e)=>{if(e.target===ov)close();};
+ card.appendChild(btn);ov.appendChild(card);
+ document.body.appendChild(ov);
+}
+function _achEsc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function renderAch(){
  document.getElementById("achtext").innerText=gs.achs.length>0?gs.achs.join(" | "):"暂无";
 }
@@ -4119,10 +4555,31 @@ function log(txt,cls=""){
 }
 //最近日志文本快照（虚拟化后环形缓冲对外只读出口；真实 DOM 的 logbox.innerText 恒由 log 填充，桩环境可作检索兜底）
 function recentLogs(){return _logLines.slice();}
+//M1.5 富文本日志：先 HTML 转义再把 `xx` 标记转行内代码（模组数据可含任意文本，转义前置防注入）
+function logRich(txt,cls=""){
+ const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+ const html=esc(txt).split("`").map((seg,i)=>i%2?`<code class="inline-code">${seg}</code>`:seg).join("");
+ const lb=document.getElementById("logbox");
+ let sp=document.createElement("span");
+ if(cls)sp.className=cls;
+ sp.innerHTML=html+"\n";
+ lb.appendChild(sp);
+ _logLines.push(txt);
+ _logSpans.push(sp);
+ if(_logSpans.length>LOG_MAX){
+  let extra=_logSpans.length-LOG_MAX;
+  for(let i=0;i<extra;i++){let old=_logSpans[i];if(old&&old.remove){try{old.remove();}catch(_){}}}
+  _logSpans=_logSpans.slice(extra);
+  _logLines=_logLines.slice(extra);
+ }
+ const sc=lb.parentElement;
+ if(sc)sc.scrollTop=sc.scrollHeight;
+}
 function clearOpt(){document.getElementById("optbox").innerHTML="";}
-function addBtn(text,cb){
+function addBtn(text,cb,cls){
  let b=document.createElement("button");
  b.innerText=text;
+ if(cls)b.className=cls;
  b.onclick=()=>{clearOpt();cb();};
  document.getElementById("optbox").appendChild(b);
 }
@@ -4396,258 +4853,6 @@ function showInfo(title,lines){
  _infoBox=box;
 }
 
-//===== js/data/official_mods.js =====
-//==== data/official_mods.js：官方模组库（P5+ 1024 程序员节）====
-// 官方彩蛋模组：与玩家自制模组走完全相同的注入管线（modValidate/modConflictCheck/modLoad），
-// 官方内容先吃自己的狗粮——这是模组系统稳定性的最好证明。
-// 规范同 modloader.js：{id,name,version,desc,author,content:{quests,npcs,items,monsters,achs}}
-// achs 为 P5+ 新增注入目标（core.js allAch）；对话选项 fight 字段 / reward.flags / reward.achs 同批引擎扩展。
-const OFFICIAL_MODS={
- "mod_1024":{
-  id:"mod_1024",
-  name:"1024·码道飞升",
-  version:"1.0.0",
-  author:"长生MUD×WorkBuddy 官方",
-  desc:"程序员节限定彩蛋：山道旁结识一位敲键盘的修士，修为打磨至 1024，斩除 Bug 心魔，诵出 Hello World 真言——成就码道飞升。（2026-10-24 程序员节献礼）",
-  content:{
-   quests:{
-    "q_1024_1":{
-     name:"初窥码道",kind:"chain",need:{type:"flag",key:"q1024_met",val:true},
-     steps:[
-      {desc:"听代码真人论道，习得码道三境",cond:{type:"flag",key:"q1024_taught",val:true},reward:{stone:64}},
-      {desc:"将修为打磨至 1024——码道之基，2 的十次方",cond:{type:"attr",key:"cult",op:">=",val:1024},reward:{items:{"代码卷轴":1}}}
-     ],
-     onDone:{flags:{q1024_1_done:true},rep:{散修盟:10},items:{"回血散":3},unlockQuest:"q_1024_2"}
-    },
-    "q_1024_2":{
-     name:"斩除心魔",kind:"chain",need:{type:"flag",key:"q1024_1_done",val:true},
-     steps:[
-      {desc:"在代码真人处领受考验，斩除 Bug 心魔",cond:{type:"flag",key:"bug_1024_slain",val:true},reward:{cult:128,stone:256}}
-     ],
-     onDone:{flags:{q1024_2_done:true},rep:{散修盟:10},unlockQuest:"q_1024_3"}
-    },
-    "q_1024_3":{
-     name:"Hello World 飞升",kind:"chain",need:{type:"flag",key:"q1024_2_done",val:true},
-     steps:[
-      {desc:"向代码真人诵出真言『Hello, World』",cond:{type:"flag",key:"hello_world_chanted",val:true},reward:{cult:512,stone:512}}
-     ],
-     onDone:{achs:["m_1024_fly"],flags:{q1024_3_done:true},rep:{散修盟:20}}
-    }
-   },
-   npcs:{
-    "daima_zhenren":{
-     name:"代码真人",faction:"散修盟",desc:"自称来自「硅基」的游方修士，敲键盘如抚琴，口吐真言 printf(\"长生\")",need:null,lifespan:1024,
-     dialogue:{
-      "start":{
-       text:"山道旁的青石上盘坐着一位灰袍修士，袍子洗得发白，膝上摊着一块微微发光的黑板子，十指在上面敲得飞快，像在弹一张看不见的琴。见你驻足，他头也不抬：「道友，可知今日是何日子？」",
-       options:[
-        {text:"愿闻其详",effect:{flags:{q1024_met:true},achs:["m_1024_meet"],relation:{daima_zhenren:5}},next:"story1024"},
-        {text:"与他论道：何为码道？",need:{type:"flag",key:"q1024_met",val:true},next:"teach"},
-        {text:"领受考验：直面 Bug 心魔（战斗）",need:{type:"flag",key:"q1024_1_done",val:true},fight:"Bug心魔"},
-        {text:"诵出真言：Hello, World",need:{type:"flag",key:"q1024_2_done",val:true},next:"chant"},
-        {text:"不打扰了，告辞",next:"end"}
-       ]
-      },
-      "story1024":{
-       text:"灰袍修士终于抬起头，眼睛亮得不像个活了两千岁的人：「十月二十四。2 的十次方，1024。吾辈码修的节日。」他把黑板子转过来给你看，上面密密麻麻，全是天书一样的符文。「此物名曰键盘，此术名曰编程。一念生万物，一念噬百魂。你既有长生之姿，或许……与码道有缘。」",
-       options:[
-        {text:"与他论道：何为码道？",next:"teach"},
-        {text:"改日再来请教",next:"end"}
-       ]
-      },
-      "teach":{
-       text:"「码道三境。」他竖起一根手指，「第一境，能跑就行；第二境，不要动它——祖传代码，动一行，崩十里；第三境，方敢言重构。」他又压低声音：「码修心魔名唤 Bug，无形无相，专在子时上线前袭来，斩之不尽，唯勤可御。你若真想入门，先把修为打磨到 1024，那是码道之基。」",
-       options:[
-        {text:"谨记教诲，回去打磨修为",effect:{flags:{q1024_taught:true},cult:64,relation:{daima_zhenren:10}},next:"end"}
-       ]
-      },
-      "chant":{
-       text:"你深吸一口气，对着青山旷野，一字一句地诵出：「Hello——World。」风停了一瞬。青石上的黑板子忽然亮起一片绿光，映得他眼中如星河倒灌。「编译通过，」代码真人缓缓起身，郑重抱拳，「零报错，零警告。欢迎入道，道友。从今日起，你也是码修了。长生路远，愿你的代码永无 Bug。」",
-       options:[
-        {text:"回礼：愿前辈永不加班",effect:{flags:{hello_world_chanted:true},cult:256,relation:{daima_zhenren:20}},next:"end"}
-       ]
-      }
-     }
-    }
-   },
-   items:{
-    "代码卷轴":{type:"consumable",desc:"上古卷轴，展开只有一行真言：Hello, World。参悟后修为+1024",use:{cult:1024}}
-   },
-   monsters:{
-    "Bug心魔":{name:"Bug心魔",hp:256,atk:21,reward:{cult:256,stone:512,flags:{bug_1024_slain:true}},ai:"enrage",aiParam:{hpPct:0.35,atkMul:1.5},affixDrop:["噬魂","魔骨"]}
-   },
-   achs:{
-    "m_1024_meet":{name:"初遇代码真人",desc:"十月二十四，山道青石上遇见一位敲键盘的修士",got:false},
-    "m_1024_fly":{name:"Hello World 飞升",desc:"在修仙世界写下第一行代码，一次编译通过",got:false}
-   }
-  }
- }
-};
-
-//===== js/modloader.js =====
-//==== ESM 依赖导入（J 批次1：显式依赖图）====
-
-
-
-
-
-
-
-//==== modloader.js：模组系统（P5 模组规范/加载/冲突检测/编辑器 + P5+ 官方模组坊）====
-// 模组规范：{id, name, version, content:{quests:{}, npcs:{}, items:{}, monsters:{}, achs:{}}}
-// 命名空间隔离：builtin:/mod: 前缀；冲突检测：同 id 且内容不同则拒绝
-// 编辑器草稿（浏览器内可视化编辑，prompt 交互）
-// P5+ 新增：achs 注入目标（core.js allAch）；官方模组库（data/official_mods.js，与玩家模组同管线）；
-//           读档恢复钩子（window.__afterSaveApplied，core.js _applySaveData 尾调用——无循环依赖）
-
-let modDraft=null;
-
-//模组注入目标（与内置内容同对象，加载即生效）
-const MOD_TARGETS={quests:QUESTS,npcs:NPCS,items:ITEMS,monsters:MONSTERS,achs:allAch};
-//内置内容快照（冲突检测基准）
-const MOD_BUILTIN={};
-for(let k in MOD_TARGETS)MOD_BUILTIN[k]=Object.assign({},MOD_TARGETS[k]);
-
-//校验模组 JSON 是否符合规范
-function modValidate(mod){
- if(!mod||typeof mod!=="object")return {ok:false,err:"模组必须为对象"};
- if(!mod.id||typeof mod.id!=="string")return {ok:false,err:"缺少 id"};
- if(!mod.name)return {ok:false,err:"缺少 name"};
- if(!mod.version)return {ok:false,err:"缺少 version"};
- if(!mod.content||typeof mod.content!=="object")return {ok:false,err:"缺少 content"};
- return {ok:true};
-}
-
-//冲突检测：与内置同 id 且内容不同 → 冲突
-function modConflictCheck(mod){
- let conflicts=[];
- for(let section in MOD_TARGETS){
-  let mods=mod.content[section]||{};
-  for(let id in mods){
-   let builtin=MOD_BUILTIN[section][id];
-   if(builtin!==undefined&&JSON.stringify(builtin)!==JSON.stringify(mods[id])){
-    conflicts.push({section:section,id:id,type:"builtin"});
-   }
-  }
- }
- return conflicts;
-}
-
-//加载模组（校验 + 冲突检测 + 注入 + 登记 gs.mods）
-function modLoad(mod){
- let v=modValidate(mod);
- if(!v.ok){log("模组校验失败："+v.err,"red");return false;}
- let conflicts=modConflictCheck(mod);
- if(conflicts.length){
-  log(`模组【${mod.name}】存在 ${conflicts.length} 处冲突，拒绝加载：`,"red");
-  for(let c of conflicts)log(`  ${c.section}.${c.id}（与内置冲突）`,"red");
-  return false;
- }
- for(let section in MOD_TARGETS){
-  let mods=mod.content[section]||{};
-  for(let id in mods)MOD_TARGETS[section][id]=mods[id];
- }
- if(!gs.mods)gs.mods={};
- gs.mods[mod.id]={name:mod.name,version:mod.version};
- log(`✅模组【${mod.name}】v${mod.version} 加载成功。`,"green");
- refreshUi();
- return true;
-}
-
-//导出模组 JSON（编辑器产物）
-function modExport(id,name,version,content){
- return JSON.stringify({id:id,name:name,version:version,content:content||{}},null,2);
-}
-
-//模组面板
-function sceneModPanel(){
- log("\n📦【模组】当前已加载："+(gs.mods&&Object.keys(gs.mods).length?Object.keys(gs.mods).join("、"):"无"));
- addBtn("🎁官方模组坊",()=>sceneOfficialMods());
- addBtn("📤导出模组模板",()=>{
-  log("模组 JSON 模板（复制到文件/控制台）：\n"+modExport("my_mod","我的模组","0.1",{quests:{},npcs:{},items:{},monsters:{},achs:{}}),"blue");
-  sceneModPanel();
- });
- addBtn("📥加载模组（粘贴 JSON）",()=>sceneModImport());
- addBtn("🛠模组编辑器",()=>sceneModEditor());
- addBtn("离开模组面板",()=>mainStep0());
-}
-
-//==== P5+ 官方模组坊：官方彩蛋模组一键安装（与玩家模组同管线，官方内容吃自家狗粮）====
-//模组是否已完整注入（任一 content 键缺失即视为未装——用于读档恢复判定）
-function modInstalled(mod){
- for(let section in MOD_TARGETS){
-  let mods=(mod.content&&mod.content[section])||{};
-  for(let id in mods)if(MOD_TARGETS[section][id]===undefined)return false;
- }
- return true;
-}
-
-//官方模组坊面板
-function sceneOfficialMods(){
- log("\n🎁【官方模组坊】官方彩蛋模组，与玩家模组走同一加载管线。");
- for(let id in OFFICIAL_MODS){
-  let m=OFFICIAL_MODS[id];
-  let installed=modInstalled(m);
-  log(`「${m.name}」v${m.version}——${m.desc}${installed?"（已安装）":""}`,"blue");
-  addBtn(installed?`「${m.name}」已安装 ✅（重新载入）`:`安装「${m.name}」`,()=>{modLoad(m);sceneOfficialMods();});
- }
- addBtn("返回模组面板",()=>sceneModPanel());
-}
-
-//读档恢复：存档登记过的官方模组自动重注入（gs.mods 随档保存；玩家粘贴模组仍需手动重载）
-function restoreOfficialMods(){
- let restored=[];
- for(let id in OFFICIAL_MODS){
-  if(gs.mods&&gs.mods[id]&&!modInstalled(OFFICIAL_MODS[id])){
-   for(let section in MOD_TARGETS){
-    let mods=OFFICIAL_MODS[id].content[section]||{};
-    for(let k in mods)MOD_TARGETS[section][k]=mods[k];
-   }
-   restored.push(OFFICIAL_MODS[id].name);
-  }
- }
- if(restored.length){
-  log(`♻官方模组已随存档恢复：${restored.join("、")}`,"green");
-  refreshUi();
- }
-}
-//读档钩子登记（core.js _applySaveData 尾调用 window.__afterSaveApplied——经 window 解耦避免 core→modloader 循环依赖）
-if(typeof window!=="undefined")window.__afterSaveApplied=restoreOfficialMods;
-
-//模组导入（浏览器 prompt 输入 JSON）
-function sceneModImport(){
- log("\n📥【加载模组】请在浏览器弹窗中粘贴模组 JSON。");
- let json=prompt("粘贴模组 JSON：");
- if(json){
-  try{
-   let mod=JSON.parse(json);
-   modLoad(mod);
-  }catch(e){log("JSON 解析失败："+e.message,"red");}
- }
- sceneModPanel();
-}
-
-//模组编辑器（可视化：新增任务 → 草稿 → 导出）
-function sceneModEditor(){
- log("\n🛠【模组编辑器】可视化编辑模组内容。");
- addBtn("新增任务（输入 id/名称）",()=>{
-  let id=prompt("任务 id（如 q_mod_test）：");
-  let name=prompt("任务名称：");
-  if(id&&name){
-   if(!modDraft)modDraft={};
-   if(!modDraft.quests)modDraft.quests={};
-   modDraft.quests[id]={name:name,kind:"side",need:null,steps:[{desc:"模组任务第一步",cond:null,reward:{stone:50}}],onDone:{}};
-   log(`已加入草稿：任务【${name}】`,"green");
-  }
-  sceneModEditor();
- });
- addBtn("导出模组 JSON",()=>{
-  log("模组 JSON：\n"+modExport("my_mod","我的模组","0.1",modDraft||{}),"blue");
-  sceneModEditor();
- });
- addBtn("返回模组面板",()=>sceneModPanel());
-}
-
 //===== js/share.js =====
 //==== ESM 依赖导入（J 批次1：显式依赖图）====
 
@@ -4767,8 +4972,34 @@ Object.assign(window, {
  sceneGenSettings, sceneDirector, sceneShare, sceneModPanel,
  sceneSkillTree, sceneParty, sceneBestiary,
  // 结局锁定校验（directorAssertLock → window[fnName]）
- endingHide, endingDemon, endingInvincible, endingDead
+ endingHide, endingDemon, endingInvincible, endingDead,
+ // M1.5：1024 彩蛋入口卡片（index.html 内联 onclick）
+ startCodeJourney, toggleSideDrawer
 });
+
+//==== M1.5 §2.1：1024 彩蛋入口卡片显隐（命格选定后显示；m_1024_fly 达成后转为「已飞升·重温」）====
+function refreshFestCard(){
+ let c=document.getElementById("festcard");
+ let d=document.getElementById("festdone");
+ if(!c||!d)return;
+ let fly=!!(allAch["m_1024_fly"]&&allAch["m_1024_fly"].got);
+ c.style.display=(gs.talent&&!fly)?"flex":"none";
+ d.style.display=fly?"block":"none";
+}
+//成就/主线钩子注册（core addAch 与 story mainStep0 经 window 回调，避免 core→main 循环依赖）
+window.__afterAch=refreshFestCard;
+window.__refreshFestCard=refreshFestCard;
+//读档追加快照刷新（与 modloader 的模组恢复钩子追加式共存，拼接顺序无关）
+if(typeof window!=="undefined"){
+ const _prevSave=window.__afterSaveApplied;
+ window.__afterSaveApplied=()=>{if(typeof _prevSave==="function")_prevSave();refreshFestCard();};
+}
+
+//==== M1.5 §2.6：移动端侧栏底部抽屉开关（桌面端无样式副作用）====
+function toggleSideDrawer(){
+ let p=document.getElementById("sidepanel");
+ if(p&&p.classList)p.classList.toggle("side-open");
+}
 
 //==== 游戏入口 ====
 
@@ -4789,6 +5020,7 @@ function startGame(){
 }
 function newGameStart(){
  document.getElementById("logbox").innerHTML="";
+ refreshFestCard(); // M1.5：重开局先收起彩蛋卡片（等命格选定后再显示）
  showPortrait("hero","主角·长生者"); // 开局立绘（seedream 内嵌）
  log("===觉醒长生系统===");
  log("你从沉睡中苏醒，脑海响起冰冷系统声音：");

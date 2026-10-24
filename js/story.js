@@ -14,6 +14,7 @@ import { bioLog } from "./meta.js";
 import { sceneEnding } from "./ngplus.js";
 import { sceneNovelLine } from "./novel.js";
 import { acceptQuest, questAvailable, questPanel } from "./quest.js";
+import { hideModShop } from "./modloader.js";
 import { pendingWorldEvent, sceneRegion, sceneWorldEvent } from "./world.js";
 
 //==== story.js：主线剧情分支 / 结局 / 路由 / 重置 ====
@@ -22,6 +23,8 @@ import { pendingWorldEvent, sceneRegion, sceneWorldEvent } from "./world.js";
 export function mainStep0(){
  gs.step=0;
  hidePortrait(); // 隐藏立绘/场景（回到主菜单）
+ if(typeof hideModShop==="function")hideModShop(); // M1.5：回主线收起模组坊容器
+ if(typeof window!=="undefined"&&typeof window.__refreshFestCard==="function")window.__refreshFestCard(); // M1.5 §2.1：彩蛋卡片显隐（main.js 注册）
  // J35 体验轮（用户 2026-08-23 定向）：奇遇随机出现于选择之间，不再作显式选项；flags.encCd 冷却防连发
  if(!gs.flags.encCd && typeof BALANCE!=="undefined" &&
     Math.random()<BALANCE.encounterBase*((typeof directorEventRate==="function")?directorEventRate():1)*0.6){

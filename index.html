@@ -65,6 +65,76 @@ button:hover{background:var(--green);color:var(--bg-face);border-color:var(--gre
 button:focus-visible,[role="button"]:focus-visible,input:focus-visible,select:focus-visible,
 [tabindex]:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+
+/*==== M1.5 §2.0：1024 彩蛋「赛博修仙」设计变量（终端绿×等宽，只加不改古风基底）====*/
+:root{
+  --fest-green:#16a34a; --fest-green-dark:#15803d;
+  --fest-bg:#f0fdf4; --fest-border:#86efac;
+  --term-bg:#0d1117; --term-fg:#39d353; --term-dim:#8b949e;
+  --mono:Consolas,"Courier New",monospace;
+}
+/* §2.7 可读性微调 */
+.log{line-height:1.8;}
+.opt button{margin:7px 0;}
+#cult,#stone,#year,#hp,#hpmax,#mp,#mpmax{font-family:var(--mono);}
+/* §2.3 行内代码 + 终端代码块 */
+.inline-code{font-family:var(--mono);font-size:.92em;background:var(--fest-bg);border:1px solid var(--fest-border);border-radius:3px;padding:1px 5px;color:var(--fest-green-dark);}
+.termcode{display:block;font-family:var(--mono);font-size:13px;line-height:1.7;background:var(--term-bg);color:var(--term-fg);border-radius:8px;border-left:4px solid var(--fest-green);padding:12px;margin:8px 0;white-space:pre;}
+/* §2.1 彩蛋入口卡片 */
+#festcard{display:none;align-items:center;gap:14px;background:var(--fest-bg);border:1px solid var(--fest-border);border-radius:12px;padding:14px;margin-bottom:12px;}
+.fest-badge{flex-shrink:0;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:bold;font-size:15px;color:var(--fest-green);background:#dcfce7;border-radius:8px;}
+.fest-mid{flex:1;min-width:0;}
+.fest-title{font-size:15px;font-weight:600;color:var(--ink);}
+.fest-sub{font-size:12px;color:var(--fest-green-dark);margin-top:3px;}
+.fest-btn{flex-shrink:0;width:auto;min-height:44px;padding:10px 18px;background:var(--fest-green);color:#fff;border:1px solid var(--fest-green-dark);border-radius:8px;font-size:15px;text-align:center;}
+.fest-btn:hover{background:var(--fest-green-dark);border-color:var(--fest-green-dark);color:#fff;}
+#festdone{display:none;background:var(--fest-bg);border:1px dashed var(--fest-border);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:13px;color:var(--fest-green-dark);cursor:pointer;text-align:center;}
+/* §2.2 官方模组坊卡片 */
+#modshopbox{display:none;margin:8px 0;}
+.modcard{background:var(--panel-light);border:1px solid var(--fest-border);border-radius:10px;padding:12px 14px;margin:8px 0;}
+.modcard-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.modcard-name{font-weight:600;font-size:15px;color:var(--ink);}
+.modcard-ver{font-family:var(--mono);font-size:12px;color:var(--sub-text);}
+.modcard-badge{margin-left:auto;background:var(--fest-green);color:#fff;font-size:11px;padding:2px 8px;border-radius:999px;}
+.modcard-desc{font-size:13px;color:var(--ink-soft);line-height:1.7;margin:8px 0;}
+.modcard-bot{display:flex;align-items:center;gap:10px;}
+.modcard-author{font-size:12px;color:var(--sub-text);}
+.modcard-btn{width:auto;min-height:36px;padding:7px 20px;margin-left:auto;background:var(--fest-green);color:#fff;border:1px solid var(--fest-green-dark);border-radius:8px;font-size:14px;text-align:center;}
+.modcard-btn:hover{background:var(--fest-green-dark);color:#fff;}
+.modcard-btn.installed{background:var(--panel);color:var(--sub-text);border-color:var(--border-soft);cursor:default;}
+.modcard-btn.installed:hover{background:var(--panel);color:var(--sub-text);}
+/* §2.4 战斗界面增强：血条过渡 + 终稿副行 + 道具圆点 */
+.hpinner{transition:width .2s ease;}
+.hpinner.playerbar{background:var(--fest-green);}
+.enemy-sub{font-family:var(--mono);font-size:12px;color:var(--term-dim);margin:2px 0;}
+button.has-pill{position:relative;}
+button.has-pill::after{content:"";position:absolute;top:8px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--fest-green);box-shadow:0 0 0 2px var(--fest-bg);}
+/* §2.5 成就 toast + 飞升「编译通过」卡片 */
+.ach-toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;background:var(--bg-face);border:1px solid var(--fest-border);border-radius:10px;padding:10px 16px;max-width:min(90vw,480px);box-shadow:0 6px 20px var(--shadow);font-size:14px;color:var(--ink);cursor:pointer;animation:achToastIn .25s ease;}
+@keyframes achToastIn{from{opacity:0;transform:translateX(-50%) translateY(-12px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+.ach-toast-icon{font-size:20px;}
+.ach-toast-body{line-height:1.5;}
+.ach-toast-body b{color:var(--fest-green-dark);}
+.fly-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:9998;display:flex;align-items:center;justify-content:center;}
+.fly-card{background:var(--term-bg);color:var(--term-fg);font-family:var(--mono);font-size:14px;line-height:1.8;text-align:left;border-radius:12px;border:1px solid var(--fest-green);padding:22px 26px;max-width:420px;width:calc(100vw - 48px);}
+.fly-btn{width:auto;min-height:40px;margin-top:14px;padding:9px 18px;background:transparent;color:var(--term-fg);border:1px solid var(--fest-green);border-radius:8px;font-family:var(--mono);font-size:14px;text-align:center;}
+.fly-btn:hover{background:var(--fest-green);color:var(--term-bg);border-color:var(--fest-green);}
+/* §2.6 移动端（<768px）：侧栏改底部抽屉；按钮 ≥44px；彩蛋卡片纵排 */
+@media (max-width:768px){
+  body{padding:10px;}
+  #layout{flex-direction:column;padding-bottom:64px;gap:8px;}
+  #gamebox{padding:12px;}
+  .side-title{cursor:pointer;}
+  #sidepanel{position:fixed;left:0;right:0;bottom:0;width:100%;max-height:60vh;flex-direction:column;z-index:60;border-radius:12px 12px 0 0;transform:translateY(calc(100% - 48px));transition:transform .25s ease;box-shadow:0 -4px 16px var(--shadow);}
+  #sidepanel.side-open{transform:none;}
+  .sidebtn,button{min-height:44px;}
+  .sidebtn{font-size:14px;}
+  .info-bar{font-size:14px;gap:10px;}
+  #festcard{flex-direction:column;align-items:stretch;text-align:center;}
+  .fest-btn{width:100%;}
+  .ach-toast{left:16px;right:16px;transform:none;max-width:none;}
+  @keyframes achToastIn{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:translateY(0);}}
+}
 </style>
 </head>
 <body>
@@ -101,11 +171,26 @@ button:focus-visible,[role="button"]:focus-visible,input:focus-visible,select:fo
 </div>
 <div id="equipbox">🎒装备：<span id="equip">无</span></div>
 <div id="achbox">🏆成就：<span id="achtext">暂无</span></div>
+<!-- M1.5 §2.1：1024 彩蛋入口卡片（命格选定后由 refreshFestCard 显示；飞升后转「已飞升·重温」） -->
+<div id="festcard">
+  <div class="fest-badge">&lt;/&gt;</div>
+  <div class="fest-mid">
+    <div class="fest-title">1024·码道飞升</div>
+    <div class="fest-sub">程序员节限定彩蛋 · 约 3 分钟 · 斩 Bug 心魔，诵 Hello World</div>
+  </div>
+  <button class="fest-btn" onclick="startCodeJourney()">启程码道 →</button>
+</div>
+<div id="festdone" onclick="startCodeJourney()">🏆 已码道飞升 · 点击重温</div>
+<!-- M1.5 §2.2：官方模组坊卡片容器（sceneOfficialMods 渲染） -->
+<div id="modshopbox"></div>
 <div id="fightui" style="display:none;">
 <div>⚔️战斗界面</div>
 <div>敌方：<span id="enemyName"></span></div>
+<div id="enemySub" class="enemy-sub" style="display:none;"></div>
 <div class="hpbar"><div id="enemyHpBar" class="hpinner"></div></div>
 <span>敌方生命：<span id="enemyHpText"></span></span>
+<div>你方：<span id="playerHpText">100</span>/<span id="hpmax2">100</span></div>
+<div class="hpbar"><div id="playerHpBar" class="hpinner playerbar" style="width:100%;"></div></div>
 </div>
 <div id="portraitbox" style="display:none;overflow:hidden;">
 <button id="portraitToggle" class="btnsmall" style="flex-shrink:0;width:auto;padding:4px 10px;margin:0 0 6px 0;" onclick="togglePortrait()">➖ 收起插图</button>
@@ -121,7 +206,7 @@ button:focus-visible,[role="button"]:focus-visible,input:focus-visible,select:fo
 </div>
 
 <div id="sidepanel">
-<div class="side-title">☰ 功能</div>
+<div class="side-title" onclick="toggleSideDrawer()">☰ 功能</div>
 <div id="sidebtns"></div>
 <hr class="side-divider">
 <button class="sidebtn home" data-k="home" onclick="mainStep0()">🏠返回主线</button>

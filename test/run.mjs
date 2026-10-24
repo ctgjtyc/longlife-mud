@@ -1249,7 +1249,7 @@ section("官方模组坊：mod_1024 全链");
   S.gs.cult = 1024;
   G.advanceQuest("q_1024_1");
   assert(S.gs.quests["q_1024_1"] === "done" && S.gs.flags["q1024_1_done"] === true, "完成：q_1024_1（onDone flags 落地）");
-  assert(S.gs.inventory["代码卷轴"] === 1, "奖励：步2 发放代码卷轴×1");
+  assert((S.gs.inventory["代码卷轴"]||0) === 0 && S.gs.inventory["回血散"] === 3 && S.gs.stone === 100 + 64 + 128, "奖励：M1.5 新口径——步2 改发灵石+128，卷轴改由 teach 对话发放，onDone 发回血散×3");
   G.acceptQuest("q_1024_2");
   G.startFight(S.MONSTERS["Bug心魔"]);
   assert(S.gs.inFight === true && S.gs.foeReward.flags["bug_1024_slain"] === true, "战斗：Bug心魔开战且击杀 flag 聚合进 foeReward");
@@ -1275,6 +1275,73 @@ section("官方模组坊：mod_1024 全链");
   G.restoreOfficialMods();
   assert(S.QUESTS["q_1024_2"] === undefined, "未登记：gs.mods 无记录时 restore 不误装");
   delete S.QUESTS["q_1024_3"]; // 清全局污染，保持基线干净
+}
+
+//==== M1.5 回归：数值稳赢仿真 / 卷轴快速通道 / 一键启程幂等 / 彩蛋卡片显隐 / modSections ====
+section("M1.5：WB 设计方案落地");
+{
+  const M = S.OFFICIAL_MODS["mod_1024"];
+  // §1.1 Monte Carlo：1024 修为·无装备·体魄10·纯平攻无道具 100 局全胜
+  let wins = 0, wounds = 0;
+  for (let i = 0; i < 100; i++) {
+    freshGame();
+    G.modLoad(M);
+    S.gs.cult = 1024; S.gs.talent = null;
+    G.startFight(S.MONSTERS["Bug心魔"]);
+    let guard = 0;
+    while (S.gs.inFight && guard++ < 50) G.playerAttack();
+    if (S.gs.flags["bug_1024_slain"] && !S.gs.inFight) wins++;
+    else wounds++;
+  }
+  assert(wins === 100 && wounds === 0, `§1.1 Monte Carlo：无道具纯攻 100 局全胜（实胜 ${wins}）`);
+  // §1.1 数值落盘
+  assert(S.MONSTERS["Bug心魔"].hp === 144 && S.MONSTERS["Bug心魔"].atk === 10, "§1.1 Bug心魔 hp144/atk10 落盘");
+  // §1.2 快速通道：teach 对话发卷轴 → 背包使用直达 1024
+  freshGame();
+  G.modLoad(M);
+  const teachEff = S.NPCS["daima_zhenren"].dialogue.teach.options[0].effect;
+  assert(teachEff.items["代码卷轴"] === 1, "§1.2 teach 对话发放代码卷轴×1（数据层）");
+  G.applyDialogueEffect("daima_zhenren", teachEff);
+  assert(S.gs.inventory["代码卷轴"] === 1, "§1.2 对话结算后背包有卷轴");
+  const c0 = S.gs.cult;
+  G.useItem("代码卷轴");
+  assert(S.gs.cult === c0 + 1024, "§1.2 使用卷轴修为+1024（3 分钟快速通道）");
+  // §1.3 一键启程：幂等（重复调用不重复登记/不炸）
+  freshGame();
+  G.startCodeJourney();
+  const first = S.gs.mods && S.gs.mods["mod_1024"];
+  G.startCodeJourney();
+  assert(first && S.gs.mods["mod_1024"] && Object.keys(S.gs.mods).length === 1, "§1.3 startCodeJourney 幂等（gs.mods 仅一条登记）");
+  // §2.1 彩蛋卡片显隐：命格后显示 → 飞升后隐藏+重温入口
+  freshGame();
+  S.allAch["m_1024_fly"].got = false; // 前段链路已解锁飞升，清污染后测显隐
+  G.modLoad(M);
+  S.gs.talent = "天选之子";
+  G.refreshFestCard();
+  const fc = document.getElementById("festcard"), fd = document.getElementById("festdone");
+  assert(fc.style.display === "flex" && fd.style.display === "none", "§2.1 命格选定后卡片显示");
+  G.addAch("m_1024_fly");
+  G.refreshFestCard();
+  assert(fc.style.display === "none" && fd.style.display === "block", "§2.1 飞升后卡片隐藏→「已飞升·重温」入口");
+  // modSections：achs 段接入 + 内置成就冲突检测
+  const secs = G.modSections();
+  const achSec = secs.find(s => s[0] === "achs");
+  assert(!!achSec && achSec[1] === S.allAch, "modSections 含 achs 段（晚序 core const 调用时求值防 TDZ）");
+  const conflictMod = { id: "t_conflict", name: "冲突测试", version: "0.1", content: { achs: { a1: { name: "假成就", desc: "x", got: false } } } };
+  assert(G.modConflictCheck(conflictMod).length === 1, "成就段冲突检测：覆盖内置 a1 被拒");
+  // 战斗界面增强元素无崩溃（renderFightUi 兼容桩环境）
+  freshGame();
+  G.modLoad(M);
+  G.startFight(S.MONSTERS["Bug心魔"]);
+  assert(G.renderFightUi() === undefined, "§2.4 renderFightUi 含血条/副行渲染不炸");
+  // M1.5 补：成就 got 状态在重注入下保留（读档恢复不被数据源 got:false 打回）
+  S.allAch["m_1024_fly"] = { name: "Hello World 飞升", desc: "x", got: true }; // 模拟存档已恢复的解锁态
+  G.modLoad(M); // 重复加载（数据源 got:false）
+  assert(S.allAch["m_1024_fly"].got === true, "成就 got 状态：重复加载/重注入保留已解锁态");
+  delete S.QUESTS["q_1024_1"]; // 清注入面
+  G.restoreOfficialMods(); // 恢复路径同样保留
+  assert(S.allAch["m_1024_fly"].got === true, "成就 got 状态：restoreOfficialMods 恢复路径保留已解锁态");
+  delete S.QUESTS["q_1024_2"]; delete S.QUESTS["q_1024_3"]; // 清全局污染
 }
 
 //==== 汇总 ====

@@ -54,19 +54,33 @@ export function renderFightUi(){
  document.getElementById("enemyHpText").innerText=gs.enemy.hp;
  let pct=Math.max(0,gs.enemy.hp)/gs.enemy.hpMax*100;
  document.getElementById("enemyHpBar").style.width=pct+"%";
+ // M1.5 §2.4：敌方终稿副行（Bug 系怪物专属梗）+ 你方血条（数字保留，实时刷新修读档外血线盲区）
+ let sub=document.getElementById("enemySub");
+ if(sub){let isBug=/Bug/.test(gs.enemy.name||"");sub.style.display=isBug?"block":"none";if(isBug)sub.textContent="FATAL: unhandled exception";}
+ let pb=document.getElementById("playerHpBar");
+ if(pb)pb.style.width=Math.max(0,gs.hp)/gs.hpmax*100+"%";
+ let pt=document.getElementById("playerHpText");
+ if(pt)pt.innerText=gs.hp;
+ let pm=document.getElementById("hpmax2");
+ if(pm)pm.innerText=gs.hpmax;
 }
+//M1.5 §2.4：Boss（Bug 系）战且背包有回血散 → 道具按钮加圆点提示类（纯 CSS 呈现，无新逻辑）
+function _pillHintClass(){
+ let boss=gs.enemy&&/Bug/.test(gs.enemy.name||"");
+ return boss&&gs.inventory&&gs.inventory["回血散"]>0?"has-pill":"";
+}
+
 export function fightTurn(){
  if(!gs.inFight)return;
  clearOpt();
- addBtn("🗡挥剑攻击",()=>{playerAttack();});
- // P3b：主动技能（已习得的 active 功法）
+ addBtn("🗡挥剑攻击",()=>{playerAttack();}); // P3b：主动技能（已习得的 active 功法）
  let actives=Object.keys(gs.arts).filter(id=>ARTS[id]&&ARTS[id].type==="active");
  for(let id of actives){
   let a=ARTS[id];
   addBtn(`⚡施展【${id}】（耗${a.mpCost}灵力，伤${a.dmg}）`,()=>{castSkill(id);});
  }
  addBtn("🛡防御格挡",()=>{playerDefend();});
- addBtn("🎒使用道具",()=>{fightItem();}); // P4：战斗内用消耗品
+ addBtn("🎒使用道具",()=>{fightItem();},_pillHintClass()); // P4：战斗内用消耗品（M1.5 §2.4 Boss 战有血散时圆点提示）
  addBtn("🏃尝试逃跑（不一定成功）",()=>{tryEscape();});
 }
 //P4：战斗内道具子菜单（用消耗品后返回战斗）
