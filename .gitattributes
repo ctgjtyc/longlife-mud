@@ -12,3 +12,7 @@
 *.gif binary
 *.ico binary
 *.mp4 binary
+
+# Pages 发布产物：按二进制处理，禁止 eol 转换
+# 该文件是 dist/longlife_mud.html 的字节级副本，需与构建产物 md5 一致
+docs/index.html -text
