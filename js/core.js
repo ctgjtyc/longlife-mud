@@ -128,6 +128,7 @@ export function _applySaveData(d,okMsg,okCls){
  refreshUi();
  log(okMsg||"✅存档读取成功！",okCls||"");
  clearOpt();
+ if(typeof window!=="undefined"&&typeof window.__afterSaveApplied==="function")window.__afterSaveApplied(); // P5+ 读档后钩子（modloader 官方模组恢复；经 window 解耦防循环依赖）
  routeByStep();
 }
 

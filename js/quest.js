@@ -1,5 +1,5 @@
 //==== ESM 依赖导入（J 批次1：显式依赖图）====
-import { addBtn, checkCond, gs, log, refreshUi, setFlag } from "./core.js";
+import { addAch, addBtn, checkCond, gs, log, refreshUi, setFlag } from "./core.js";
 import { QUESTS } from "./data/quests.js";
 import { addRep } from "./faction.js";
 import { addItem } from "./inventory.js";
@@ -70,6 +70,7 @@ export function applyReward(r){
  if(r.cult)gs.cult+=r.cult;
  if(r.stone)gs.stone+=r.stone;
  if(r.attrs)for(let k in r.attrs)gs.attrs[k]+=r.attrs[k];
+ if(r.achs)for(let a of r.achs)addAch(a); // 任务奖励解成就（onDone.achs 模组成就链路）
 }
 
 //==== 任务面板场景 ====

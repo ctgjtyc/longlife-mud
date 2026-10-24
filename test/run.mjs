@@ -60,7 +60,7 @@ vm.runInContext(`
     get gs() { return gs; }, set gs(v) { gs = v; },
     BALANCE, ITEMS, ARTS, TALENTS, FACTIONS, RECIPES, allEquip, allAch, monsterList, ENCOUNTERS,
     MONSTERS, QUESTS, NPCS, WORLD, DYNASTIES, EVENT_TEMPLATES, MOD_TARGETS,
-    DIFFS, NOVEL
+    DIFFS, NOVEL, OFFICIAL_MODS
   };
 `, sandbox);
 const G = sandbox; // 游戏全局函数（function 声明挂 globalThis）
@@ -1223,6 +1223,58 @@ section("日志虚拟化：环形缓冲上限（LOG_MAX=1000）");
   assert(rl[rl.length - 1].includes("条目2599"), "缓冲保留最新（末条=条目2599）");
   assert(!rl.some(t => t.includes("条目0")), "缓冲裁去最旧（不含条目0）");
   assert(lb0._children.length === 1000, "DOM 节点恰为 1000（有界；remove 兑现）");
+}
+
+//==== P5+ 官方模组坊回归（1024 程序员节）：注入/门控/战斗flag/成就/读档恢复 ====
+section("官方模组坊：mod_1024 全链");
+{
+  freshGame();
+  const M = S.OFFICIAL_MODS["mod_1024"];
+  assert(G.modValidate(M).ok === true, "校验：官方模组过 modValidate");
+  assert(G.modValidate({}).ok === false, "校验：空对象被拒");
+  assert(G.modInstalled(M) === false, "装前：modInstalled 判未装");
+  assert(G.modLoad(M) === true, "加载：modLoad 走玩家模组同管线成功");
+  assert(G.modInstalled(M) === true, "装后：modInstalled 判已装");
+  assert(!!S.QUESTS["q_1024_1"] && !!S.QUESTS["q_1024_2"] && !!S.QUESTS["q_1024_3"], "注入：三环任务入 QUESTS");
+  assert(!!S.NPCS["daima_zhenren"] && !!S.NPCS["daima_zhenren"].dialogue.chant, "注入：代码真人对话树（含 chant 节点）入 NPCS");
+  assert(!!S.ITEMS["代码卷轴"] && !!S.MONSTERS["Bug心魔"], "注入：代码卷轴+Bug心魔入表");
+  assert(!!S.allAch["m_1024_meet"] && !!S.allAch["m_1024_fly"], "注入：两项模组成就入 allAch（achs 新目标）");
+  assert(G.questAvailable("q_1024_1") === false, "门控：未遇代码真人 q_1024_1 不可接");
+  G.setFlag("q1024_met", true);
+  assert(G.questAvailable("q_1024_1") === true, "门控：结识后 q_1024_1 可接");
+  // 全链快进：论道 → 修为1024 → 斩Bug心魔 → 诵真言 → 飞升成就
+  G.acceptQuest("q_1024_1");
+  G.setFlag("q1024_taught", true);
+  assert(G.advanceQuest("q_1024_1") === true, "推进：q_1024_1 步1（论道）");
+  S.gs.cult = 1024;
+  G.advanceQuest("q_1024_1");
+  assert(S.gs.quests["q_1024_1"] === "done" && S.gs.flags["q1024_1_done"] === true, "完成：q_1024_1（onDone flags 落地）");
+  assert(S.gs.inventory["代码卷轴"] === 1, "奖励：步2 发放代码卷轴×1");
+  G.acceptQuest("q_1024_2");
+  G.startFight(S.MONSTERS["Bug心魔"]);
+  assert(S.gs.inFight === true && S.gs.foeReward.flags["bug_1024_slain"] === true, "战斗：Bug心魔开战且击杀 flag 聚合进 foeReward");
+  G.damageEnemy(99999);
+  assert(S.gs.flags["bug_1024_slain"] === true && S.gs.inFight === false, "战斗：击杀后 bug_1024_slain 落地且战斗收束");
+  assert(G.advanceQuest("q_1024_2") === true, "推进：q_1024_2 完成（斩心魔）");
+  G.acceptQuest("q_1024_3");
+  G.setFlag("hello_world_chanted", true);
+  G.advanceQuest("q_1024_3");
+  assert(S.gs.quests["q_1024_3"] === "done", "完成：q_1024_3（Hello World 飞升）");
+  assert(S.gs.achs.includes("Hello World 飞升"), "成就：onDone.achs 解锁「Hello World 飞升」");
+  // 对话效果 achs（applyDialogueEffect 扩展）
+  G.applyDialogueEffect("daima_zhenren", { achs: ["m_1024_meet"] });
+  assert(S.gs.achs.includes("初遇代码真人"), "对话效果：eff.achs 解锁「初遇代码真人」");
+  // 读档恢复：清注入面（模拟重开会话）→ gs.mods 登记在案 → 钩子重注入
+  delete S.QUESTS["q_1024_1"]; delete S.NPCS["daima_zhenren"]; delete S.allAch["m_1024_fly"];
+  assert(G.modInstalled(M) === false, "恢复前：注入面已清（模拟重开会话）");
+  G.restoreOfficialMods();
+  assert(!!S.QUESTS["q_1024_1"] && !!S.NPCS["daima_zhenren"] && !!S.allAch["m_1024_fly"], "恢复：restoreOfficialMods 重注入在案官方模组");
+  // 未登记不误装：gs.mods 无记录 → 不重注入
+  freshGame();
+  delete S.QUESTS["q_1024_2"];
+  G.restoreOfficialMods();
+  assert(S.QUESTS["q_1024_2"] === undefined, "未登记：gs.mods 无记录时 restore 不误装");
+  delete S.QUESTS["q_1024_3"]; // 清全局污染，保持基线干净
 }
 
 //==== 汇总 ====

@@ -13,6 +13,7 @@ import "./data/novel.js";
 import "./data/world.js";
 import "./data/dynasty.js";
 import "./data/images.js";
+import "./data/official_mods.js";
 // 引擎层
 import { SAVE_SLOTS, addAch, addBtn, allEquip, gs, loadLatest, log, refreshUi, showPortrait, showSaveWindow, clearSave, togglePortrait } from "./core.js";
 import { sceneMemory } from "./memory.js";

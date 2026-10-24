@@ -1,8 +1,10 @@
 //==== ESM 依赖导入（J 批次1：显式依赖图）====
-import { addBtn, addDisciple, addEnemy, checkCond, gs, hasEnemy, hidePortrait, isNpcDead, log, npcExpireYear, passYear, refreshUi, removeEnemy, setFlag, showPortrait } from "./core.js";
+import { addAch, addBtn, addDisciple, addEnemy, checkCond, gs, hasEnemy, hidePortrait, isNpcDead, log, npcExpireYear, passYear, refreshUi, removeEnemy, setFlag, showPortrait } from "./core.js";
 import { NPCS } from "./data/npcs.js";
 import { addRep } from "./faction.js";
 import { addItem, equipByName, gainEquip } from "./inventory.js";
+import { monsterByName } from "./data/monsters.js";
+import { startFight } from "./fight.js";
 import { mainStep0 } from "./story.js";
 
 //==== dialogue.js：NPC 对话树引擎（P4 叙事引擎）====
@@ -60,6 +62,7 @@ export function dialogueNode(npcId,nodeId){
  for(let o of opts){
   addBtn(o.text,()=>{
    if(o.effect)applyDialogueEffect(npcId,o.effect);
+   if(o.fight){hidePortrait();startFight(monsterByName(o.fight));return;} // P5+：对话开战（与动态事件 choices.fight 同语义）
    if(o.next&&o.next!=="end"){dialogueNode(npcId,o.next);}
    else{hidePortrait();log(`你与【${npc.name}】结束了对话。`);mainStep0();}
   });
@@ -80,6 +83,7 @@ export function applyDialogueEffect(npcId,eff){
  if(eff.equip){let eq=equipByName(eff.equip);if(eq)gainEquip(eq);}
  if(eff.disciple)addDisciple(eff.disciple.name,eff.disciple.talent); // J34 后续：收徒
  if(eff.enemy)addEnemy(eff.enemy.npcId,eff.enemy.reason);           // J34 后续：结仇
+ if(eff.achs)for(let a of eff.achs)addAch(a);                        // 对话解成就（模组成就链路）
  refreshUi();
 }
 

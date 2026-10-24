@@ -65,6 +65,8 @@ KEY_FUNCS = [
     "showInfo",
     "saveToSlot", "loadFromSlot", "deleteSlot", "slotInfo", "loadLatest", "showSaveWindow",
     "genL0", "genL1", "genL2", "generate",
+    # P5+ 官方模组坊（1024 程序员节）
+    "sceneOfficialMods", "modInstalled", "restoreOfficialMods",
 ]
 
 # index.html 中的 ESM 入口

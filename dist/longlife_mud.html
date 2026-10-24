@@ -2208,6 +2208,7 @@ function applyReward(r){
  if(r.cult)gs.cult+=r.cult;
  if(r.stone)gs.stone+=r.stone;
  if(r.attrs)for(let k in r.attrs)gs.attrs[k]+=r.attrs[k];
+ if(r.achs)for(let a of r.achs)addAch(a); // 任务奖励解成就（onDone.achs 模组成就链路）
 }
 
 //==== 任务面板场景 ====
@@ -2973,6 +2974,13 @@ function startFightGroup(monsters){
   gs.foeReward.cult+=(m.reward&&m.reward.cult)||0;
   gs.foeReward.stone+=(m.reward&&m.reward.stone)||0;
  }
+ // 击杀 flag 奖励聚合（如模组 BOSS 击杀标记；多次出现后者覆盖，同 flag 语义等价）
+ for(let m of gs.foes){
+  if(m.reward&&m.reward.flags){
+   gs.foeReward.flags=gs.foeReward.flags||{};
+   for(let k in m.reward.flags)gs.foeReward.flags[k]=m.reward.flags[k];
+  }
+ }
  document.getElementById("fightui").style.display="block";
  log(`\n⚔战斗开启！遭遇${gs.foes.length>1?gs.foes.length+"名敌人":"【"+gs.enemy.name+"】"}！`,"danger");
  renderFightUi();
@@ -3105,6 +3113,7 @@ function fightWin(){
  gs.cult+=rw.cult;
  gs.stone+=rw.stone;
  log(`获得修为+${rw.cult}，灵石+${rw.stone}`);
+ if(rw.flags)for(let k in rw.flags)setFlag(k,rw.flags[k]); // 击杀 flag 奖励落地（含模组 BOSS 标记）
  // P4：任务钩子（斩妖支线 + 秘境主线副本通关标记）
  setFlag("kill_monster",true);
  if(gs.step===6)setFlag("dungeon_yaoshan",true);
@@ -3665,6 +3674,8 @@ const NPCS={
 
 
 
+
+
 //==== dialogue.js：NPC 对话树引擎（P4 叙事引擎）====
 // gs.relations = {npcId: 好感值}；多轮树遍历，选项 checkCond 门控，effect 改关系/声望/flags
 
@@ -3720,6 +3731,7 @@ function dialogueNode(npcId,nodeId){
  for(let o of opts){
   addBtn(o.text,()=>{
    if(o.effect)applyDialogueEffect(npcId,o.effect);
+   if(o.fight){hidePortrait();startFight(monsterByName(o.fight));return;} // P5+：对话开战（与动态事件 choices.fight 同语义）
    if(o.next&&o.next!=="end"){dialogueNode(npcId,o.next);}
    else{hidePortrait();log(`你与【${npc.name}】结束了对话。`);mainStep0();}
   });
@@ -3740,6 +3752,7 @@ function applyDialogueEffect(npcId,eff){
  if(eff.equip){let eq=equipByName(eff.equip);if(eq)gainEquip(eq);}
  if(eff.disciple)addDisciple(eff.disciple.name,eff.disciple.talent); // J34 后续：收徒
  if(eff.enemy)addEnemy(eff.enemy.npcId,eff.enemy.reason);           // J34 后续：结仇
+ if(eff.achs)for(let a of eff.achs)addAch(a);                        // 对话解成就（模组成就链路）
  refreshUi();
 }
 
@@ -3885,6 +3898,7 @@ function _applySaveData(d,okMsg,okCls){
  refreshUi();
  log(okMsg||"✅存档读取成功！",okCls||"");
  clearOpt();
+ if(typeof window!=="undefined"&&typeof window.__afterSaveApplied==="function")window.__afterSaveApplied(); // P5+ 读档后钩子（modloader 官方模组恢复；经 window 解耦防循环依赖）
  routeByStep();
 }
 
@@ -4382,6 +4396,94 @@ function showInfo(title,lines){
  _infoBox=box;
 }
 
+//===== js/data/official_mods.js =====
+//==== data/official_mods.js：官方模组库（P5+ 1024 程序员节）====
+// 官方彩蛋模组：与玩家自制模组走完全相同的注入管线（modValidate/modConflictCheck/modLoad），
+// 官方内容先吃自己的狗粮——这是模组系统稳定性的最好证明。
+// 规范同 modloader.js：{id,name,version,desc,author,content:{quests,npcs,items,monsters,achs}}
+// achs 为 P5+ 新增注入目标（core.js allAch）；对话选项 fight 字段 / reward.flags / reward.achs 同批引擎扩展。
+const OFFICIAL_MODS={
+ "mod_1024":{
+  id:"mod_1024",
+  name:"1024·码道飞升",
+  version:"1.0.0",
+  author:"长生MUD×WorkBuddy 官方",
+  desc:"程序员节限定彩蛋：山道旁结识一位敲键盘的修士，修为打磨至 1024，斩除 Bug 心魔，诵出 Hello World 真言——成就码道飞升。（2026-10-24 程序员节献礼）",
+  content:{
+   quests:{
+    "q_1024_1":{
+     name:"初窥码道",kind:"chain",need:{type:"flag",key:"q1024_met",val:true},
+     steps:[
+      {desc:"听代码真人论道，习得码道三境",cond:{type:"flag",key:"q1024_taught",val:true},reward:{stone:64}},
+      {desc:"将修为打磨至 1024——码道之基，2 的十次方",cond:{type:"attr",key:"cult",op:">=",val:1024},reward:{items:{"代码卷轴":1}}}
+     ],
+     onDone:{flags:{q1024_1_done:true},rep:{散修盟:10},items:{"回血散":3},unlockQuest:"q_1024_2"}
+    },
+    "q_1024_2":{
+     name:"斩除心魔",kind:"chain",need:{type:"flag",key:"q1024_1_done",val:true},
+     steps:[
+      {desc:"在代码真人处领受考验，斩除 Bug 心魔",cond:{type:"flag",key:"bug_1024_slain",val:true},reward:{cult:128,stone:256}}
+     ],
+     onDone:{flags:{q1024_2_done:true},rep:{散修盟:10},unlockQuest:"q_1024_3"}
+    },
+    "q_1024_3":{
+     name:"Hello World 飞升",kind:"chain",need:{type:"flag",key:"q1024_2_done",val:true},
+     steps:[
+      {desc:"向代码真人诵出真言『Hello, World』",cond:{type:"flag",key:"hello_world_chanted",val:true},reward:{cult:512,stone:512}}
+     ],
+     onDone:{achs:["m_1024_fly"],flags:{q1024_3_done:true},rep:{散修盟:20}}
+    }
+   },
+   npcs:{
+    "daima_zhenren":{
+     name:"代码真人",faction:"散修盟",desc:"自称来自「硅基」的游方修士，敲键盘如抚琴，口吐真言 printf(\"长生\")",need:null,lifespan:1024,
+     dialogue:{
+      "start":{
+       text:"山道旁的青石上盘坐着一位灰袍修士，袍子洗得发白，膝上摊着一块微微发光的黑板子，十指在上面敲得飞快，像在弹一张看不见的琴。见你驻足，他头也不抬：「道友，可知今日是何日子？」",
+       options:[
+        {text:"愿闻其详",effect:{flags:{q1024_met:true},achs:["m_1024_meet"],relation:{daima_zhenren:5}},next:"story1024"},
+        {text:"与他论道：何为码道？",need:{type:"flag",key:"q1024_met",val:true},next:"teach"},
+        {text:"领受考验：直面 Bug 心魔（战斗）",need:{type:"flag",key:"q1024_1_done",val:true},fight:"Bug心魔"},
+        {text:"诵出真言：Hello, World",need:{type:"flag",key:"q1024_2_done",val:true},next:"chant"},
+        {text:"不打扰了，告辞",next:"end"}
+       ]
+      },
+      "story1024":{
+       text:"灰袍修士终于抬起头，眼睛亮得不像个活了两千岁的人：「十月二十四。2 的十次方，1024。吾辈码修的节日。」他把黑板子转过来给你看，上面密密麻麻，全是天书一样的符文。「此物名曰键盘，此术名曰编程。一念生万物，一念噬百魂。你既有长生之姿，或许……与码道有缘。」",
+       options:[
+        {text:"与他论道：何为码道？",next:"teach"},
+        {text:"改日再来请教",next:"end"}
+       ]
+      },
+      "teach":{
+       text:"「码道三境。」他竖起一根手指，「第一境，能跑就行；第二境，不要动它——祖传代码，动一行，崩十里；第三境，方敢言重构。」他又压低声音：「码修心魔名唤 Bug，无形无相，专在子时上线前袭来，斩之不尽，唯勤可御。你若真想入门，先把修为打磨到 1024，那是码道之基。」",
+       options:[
+        {text:"谨记教诲，回去打磨修为",effect:{flags:{q1024_taught:true},cult:64,relation:{daima_zhenren:10}},next:"end"}
+       ]
+      },
+      "chant":{
+       text:"你深吸一口气，对着青山旷野，一字一句地诵出：「Hello——World。」风停了一瞬。青石上的黑板子忽然亮起一片绿光，映得他眼中如星河倒灌。「编译通过，」代码真人缓缓起身，郑重抱拳，「零报错，零警告。欢迎入道，道友。从今日起，你也是码修了。长生路远，愿你的代码永无 Bug。」",
+       options:[
+        {text:"回礼：愿前辈永不加班",effect:{flags:{hello_world_chanted:true},cult:256,relation:{daima_zhenren:20}},next:"end"}
+       ]
+      }
+     }
+    }
+   },
+   items:{
+    "代码卷轴":{type:"consumable",desc:"上古卷轴，展开只有一行真言：Hello, World。参悟后修为+1024",use:{cult:1024}}
+   },
+   monsters:{
+    "Bug心魔":{name:"Bug心魔",hp:256,atk:21,reward:{cult:256,stone:512,flags:{bug_1024_slain:true}},ai:"enrage",aiParam:{hpPct:0.35,atkMul:1.5},affixDrop:["噬魂","魔骨"]}
+   },
+   achs:{
+    "m_1024_meet":{name:"初遇代码真人",desc:"十月二十四，山道青石上遇见一位敲键盘的修士",got:false},
+    "m_1024_fly":{name:"Hello World 飞升",desc:"在修仙世界写下第一行代码，一次编译通过",got:false}
+   }
+  }
+ }
+};
+
 //===== js/modloader.js =====
 //==== ESM 依赖导入（J 批次1：显式依赖图）====
 
@@ -4390,15 +4492,18 @@ function showInfo(title,lines){
 
 
 
-//==== modloader.js：模组系统（P5 模组规范/加载/冲突检测/编辑器）====
-// 模组规范：{id, name, version, content:{quests:{}, npcs:{}, items:{}, monsters:{}}}
+
+//==== modloader.js：模组系统（P5 模组规范/加载/冲突检测/编辑器 + P5+ 官方模组坊）====
+// 模组规范：{id, name, version, content:{quests:{}, npcs:{}, items:{}, monsters:{}, achs:{}}}
 // 命名空间隔离：builtin:/mod: 前缀；冲突检测：同 id 且内容不同则拒绝
 // 编辑器草稿（浏览器内可视化编辑，prompt 交互）
+// P5+ 新增：achs 注入目标（core.js allAch）；官方模组库（data/official_mods.js，与玩家模组同管线）；
+//           读档恢复钩子（window.__afterSaveApplied，core.js _applySaveData 尾调用——无循环依赖）
 
 let modDraft=null;
 
 //模组注入目标（与内置内容同对象，加载即生效）
-const MOD_TARGETS={quests:QUESTS,npcs:NPCS,items:ITEMS,monsters:MONSTERS};
+const MOD_TARGETS={quests:QUESTS,npcs:NPCS,items:ITEMS,monsters:MONSTERS,achs:allAch};
 //内置内容快照（冲突检测基准）
 const MOD_BUILTIN={};
 for(let k in MOD_TARGETS)MOD_BUILTIN[k]=Object.assign({},MOD_TARGETS[k]);
@@ -4457,14 +4562,57 @@ function modExport(id,name,version,content){
 //模组面板
 function sceneModPanel(){
  log("\n📦【模组】当前已加载："+(gs.mods&&Object.keys(gs.mods).length?Object.keys(gs.mods).join("、"):"无"));
+ addBtn("🎁官方模组坊",()=>sceneOfficialMods());
  addBtn("📤导出模组模板",()=>{
-  log("模组 JSON 模板（复制到文件/控制台）：\n"+modExport("my_mod","我的模组","0.1",{quests:{},npcs:{},items:{},monsters:{}}),"blue");
+  log("模组 JSON 模板（复制到文件/控制台）：\n"+modExport("my_mod","我的模组","0.1",{quests:{},npcs:{},items:{},monsters:{},achs:{}}),"blue");
   sceneModPanel();
  });
  addBtn("📥加载模组（粘贴 JSON）",()=>sceneModImport());
  addBtn("🛠模组编辑器",()=>sceneModEditor());
  addBtn("离开模组面板",()=>mainStep0());
 }
+
+//==== P5+ 官方模组坊：官方彩蛋模组一键安装（与玩家模组同管线，官方内容吃自家狗粮）====
+//模组是否已完整注入（任一 content 键缺失即视为未装——用于读档恢复判定）
+function modInstalled(mod){
+ for(let section in MOD_TARGETS){
+  let mods=(mod.content&&mod.content[section])||{};
+  for(let id in mods)if(MOD_TARGETS[section][id]===undefined)return false;
+ }
+ return true;
+}
+
+//官方模组坊面板
+function sceneOfficialMods(){
+ log("\n🎁【官方模组坊】官方彩蛋模组，与玩家模组走同一加载管线。");
+ for(let id in OFFICIAL_MODS){
+  let m=OFFICIAL_MODS[id];
+  let installed=modInstalled(m);
+  log(`「${m.name}」v${m.version}——${m.desc}${installed?"（已安装）":""}`,"blue");
+  addBtn(installed?`「${m.name}」已安装 ✅（重新载入）`:`安装「${m.name}」`,()=>{modLoad(m);sceneOfficialMods();});
+ }
+ addBtn("返回模组面板",()=>sceneModPanel());
+}
+
+//读档恢复：存档登记过的官方模组自动重注入（gs.mods 随档保存；玩家粘贴模组仍需手动重载）
+function restoreOfficialMods(){
+ let restored=[];
+ for(let id in OFFICIAL_MODS){
+  if(gs.mods&&gs.mods[id]&&!modInstalled(OFFICIAL_MODS[id])){
+   for(let section in MOD_TARGETS){
+    let mods=OFFICIAL_MODS[id].content[section]||{};
+    for(let k in mods)MOD_TARGETS[section][k]=mods[k];
+   }
+   restored.push(OFFICIAL_MODS[id].name);
+  }
+ }
+ if(restored.length){
+  log(`♻官方模组已随存档恢复：${restored.join("、")}`,"green");
+  refreshUi();
+ }
+}
+//读档钩子登记（core.js _applySaveData 尾调用 window.__afterSaveApplied——经 window 解耦避免 core→modloader 循环依赖）
+if(typeof window!=="undefined")window.__afterSaveApplied=restoreOfficialMods;
 
 //模组导入（浏览器 prompt 输入 JSON）
 function sceneModImport(){
@@ -4582,6 +4730,7 @@ function sceneShare(){
 //===== js/main.js =====
 //==== main.js：游戏入口（ESM 装配根；显式引入全部模块，加载顺序机器保障）====
 // 数据层（叶子模块，无其它依赖）
+
 
 
 

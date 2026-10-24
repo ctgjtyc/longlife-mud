@@ -37,6 +37,13 @@ export function startFightGroup(monsters){
   gs.foeReward.cult+=(m.reward&&m.reward.cult)||0;
   gs.foeReward.stone+=(m.reward&&m.reward.stone)||0;
  }
+ // 击杀 flag 奖励聚合（如模组 BOSS 击杀标记；多次出现后者覆盖，同 flag 语义等价）
+ for(let m of gs.foes){
+  if(m.reward&&m.reward.flags){
+   gs.foeReward.flags=gs.foeReward.flags||{};
+   for(let k in m.reward.flags)gs.foeReward.flags[k]=m.reward.flags[k];
+  }
+ }
  document.getElementById("fightui").style.display="block";
  log(`\n⚔战斗开启！遭遇${gs.foes.length>1?gs.foes.length+"名敌人":"【"+gs.enemy.name+"】"}！`,"danger");
  renderFightUi();
@@ -169,6 +176,7 @@ export function fightWin(){
  gs.cult+=rw.cult;
  gs.stone+=rw.stone;
  log(`获得修为+${rw.cult}，灵石+${rw.stone}`);
+ if(rw.flags)for(let k in rw.flags)setFlag(k,rw.flags[k]); // 击杀 flag 奖励落地（含模组 BOSS 标记）
  // P4：任务钩子（斩妖支线 + 秘境主线副本通关标记）
  setFlag("kill_monster",true);
  if(gs.step===6)setFlag("dungeon_yaoshan",true);
