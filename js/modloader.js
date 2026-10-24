@@ -1,5 +1,5 @@
 //==== ESM 依赖导入（J 批次1：显式依赖图）====
-import { addBtn, allAch, gs, log, refreshUi } from "./core.js";
+import { addBtn, allAch, clearOpt, gs, log, refreshUi } from "./core.js";
 import { ITEMS } from "./data/items.js";
 import { MONSTERS } from "./data/monsters.js";
 import { NPCS } from "./data/npcs.js";
@@ -149,9 +149,11 @@ export function hideModShop(){let box=document.getElementById("modshopbox");if(b
 function _modEsc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
 //M1.5 §1.3 一键启程：未装则走官方管线安装（幂等）→ 直达代码真人对话
+//R1(D1)：卡片是 index.html 原生 onclick，绕过 addBtn 的 clearOpt——此处必须自清选项区，否则主菜单按钮残留把对话选项挤出首屏
 export function startCodeJourney(){
  let m=OFFICIAL_MODS["mod_1024"];
  if(!m){log("官方模组暂不可用","red");return;}
+ clearOpt();
  if(!gs.mods||!gs.mods[m.id])modLoad(m);
  else if(!modInstalled(m))restoreOfficialMods();
  startDialogue("daima_zhenren");

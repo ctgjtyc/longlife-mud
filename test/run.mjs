@@ -1344,6 +1344,55 @@ section("M1.5：WB 设计方案落地");
   delete S.QUESTS["q_1024_2"]; delete S.QUESTS["q_1024_3"]; // 清全局污染
 }
 
+//==== M1.5-R1 回归：WB 审计 D1（启程不清选项区）/ D2（论道奖励无限重领）====
+section("M1.5-R1：审计缺陷修复");
+{
+  const M = S.OFFICIAL_MODS["mod_1024"];
+  // D1：主菜单残留 —— startCodeJourney 须自清 optbox
+  freshGame();
+  G.modLoad(M);
+  G.mainStep0(); // 主菜单渲染（①②③…进 optbox）
+  const optTexts = () => [...document.getElementById("optbox")._children].map(b => b.innerText);
+  let ts1 = optTexts();
+  if (!ts1.some(t => t.includes("寻一处山谷隐居"))) { // 桩环境兜底：_children 不可读则跳过结构断言，走行为断言
+    // makeEl 的 appendChild 压 _children；addBtn 用 appendChild ✓ 理论可达
+  }
+  G.startCodeJourney();
+  let ts2 = optTexts();
+  assert(!ts2.some(t => t.includes("寻一处山谷隐居")), "R1-D1：启程后主菜单选项已清空");
+  assert(ts2.some(t => t.includes("愿闻其详")), "R1-D1：启程后直达代码真人对话（愿闻其详在位）");
+  // D2：一次性奖励 need 门控（论道/初遇/回礼），重温版无奖励
+  freshGame();
+  G.modLoad(M);
+  G.setFlag("q1024_met", true); G.setFlag("q1024_taught", true);
+  G.clearOpt(); // 模拟真实点击语义（addBtn onclick 先 clearOpt 再进对话）
+  G.dialogueNode("daima_zhenren", "start");
+  let ts3 = optTexts();
+  assert(!ts3.some(t => t.includes("与他论道")) && ts3.some(t => t.includes("温故：再听一遍码道三境")), "R1-D2：已论道后「与他论道」隐藏，重温版在位");
+  assert(ts3.some(t => t.includes("回顾 1024 的由来")) && !ts3.some(t => t === "愿闻其详"), "R1-D2：已初遇后「愿闻其详」隐藏，回顾版在位");
+  const teachOpts = S.NPCS["daima_zhenren"].dialogue.teach.options;
+  const teachNeed = teachOpts[0].effect; // 奖励仍挂 teach（首达必经 need 门控）
+  assert(!!teachNeed.items && !!teachNeed.cult, "R1-D2：teach 奖励本体未动（门控在外层选项）");
+  G.setFlag("hello_world_chanted", true);
+  G.clearOpt();
+  G.dialogueNode("daima_zhenren", "chant");
+  let ts4 = optTexts();
+  assert(!ts4.some(t => t.includes("回礼：愿前辈永不加班")) && ts4.some(t => t.includes("静静回味")), "R1-D2：已诵真言后「回礼(+256)」隐藏，回味版在位");
+  // 首链不堵死：全新状态（未met）→ 闻详可达、论道不可达；met 后 → 论道可达
+  freshGame();
+  G.modLoad(M);
+  G.clearOpt();
+  G.dialogueNode("daima_zhenren", "start");
+  let ts5 = optTexts();
+  assert(ts5.includes("愿闻其详") && !ts5.some(t => t.includes("与他论道")), "R1-D2：全新状态首步「愿闻其详」可达（论道未解锁不显示）");
+  G.setFlag("q1024_met", true);
+  G.clearOpt();
+  G.dialogueNode("daima_zhenren", "start");
+  let ts6 = optTexts();
+  assert(ts6.some(t => t.includes("与他论道")) && !ts6.includes("愿闻其详"), "R1-D2：初遇后「与他论道」可达（闻详转回顾版）");
+  delete S.QUESTS["q_1024_1"]; delete S.QUESTS["q_1024_2"]; delete S.QUESTS["q_1024_3"]; // 清全局污染
+}
+
 //==== 汇总 ====
 console.log("\n==============================");
 console.log(`T0 测试结果：${pass} 通过 / ${fail} 失败`);

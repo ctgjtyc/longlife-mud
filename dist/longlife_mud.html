@@ -2714,8 +2714,10 @@ const OFFICIAL_MODS={
       "start":{
        text:"山道旁的青石上盘坐着一位灰袍修士，袍子洗得发白，膝上摊着一块微微发光的黑板子，十指在上面敲得飞快，像在弹一张看不见的琴。见你驻足，他头也不抬：「道友，可知今日是何日子？」",
        options:[
-        {text:"愿闻其详",effect:{flags:{q1024_met:true},achs:["m_1024_meet"],relation:{daima_zhenren:5}},next:"story1024"},
-        {text:"与他论道：何为码道？",need:{type:"flag",key:"q1024_met",val:true},next:"teach"},
+        {text:"愿闻其详",need:{type:"flag",key:"q1024_met",val:false},effect:{flags:{q1024_met:true},achs:["m_1024_meet"],relation:{daima_zhenren:5}},next:"story1024"},
+        {text:"回顾 1024 的由来",need:{type:"flag",key:"q1024_met",val:true},next:"story1024"},
+        {text:"与他论道：何为码道？",need:[{type:"flag",key:"q1024_met",val:true},{type:"flag",key:"q1024_taught",val:false}],next:"teach"},
+        {text:"温故：再听一遍码道三境",need:[{type:"flag",key:"q1024_met",val:true},{type:"flag",key:"q1024_taught",val:true}],next:"teach_review"},
         {text:"⚔ 领受考验：直面 Bug 心魔（战斗）",need:{type:"flag",key:"q1024_1_done",val:true},fight:"Bug心魔"},
         {text:"✨ 诵出真言：Hello, World",need:{type:"flag",key:"q1024_2_done",val:true},next:"chant"},
         {text:"不打扰了，告辞",next:"end"}
@@ -2724,7 +2726,8 @@ const OFFICIAL_MODS={
       "story1024":{
        text:"灰袍修士终于抬起头，眼睛亮得不像个活了两千岁的人：「十月二十四。2 的十次方，1024。吾辈码修的节日。」他把黑板子转过来给你看，上面密密麻麻，全是天书一样的符文。「此物名曰键盘，此术名曰编程。一念生万物，一念噬百魂。你既有长生之姿，或许……与码道有缘。」",
        options:[
-        {text:"与他论道：何为码道？",next:"teach"},
+        {text:"与他论道：何为码道？",need:{type:"flag",key:"q1024_taught",val:false},next:"teach"},
+        {text:"温故：再听一遍码道三境",need:{type:"flag",key:"q1024_taught",val:true},next:"teach_review"},
         {text:"改日再来请教",next:"end"}
        ]
       },
@@ -2735,10 +2738,18 @@ const OFFICIAL_MODS={
         {text:"谨记教诲，收下卷轴（获得【代码卷轴】）",effect:{flags:{q1024_taught:true},cult:64,items:{"代码卷轴":1},relation:{daima_zhenren:10}},next:"end"}
        ]
       },
+      "teach_review":{
+       text:"再访青石，灰袍修士正合上黑板子小憩。见你到来，他睁眼一笑：「温故而知新，可以为师矣。三境之义，你既已上路，便再赠你一句——写代码如修仙，重构即轮回。」",
+       code:["> 码道三境","  第一境：能跑就行","  第二境：不要动它   // 祖传代码，动一行，崩十里","  第三境：方敢言重构"],
+       options:[
+        {text:"抱拳谢过，不再打扰",next:"end"}
+       ]
+      },
       "chant":{
        text:"你深吸一口气，对着青山旷野，一字一句地诵出：`Hello——World`。风停了一瞬。青石上的黑板子忽然亮起一片绿光，映得他眼中如星河倒灌。「编译通过，」代码真人缓缓起身，郑重抱拳，「零报错，零警告。欢迎入道，道友。从今日起，你也是码修了。长生路远，愿你的代码永无 Bug。」",
        options:[
-        {text:"回礼：愿前辈永不加班",effect:{flags:{hello_world_chanted:true},cult:256,relation:{daima_zhenren:20}},next:"end"}
+        {text:"回礼：愿前辈永不加班",need:{type:"flag",key:"hello_world_chanted",val:false},effect:{flags:{hello_world_chanted:true},cult:256,relation:{daima_zhenren:20}},next:"end"},
+        {text:"（真言已诵）静静回味这一刻",need:{type:"flag",key:"hello_world_chanted",val:true},next:"end"}
        ]
       }
      }
@@ -3013,9 +3024,11 @@ function hideModShop(){let box=document.getElementById("modshopbox");if(box)box.
 function _modEsc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
 //M1.5 §1.3 一键启程：未装则走官方管线安装（幂等）→ 直达代码真人对话
+//R1(D1)：卡片是 index.html 原生 onclick，绕过 addBtn 的 clearOpt——此处必须自清选项区，否则主菜单按钮残留把对话选项挤出首屏
 function startCodeJourney(){
  let m=OFFICIAL_MODS["mod_1024"];
  if(!m){log("官方模组暂不可用","red");return;}
+ clearOpt();
  if(!gs.mods||!gs.mods[m.id])modLoad(m);
  else if(!modInstalled(m))restoreOfficialMods();
  startDialogue("daima_zhenren");
